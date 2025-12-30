@@ -1,8 +1,8 @@
 <?xml version="1.0" ?>
 <!--
 	Copyright (c) by Hugo Leisink <hugo@leisink.net>
-	This file is part of the Taida web desktop
-	https://gitlab.com/hsleisink/taida
+	This file is part of the Orb web desktop
+	https://gitlab.com/hsleisink/orb
 
 	Licensed under the GPLv2 License
 -->
