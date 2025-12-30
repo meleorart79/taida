@@ -1,0 +1,2152 @@
+127.0.0.1|Wed 21 May 2025 08:32:52|/taida/setting/applications/coder/theme|public|Array
+(
+    [value] => 
+)
+127.0.0.1|Wed 21 May 2025 08:32:55|/taida/file/remove|public|Array
+(
+    [filename] => Temporary/coder_autosave_1747816372261.txt
+)
+127.0.0.1|Wed 21 May 2025 13:15:27|/taida/setting/applications/calculator/display|public|Array
+(
+    [value] => 15
+)
+127.0.0.1|Sat 24 May 2025 12:57:47|/taida/setting/system/color|public|Array
+(
+    [value] => #c3cfda
+)
+127.0.0.1|Sat 24 May 2025 12:57:53|/taida/setting/system/color|public|Array
+(
+    [value] => #bf0313
+)
+127.0.0.1|Sat 24 May 2025 12:57:59|/taida/setting/system/color|public|Array
+(
+    [value] => #7bd879
+)
+127.0.0.1|Sat 24 May 2025 12:58:06|/taida/setting/system/color|public|Array
+(
+    [value] => #286090
+)
+127.0.0.1|Sat 24 May 2025 12:58:12|/taida/setting/system/zoom|public|Array
+(
+    [value] => 0.65
+)
+127.0.0.1|Thu 19 Jun 2025 17:04:56|/taida/setting/applications/notepad/wordwrap|public|Array
+(
+    [value] => false
+)
+127.0.0.1|Thu 19 Jun 2025 17:05:07|/taida/setting/applications/notepad/wordwrap|public|Array
+(
+    [value] => false
+)
+127.0.0.1|Fri 20 Jun 2025 12:32:59|/taida/setting/applications/notepad/wordwrap|public|Array
+(
+    [value] => false
+)
+127.0.0.1|Fri 20 Jun 2025 16:33:32|/taida/setting/applications/notepad/wordwrap|public|Array
+(
+    [value] => false
+)
+127.0.0.1|Sun 22 Jun 2025 16:26:36|/taida/setting/applications/notepad/wordwrap|public|Array
+(
+    [value] => false
+)
+127.0.0.1|Tue 24 Jun 2025 12:25:44|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Tue 24 Jun 2025 12:36:06|/taida/file/search|taida|Array
+(
+    [search] => 
+    [path] => 
+)
+127.0.0.1|Tue 24 Jun 2025 15:47:36|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Tue 24 Jun 2025 19:11:11|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Tue 24 Jun 2025 19:16:06|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Tue 24 Jun 2025 20:56:32|/taida/setting/applications/explorer/format|taida|Array
+(
+    [value] => detail
+)
+127.0.0.1|Tue 24 Jun 2025 21:19:40|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Tue 24 Jun 2025 22:28:10|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Tue 24 Jun 2025 22:33:02|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Tue 24 Jun 2025 22:34:26|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Tue 24 Jun 2025 22:40:59|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Tue 24 Jun 2025 22:42:11|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Tue 24 Jun 2025 22:45:39|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Tue 24 Jun 2025 22:50:30|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Tue 24 Jun 2025 22:53:13|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Tue 24 Jun 2025 22:59:22|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Tue 24 Jun 2025 23:06:31|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Wed 25 Jun 2025 16:07:32|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Wed 25 Jun 2025 16:44:45|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Wed 25 Jun 2025 16:51:09|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Mon 30 Jun 2025 11:38:34|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Tue 01 Jul 2025 09:35:36|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Tue 01 Jul 2025 10:35:53|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Tue 01 Jul 2025 10:44:21|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Tue 01 Jul 2025 15:10:17|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Tue 01 Jul 2025 15:12:50|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Tue 01 Jul 2025 15:13:36|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Tue 01 Jul 2025 18:50:50|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Wed 02 Jul 2025 06:00:51|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Wed 02 Jul 2025 06:02:08|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Wed 02 Jul 2025 06:46:30|/taida/setting/system/color|taida|Array
+(
+    [value] => #ffffff
+)
+127.0.0.1|Wed 02 Jul 2025 06:47:00|/taida/setting/system/color|taida|Array
+(
+    [value] => #000000
+)
+127.0.0.1|Wed 02 Jul 2025 06:47:20|/taida/setting/system/color|taida|Array
+(
+    [value] => #286090
+)
+127.0.0.1|Thu 03 Jul 2025 10:15:29|/taida/file/remove|taida|Array
+(
+    [filename] => Temporary/paint_autosave_1751537719634.png
+)
+127.0.0.1|Sat 05 Jul 2025 21:22:55|/taida/file/save|taida|Array
+(
+    [filename] => hello
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Sat 05 Jul 2025 21:23:02|/taida/dir/make|taida|Array
+(
+    [directory] => /hi
+    [timeout] => 30000
+)
+127.0.0.1|Sat 05 Jul 2025 21:23:13|/taida/file/save|taida|Array
+(
+    [filename] => fjf
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:52:58|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Wed 09 Jul 2025 04:53:03|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:53:08|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:53:13|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:53:18|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:53:23|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:53:28|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:53:33|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:53:38|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:53:43|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:53:48|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:53:53|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:53:58|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:54:03|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:54:08|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:54:13|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:54:18|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:54:23|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:54:29|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:54:34|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:54:39|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:54:44|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:54:49|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:54:54|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:54:59|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:55:04|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:55:09|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:55:14|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:55:19|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:55:24|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:55:36|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:55:38|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:55:43|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:55:48|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:55:53|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:55:58|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:56:03|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:56:08|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:56:13|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:56:18|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:56:23|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:56:28|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:56:33|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:56:38|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:56:43|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:56:48|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:56:53|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:56:58|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:57:03|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:57:08|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:57:13|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:57:18|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:57:23|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:57:28|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:57:33|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:57:38|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:57:43|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:57:48|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:57:53|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:57:58|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:58:03|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:58:08|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:58:13|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:58:18|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:58:23|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:58:28|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:58:33|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:58:38|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:58:43|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:58:48|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:58:53|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:58:58|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:59:03|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:59:08|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:59:13|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:59:18|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:59:23|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:59:28|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:59:33|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:59:38|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:59:43|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:59:48|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:59:53|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 04:59:58|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:00:03|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:00:08|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:00:13|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:00:18|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:00:23|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:00:28|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:00:33|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:00:38|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:00:43|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:00:48|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:00:59|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:01:09|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:01:39|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:01:39|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:01:39|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:01:39|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:01:39|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:01:39|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:01:43|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:01:48|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:01:53|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:01:58|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:02:03|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:02:08|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:02:13|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:02:18|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:02:23|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:02:28|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:02:33|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:02:38|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:02:43|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:02:48|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:02:53|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:02:58|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:03:03|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:03:08|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:03:13|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:03:18|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:03:23|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:03:28|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:03:33|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:03:38|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:03:41|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => true
+)
+127.0.0.1|Wed 09 Jul 2025 05:03:43|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:03:48|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:03:53|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:03:58|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:04:03|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:04:04|/taida/file/save|taida|Array
+(
+    [filename] => Documents/hi.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:04:27|/taida/file/save|taida|Array
+(
+    [filename] => newfile
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:04:37|/taida/setting/applications/explorer/format|taida|Array
+(
+    [value] => icon
+)
+127.0.0.1|Wed 09 Jul 2025 05:05:12|/explorer/download|taida|Array
+(
+    [url] => 
+    [path] => 
+)
+127.0.0.1|Wed 09 Jul 2025 05:05:43|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:05:48|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:05:53|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 09 Jul 2025 05:05:59|/taida/file/remove|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752036778809.txt
+)
+127.0.0.1|Wed 09 Jul 2025 06:06:31|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Wed 09 Jul 2025 06:09:01|/taida/setting/system/color|taida|Array
+(
+    [value] => #0008f5
+)
+127.0.0.1|Wed 09 Jul 2025 06:09:26|/taida/setting/system/color|taida|Array
+(
+    [value] => #ffffff
+)
+127.0.0.1|Wed 09 Jul 2025 06:09:27|/taida/setting/system/color|taida|Array
+(
+    [value] => #ffffff
+)
+127.0.0.1|Wed 09 Jul 2025 06:10:03|/taida/file/remove|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752041191211.txt
+)
+127.0.0.1|Thu 10 Jul 2025 10:39:39|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Thu 10 Jul 2025 12:30:37|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Thu 10 Jul 2025 12:31:22|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:31:27|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:31:32|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:31:37|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:31:42|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:31:47|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:31:52|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:31:57|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:32:02|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:32:07|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:32:12|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:32:17|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:32:22|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:32:27|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:32:32|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:32:37|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:32:42|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:32:47|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:32:52|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:32:57|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:33:02|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:33:07|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:33:13|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:33:18|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:33:23|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:33:28|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:33:33|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:33:38|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:33:43|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:33:48|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:33:53|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:33:58|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:34:03|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:34:08|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:34:29|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:34:32|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:34:37|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:34:42|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:34:47|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:34:54|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:34:58|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:35:03|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:35:08|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:35:13|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:35:18|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:35:23|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:35:28|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:35:33|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:35:38|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:35:43|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:35:48|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:35:53|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:36:55|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:37:31|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:37:32|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:37:38|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:37:43|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:37:48|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:37:52|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:37:57|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:38:03|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:38:07|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:38:12|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:38:17|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:38:22|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:38:27|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:38:32|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:38:37|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:38:43|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:38:48|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:38:53|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:38:58|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:39:02|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:39:08|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:39:13|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:39:18|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:39:22|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:39:27|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:39:33|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:39:38|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:39:42|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:39:48|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:39:53|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:39:58|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:40:03|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:40:08|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:40:13|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:40:18|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:40:23|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:40:28|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:40:33|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:40:38|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:40:43|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:40:55|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:41:55|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:42:55|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:43:56|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 12:44:55|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:36:38|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:36:46|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:36:50|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:36:59|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:37:02|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:37:07|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:37:12|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:37:17|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:37:22|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:37:27|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:37:32|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:37:37|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:37:42|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:37:49|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:38:53|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:39:35|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:39:49|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:40:49|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:41:49|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:42:49|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:43:49|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:44:49|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:45:49|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:46:49|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:47:12|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:47:49|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:48:59|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:49:49|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:50:49|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:51:49|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:52:49|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:53:49|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:54:49|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:55:49|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:56:38|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:56:42|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:56:47|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:56:52|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752150637830.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Thu 10 Jul 2025 17:58:54|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Thu 10 Jul 2025 20:39:30|/taida/setting/applications/explorer/format|taida|Array
+(
+    [value] => detail
+)
+127.0.0.1|Fri 11 Jul 2025 05:35:09|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Fri 11 Jul 2025 05:35:12|/taida/file/remove|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752212109069.txt
+)
+127.0.0.1|Fri 11 Jul 2025 06:14:45|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Fri 11 Jul 2025 09:56:53|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Fri 11 Jul 2025 10:38:37|/explorer/download|taida|Array
+(
+    [url] => 
+    [path] => 
+)
+127.0.0.1|Sun 13 Jul 2025 04:02:07|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Sun 13 Jul 2025 04:27:53|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Sun 13 Jul 2025 04:28:02|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752380872906.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Sun 13 Jul 2025 04:28:09|/taida/file/remove|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1752380872906.txt
+)
+127.0.0.1|Sun 13 Jul 2025 04:28:34|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/paint_autosave_1752380899431.png
+    [encoding] => base64
+    [timeout] => 30000
+)
+127.0.0.1|Sun 13 Jul 2025 04:28:39|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/paint_autosave_1752380899431.png
+    [encoding] => base64
+    [timeout] => 30000
+)
+127.0.0.1|Sun 13 Jul 2025 04:28:44|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/paint_autosave_1752380899431.png
+    [encoding] => base64
+    [timeout] => 30000
+)
+127.0.0.1|Sun 13 Jul 2025 04:28:49|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/paint_autosave_1752380899431.png
+    [encoding] => base64
+    [timeout] => 30000
+)
+127.0.0.1|Sun 13 Jul 2025 04:28:54|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/paint_autosave_1752380899431.png
+    [encoding] => base64
+    [timeout] => 30000
+)
+127.0.0.1|Sun 13 Jul 2025 04:28:59|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/paint_autosave_1752380899431.png
+    [encoding] => base64
+    [timeout] => 30000
+)
+127.0.0.1|Sun 13 Jul 2025 04:29:04|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/paint_autosave_1752380899431.png
+    [encoding] => base64
+    [timeout] => 30000
+)
+127.0.0.1|Sun 13 Jul 2025 04:29:09|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/paint_autosave_1752380899431.png
+    [encoding] => base64
+    [timeout] => 30000
+)
+127.0.0.1|Sun 13 Jul 2025 04:29:14|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/paint_autosave_1752380899431.png
+    [encoding] => base64
+    [timeout] => 30000
+)
+127.0.0.1|Sun 13 Jul 2025 04:29:19|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/paint_autosave_1752380899431.png
+    [encoding] => base64
+    [timeout] => 30000
+)
+127.0.0.1|Sun 13 Jul 2025 04:29:21|/taida/file/remove|taida|Array
+(
+    [filename] => Temporary/paint_autosave_1752380899431.png
+)
+127.0.0.1|Sun 13 Jul 2025 04:49:03|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Sun 13 Jul 2025 04:50:08|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Sun 13 Jul 2025 05:19:12|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Sun 13 Jul 2025 05:21:12|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Sun 13 Jul 2025 07:23:49|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Sun 13 Jul 2025 07:26:09|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Mon 14 Jul 2025 08:15:17|/taida/file/remove|taida|Array
+(
+    [filename] => Temporary/paint_autosave_1752480911445.png
+)
+127.0.0.1|Tue 15 Jul 2025 02:59:05|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Tue 15 Jul 2025 08:32:22|/taida/file/remove|taida|Array
+(
+    [filename] => Temporary/paint_autosave_1752549056809.png
+)
+127.0.0.1|Mon 21 Jul 2025 09:41:45|/taida/file/remove|taida|Array
+(
+    [filename] => Temporary/paint_autosave_1753090879706.png
+)
+127.0.0.1|Mon 21 Jul 2025 09:42:58|/taida/setting/system/color|taida|Array
+(
+    [value] => #289048
+)
+127.0.0.1|Mon 21 Jul 2025 09:43:05|/taida/setting/system/color|taida|Array
+(
+    [value] => #90284b
+)
+127.0.0.1|Mon 21 Jul 2025 09:43:10|/taida/setting/system/color|taida|Array
+(
+    [value] => #ffffff
+)
+127.0.0.1|Mon 21 Jul 2025 09:43:14|/taida/setting/system/color|taida|Array
+(
+    [value] => #000000
+)
+127.0.0.1|Mon 21 Jul 2025 09:43:23|/taida/setting/system/zoom|taida|Array
+(
+    [value] => 0.55
+)
+127.0.0.1|Mon 21 Jul 2025 09:43:31|/taida/setting/system/zoom|taida|Array
+(
+    [value] => 1
+)
+127.0.0.1|Mon 21 Jul 2025 09:43:37|/taida/setting/system/zoom|taida|Array
+(
+    [value] => 0.5
+)
+127.0.0.1|Mon 21 Jul 2025 09:43:41|/taida/setting/system/zoom|taida|Array
+(
+    [value] => 1
+)
+127.0.0.1|Mon 21 Jul 2025 11:02:42|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Mon 21 Jul 2025 11:02:53|/taida/file/remove|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1753095762094.txt
+)
+127.0.0.1|Mon 21 Jul 2025 11:03:00|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Mon 21 Jul 2025 11:03:05|/taida/file/save|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1753095780192.txt
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Mon 21 Jul 2025 11:03:11|/taida/file/remove|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1753095780192.txt
+)
+127.0.0.1|Fri 25 Jul 2025 21:20:36|/taida/setting/applications/notepad/wordwrap|taida|Array
+(
+    [value] => false
+)
+127.0.0.1|Fri 25 Jul 2025 21:20:44|/taida/file/remove|taida|Array
+(
+    [filename] => Temporary/notepad_autosave_1753478436297.txt
+)
+127.0.0.1|Mon 08 Sep 2025 13:03:25|/taida/setting/applications/notepad/wordwrap|public|Array
+(
+    [value] => false
+)
+127.0.0.1|Mon 08 Sep 2025 13:03:28|/taida/file/remove|public|Array
+(
+    [filename] => Temporary/notepad_autosave_1757336604986.txt
+)
+127.0.0.1|Thu 18 Sep 2025 07:49:31|/taida/dir/make|public|Array
+(
+    [directory] => /xfxgd
+    [timeout] => 30000
+)
+127.0.0.1|Thu 18 Sep 2025 07:49:46|/taida/file/search|public|Array
+(
+    [search] => 
+    [path] => 
+)
+127.0.0.1|Wed 24 Sep 2025 07:29:10|/taida/setting/applications/notepad/wordwrap|public|Array
+(
+    [value] => false
+)
+127.0.0.1|Wed 24 Sep 2025 07:29:44|/taida/file/save|public|Array
+(
+    [filename] => Desktop/hey
+    [encoding] => none
+    [timeout] => 30000
+)
+127.0.0.1|Wed 24 Sep 2025 07:30:00|/taida/dir/make|public|Array
+(
+    [directory] => Desktop/new
+    [timeout] => 30000
+)
+127.0.0.1|Wed 24 Sep 2025 07:30:24|/taida/setting/applications/explorer/format|public|Array
+(
+    [value] => detail
+)
+127.0.0.1|Wed 24 Sep 2025 07:30:33|/explorer/download|public|Array
+(
+    [url] => 
+    [path] => 
+)
+::1|Tue 30 Dec 2025 13:23:52|/taida/setting/applications/notepad/wordwrap|public|Array
+(
+    [value] => false
+)
+::1|Tue 30 Dec 2025 13:24:00|/taida/file/remove|public|Array
+(
+    [filename] => Temporary/notepad_autosave_1767097432393.txt
+)
+::1|Tue 30 Dec 2025 13:24:02|/taida/setting/applications/notepad/wordwrap|public|Array
+(
+    [value] => false
+)
+::1|Tue 30 Dec 2025 13:24:45|/taida/file/remove|public|Array
+(
+    [filename] => Temporary/notepad_autosave_1767097442083.txt
+)

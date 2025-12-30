@@ -1,0 +1,221 @@
+/* Taskbar
+ */
+div.taskbar {
+	display: flex;
+	align-items: center;
+	position:absolute;
+	right:0;
+	bottom:0;
+	left:0;
+	height:44px;
+	background: rgb(247, 255, 247, 0.15);
+	z-index:2;
+	border-top: 2px rgb(255, 235, 243, 0.6);
+	border-bottom: 0px;
+	border-style: outset;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	color: #f7f7f7;
+	box-shadow: 0 4px 30px rgb(51, 51, 51, 0.6);
+}
+
+div.taskbar div.overlay {
+	position:absolute;
+	top:0;
+	right:0;
+	bottom:0;
+	left:0;
+	background-color:rgba(0, 0, 0, 0.5);
+}
+
+/* Start button
+ */
+div.taskbar div.start {
+	mask-image: url(/images/taidasansfond.png);
+	width:36px;
+	margin:11px;
+	height:36px;
+	justify-content: center;
+	background-color: #f7fff7;
+	box-shadow: none;
+	mask-repeat: no-repeat;
+	mask-size: contain;
+	mask-position: center;
+	cursor: pointer;
+	box-shadow: 4px rgb(51, 51, 51, 0.6);
+}
+
+div.taskbar div.start:hover {
+  background-color: #ffebf3b0; 
+}
+
+/* Start menu
+ */
+
+div.taskbar div.startmenu {
+	position:absolute;
+	bottom:51px;
+	width:220px;
+	height:285px;
+	background: rgb(247, 255, 247, 0.15);
+	display:none;
+	border-top: 3px rgb(255, 235, 243, 0.6);
+	border-style: outset;
+	border-top-left-radius: 10px;
+	border-bottom-right-radius: 10px;
+}
+
+div.taskbar div.startmenu div.system {
+	position:absolute;
+	width:35px;
+	height:inherit;
+	background: rgb(247, 255, 247, 0.015);
+	padding:10px 5px 0px 5px;
+}
+
+div.taskbar div.startmenu div.system img.icon {
+	width:24px;
+	height:24px;
+	cursor:pointer;
+	margin-bottom:10px;
+}
+
+div.taskbar div.startmenu div.system img[title=Logout] {
+	position:absolute;
+	bottom:0;
+	left:5px;
+	margin-bottom:5px;
+}
+
+div.taskbar div.startmenu div.applications {
+    margin-left: 35px;   /* margin instead of shifting position */
+    width: calc(100% - 35px);
+    height: calc(100% - 1px);
+	overflow-y:scroll;
+	scrollbar-width: none;
+	background-color:#333333;
+	border-bottom-right-radius: 10px;
+}
+
+div.taskbar div.startmenu div.applications ::-webkit-scrollbar {
+    display: none;            /* Chrome, Safari, Edge */
+}
+
+div.taskbar div.startmenu div.applications div.application {
+	align-items: center;
+	justify-content: left;
+	color:#f7fff7;
+	padding:10px 10px;
+	cursor:pointer;
+	overflow-x:hidden;
+	text-overflow:ellipsis;
+	display: flex;
+}
+
+div.taskbar div.startmenu div.applications div.application:hover {
+	text-shadow: 0 0 3px #f7fff7;
+	border: none;
+	border-left: 3px outset rgb(255, 235, 243, 0.6);
+}
+
+div.taskbar div.startmenu div.applications div.application img.icon {
+	width:20px;
+	height:20px;
+	margin-right:10px;
+}
+
+/* Tasks
+ */
+div.taskbar div.tasks {
+	display: flex;
+	align-items: center;
+	gap: 6px;              /* 👈 Spacing between individual .task buttons */
+	overflow: hidden;
+	position: absolute;
+	right: 80px;
+	left: 61px;
+	height: 40px;
+}
+
+div.taskbar div.tasks div.task {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: #ffebf32b;
+  color: #f7fff7;
+  height: 36px;
+
+  padding: 0;                    /* Start with no padding */
+  overflow: hidden;
+  cursor: pointer;
+
+  max-width:36px;
+  min-width: 36px;               /* Force icon-only width */
+  flex: 0 0 auto;                /* Prevent flex stretching */
+  transition: max-width 0.2s ease, padding 0.2s ease;
+
+  border-top: 1px solid rgb(247, 255, 247, 0.2);
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+div.taskbar div.tasks div.task img {
+	width: 26px;
+	height: 26px;
+	margin: 0;                       /* ❌ Remove the vertical push */
+	flex-shrink: 0;                  /* Prevent icon from shrinking */
+}
+
+div.taskbar div.tasks div.focus {
+	color: #f7f7f7;
+	text-shadow: 2px #ffebf3;
+}
+
+div.taskbar div.tasks div.minimized {
+	color:#f7fff7;
+	font-style:italic;
+	background-color:#3c32329e;
+}
+
+/* Hide the text title inside each task by default */
+div.taskbar div.tasks div.task span {
+  opacity: 0;
+  margin-left: 0px;
+  overflow: hidden;
+  max-width: 0px;
+}
+
+div.taskbar div.tasks div.task:hover {
+  width: fit-content;
+  max-width: 240px;                 /* Allow expansion on hover */
+  padding: 0 10px;
+  justify-content: left;
+  background-color:#303030;
+  margin-left: 6px;
+  box-shadow: 0 0 3px #ffebf3;
+  transition: opacity 1s ease-in-out, max-width 0.3s ease;
+}
+
+div.taskbar div.tasks div.task:hover span {
+  width: fit-content;
+  opacity: 1;
+  max-width: 240px;
+  justify-content: left;
+  margin-left: 6px;
+}
+
+/* Clock
+ */
+div.taskbar div.clock {
+	position:absolute;
+	align-items: center;
+	right: 11px;
+	color:#f7fff7;
+	text-align:right;
+	font-size:12px;
+	font-weight: bold;
+	box-shadow: 4px rgb(51, 51, 51, 0.6);
+}

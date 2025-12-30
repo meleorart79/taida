@@ -1,0 +1,387 @@
+/* Windows
+ */
+div.windows {
+	position:absolute;
+	top:0;
+	right:0;
+	bottom:36px;
+	left:0;
+	overflow:hidden;
+}
+
+div.windows > div.overlay {
+	position:absolute;
+	top:0;
+	right:0;
+	bottom:0;
+	left:0;
+	background-color:rgba(0, 0, 0, 0.325);
+}
+
+div.windows div.window {
+	min-width:200px;
+	min-height:150px;
+	outline:none;
+	transform-origin:top left;
+	background-color: #333333;
+  	color: #f7fff7;
+	border-style: outset;
+	border-width: 3px;
+	border-color: #ffebf3;
+	box-shadow: 0 0 0 6px #333333, 0 10px 20px rgba(0, 255, 255, 0.08);
+}
+
+div.windows div.window div.window-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height:30px;
+	padding:5px 15px 5px 15px;
+	gap: 0.5rem;
+	border-top-left-radius:inherit;
+	border-top-right-radius:inherit;
+	cursor:default;
+	background-color: #333333;
+  	color: #ffebf3;
+	border-bottom: 1px solid #f7fff7;
+}
+
+div.windows div.window div.window-header img.icon {
+	width:22px;
+	height:22px;
+	position:relative;
+}
+
+div.windows div.window div.window-header div.title {
+	flex: 1;
+	display: inline-block;
+	font-size:14px;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	white-space:nowrap;
+	max-width:calc(100% - 100px);
+	transition: text-shadow 0.2s ease;
+}
+
+div.windows div.window.focus div.window-header div.title {
+	text-shadow: 0 0 2px #ffebf3;
+	transition: text-shadow 0.2s ease;
+}
+
+div.windows div.window div.window-header span {
+	float:right;
+	padding-top:1px;
+	font-size:16px;
+	color:#333333;
+	margin-left:10px;
+}
+
+div.windows div.window div.window-body {
+	position:relative;
+	max-height: 90vh;
+    overflow-y: auto;
+	overflow: hidden;
+	height:calc(100% - 30px);
+	padding:10px;
+}
+
+div.windows div.window ul.nav + div.window-body {
+	height:calc(100% - 61px);
+}
+/* Menu bar
+ */
+
+div.windows div.window ul.nav {
+  display: flex;
+  align-items: center;
+  height: 32px;
+  margin: 0;
+  border-bottom: 1px solid #ffebf3;
+  gap: 0.2 rem;
+  list-style: none;
+}
+
+div.windows div.window ul.nav li {
+  list-style: none;
+  align-items: center;
+}
+
+div.windows div.window ul.nav li.selected a {
+  color: #ff6666;
+}
+
+div.windows div.window ul.nav li.open a.dropdown-toggle {
+  background-color: #333333;
+}
+
+div.windows div.window ul.nav li.dropdown {
+  position: relative;
+}
+
+div.windows div.window ul.nav a.dropdown-toggle {
+  all: unset;
+  display: flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  font-size: 16px;
+  cursor: pointer;
+  color:#f7fff7;
+  background-color: #333333;
+  transition: background-color color 0.2s ease;
+}
+
+div.windows div.window ul.nav a.dropdown-toggle:hover {
+  background-color: #ffebf3;
+  color: #333333;
+}
+
+
+div.windows div.window ul.nav li.dropdown .dropdown-menu {
+  position: absolute;
+  top: 100%; /* Show just below the tab */
+  left: 0;
+  display: none;
+  z-index: 1000;
+  padding: 4px 0;
+  min-width: 150px;
+  width: max-content;
+  background-color: #333333;
+  border: 1px solid #ffebf3;
+  box-shadow: 0 0 3px rgba(255, 235, 243, 0.5);
+  transition: 0.1s ease;
+}
+
+div.windows div.window ul.dropdown-menu li a {
+  all: unset;
+  display: flex;
+  align-items: center;
+  padding: 6px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+div.windows div.window ul.dropdown-menu li a:hover {
+  background-color: #f7fff7;
+  color: #333333;
+}
+
+/* Window with iframe
+ */
+div.windows div.window iframe {
+	border:none;
+	width:100%;
+	height:100%;
+}
+
+/* Alert
+ */
+div.taida_dialog {
+	padding:10px;
+}
+
+div.taida_dialog div.message {
+	min-height:35px;
+}
+
+div.taida_dialog div.btn-group {
+	margin-top:15px;
+	margin-bottom:0;
+}
+
+div.taida_dialog div.btn-group input {
+	padding:5px 25px;
+}
+
+ul.nav.nav-tabs {
+    display: flex;
+    align-items: center; /* Vertical centering */
+    height: 100%;         /* Ensures tab height is consistent */
+}
+
+ul.nav.nav-tabs li {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+ul.nav.nav-tabs li a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px;
+    height: 100%;
+}
+
+/* File Dialog – File browsers inside window environment */
+
+/* Icon
+ */
+div.file-icon {
+	width:50px;
+	box-sizing:content-box;
+}
+
+div.file-icon img {
+	width:inherit;
+	height:50px;
+	margin-bottom:5px;
+}
+
+div.file-icon img + img {
+	margin:0 -50px;
+}
+
+div.detail img + img {
+	margin:0 -14px;
+}
+
+div.file-icon span {
+	font-size:12px;
+	text-align:center;
+	display:block;
+	width:70px;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	max-height:50px;
+	margin-left:-10px;
+}
+
+div.file-icon:hover span {
+	max-height:70px;
+}
+
+/* File dialog
+ */
+div.file_dialog {
+	position:relative;
+	height:100%;
+}
+
+div.file_dialog button.up {
+	position:absolute;
+	top:0;
+	right:0;
+	left:0;
+	width:25px;
+	height:25px;
+}
+
+div.file_dialog div.path {
+	border:1px solid #cccccc;
+	position:absolute;
+	top:0;
+	right:0;
+	left:35px;
+	height:25px;
+	padding:2px 5px;
+	cursor:default;
+}
+
+div.file_dialog div.filename {
+	position:absolute;
+	right:0;
+	bottom:0;
+	left:210px;
+}
+
+/* Directory tree
+ */
+div.file_dialog div.directories {
+	border:1px solid #cccccc;
+	position:absolute;
+	top:35px;
+	bottom:45px;
+	left:0;
+	width:200px;
+	padding:5px;
+	overflow:auto;
+}
+
+div.file_dialog div.directories div.directory {
+	padding:1px 5px;
+	cursor:default;
+	padding-left:15px;
+	text-indent:-10px;
+}
+
+div.file_dialog div.directories div.directory img {
+	width:14px;
+	height:14px;
+	position:relative;
+	left:-4px;
+	top:-2px;
+	margin-right:2px;
+}
+
+div.file_dialog div.directories div.directory:hover {
+	background-color:#e8e8f4;
+}
+
+/* Files list
+*/
+div.file_dialog div.files {
+	border:1px solid #cccccc;
+	position:absolute;
+	top:35px;
+	right:0;
+	bottom:45px;
+	left:210px;
+	overflow:auto;
+}
+
+div.file_dialog div.files div.icon {
+	margin:25px 15px 0 25px;
+	height:100px;
+	float:left;
+}
+
+/* Buttons
+*/
+
+.window-buttons {
+	display: flex;
+	gap: 4px; /* optional spacing between buttons */
+}
+
+.window-btn {
+  display: inline-block;
+  width: 16px;    /* fixed size to match icon */
+  height: 16px;
+  background-color: #ffebf3; /* this sets the icon color */
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
+  cursor: pointer;
+}
+
+.window-btn.minimize-btn {
+  mask-image: url("../images/minimize.svg");
+}
+
+.window-btn.maximize-btn {
+  mask-image: url("../images/maximize.svg");
+}
+
+.window-btn.close-btn {
+  mask-image: url("../images/close.svg");
+}
+
+.window-btn:hover {
+  background-color: #ffebf3b0; 
+  filter: drop-shadow(0 0 8px #f7fff7);
+  transition: filter 0.3s ease;
+}
+
+div.file_dialog div.btn-group {
+	position:absolute;
+	bottom:0;
+	left:0;
+	width:200px;
+}
+
+div.file_dialog div.btn-group input {
+	width:50%;
+}
+
+

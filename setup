@@ -1,0 +1,290 @@
+#!/bin/bash
+
+whiptail -v > /dev/null 2> /dev/null
+if [ $? != 0 ]; then
+	echo "This script requires whiptail."
+	exit;
+fi
+
+# Initialize
+#
+cd `dirname $0`
+swd=$PWD
+
+version=`grep TAIDA_VERSION libraries/taida.php | cut -f4 -d'"'`
+desktop=`grep 'define("DESKTOP_PATH"' libraries/taida.php | cut -f4 -d'"'`
+homedir=`grep HOME_DIRECTORIES taida.conf | cut -f2 -d= | sed 's/^ *//g'`
+user_websites=`grep USER_WEBSITES taida.conf | cut -f2 -d= | sed 's/^ *//g'`
+backtitle="Taida v${version} setup tool"
+
+# Show message and wait for key
+#
+function alert {
+	whiptail \
+		--backtitle "${backtitle}" \
+		--msgbox "$1" 10 60
+}
+
+# Create new user account
+#
+function create_user {
+	username=""
+	while [ "${username}" = "" ]; do
+		username=$(whiptail \
+			--backtitle "${backtitle}" \
+			--inputbox "Username:" 8 60 \
+			3>&1 1>&2 2>&3)
+
+		if [ $? = 1 ]; then
+			return
+		fi
+	done
+
+	username=`echo ${username} | tr '[:upper:]' '[:lower:]'`
+
+	if [ "`grep ^${username}: ${homedir}/users.txt`" != "" ]; then
+		alert "That user already has an account."
+		return
+	fi
+
+	password=""
+	while [ "${password}" = "" ]; do
+		password=$(whiptail \
+			--backtitle "${backtitle}" \
+			--passwordbox "Password:" 8 60 \
+			3>&1 1>&2 2>&3)
+
+		if [ $? = 1 ]; then
+			return
+		fi
+	done
+
+	password=`php -r "print password_hash(\"${password}\", PASSWORD_ARGON2I);"`
+
+	echo "${username}:${password}" >> ${homedir}/users.txt
+
+	alert "User account has been created."
+}
+
+# Change user password
+#
+function change_password {
+	users=()
+	for user in `cut -f1 -d: ${homedir}/users.txt | sort`; do
+		users+=("${user}" "${user}");
+	done
+
+	username=$(whiptail \
+		--backtitle "${backtitle}" \
+		--title "Select user" \
+		--clear --notags \
+		--cancel-button "Exit" \
+		--menu "" 0 0 0 \
+		${users[@]} \
+		3>&1 1>&2 2>&3)
+
+	if [ $? = 1 ]; then
+		return
+	fi
+
+	password=""
+	while [ "${password}" = "" ]; do
+		password=$(whiptail \
+			--backtitle "${backtitle}" \
+			--passwordbox "Password:" 8 60 \
+			3>&1 1>&2 2>&3)
+
+		if [ $? = 1 ]; then
+			return
+		fi
+	done
+
+	password=`php -r "print password_hash(\"${password}\", PASSWORD_ARGON2I);"`
+
+	grep -v "^${username}:" ${homedir}/users.txt > _taida_users.txt
+	mv _taida_users.txt ${homedir}/users.txt
+	echo "${username}:${password}" >> ${homedir}/users.txt
+
+	whiptail \
+		--backtitle "${backtitle}" \
+		--msgbox "User password has been changed." 8 60
+}
+
+# Set maximum storage capacity
+#
+function set_maximum_storage_capacity {
+	users=()
+	for user in `cut -f1 -d: ${homedir}/users.txt | sort`; do
+		users+=("${user}" "${user}");
+	done
+
+	username=$(whiptail \
+		--backtitle "${backtitle}" \
+		--title "Select user" \
+		--clear --notags \
+		--cancel-button "Exit" \
+		--menu "" 0 0 0 \
+		${users[@]} \
+		3>&1 1>&2 2>&3)
+
+	if [ $? = 1 ]; then
+		return
+	fi
+
+	maximum=`grep "^${username}:" ${homedir}/users.txt | cut -f3 -d:`
+
+	maximum=$(whiptail \
+		--backtitle "${backtitle}" \
+		--inputbox "Maximum storage capacity in megabytes:\n(Leave empty for unlimited capacity)" 9 60 "${maximum}" \
+		3>&1 1>&2 2>&3)
+
+	if [ $? = 1 ]; then
+		return
+	fi
+
+	user=`grep "^${username}:" ${homedir}/users.txt | cut -f1,2 -d:`
+	grep -v "^${username}:" ${homedir}/users.txt > _taida_users.txt
+	mv _taida_users.txt ${homedir}/users.txt
+	echo "${user}:${maximum}" >> ${homedir}/users.txt
+
+	alert "Maximum storage capacity set."
+}
+
+# Create new user home directory
+#
+function create_home_directory {
+	username=""
+	while [ "${username}" = "" ]; do
+		username=$(whiptail \
+			--backtitle "${backtitle}" \
+			--inputbox "Taida username:" 8 60 \
+			3>&1 1>&2 2>&3)
+
+		if [ $? = 1 ]; then
+			return
+		fi
+	done
+
+	username=`echo ${username} | tr '[:upper:]' '[:lower:]'`
+
+	if [ ! -d ${homedir} ]; then
+		mkdir ${homedir}
+	fi
+
+	cd ${homedir}
+
+	if [ ! -d Shared ]; then
+		mkdir Shared
+	fi
+
+	if [ -d ${username} ]; then
+		alert "That user already has a home directory."
+		cd ${swd}
+		return
+	fi
+
+	mkdir ${username}
+	cd ${username}
+
+	if [ -d ../../public/apps/browser ]; then
+		mkdir Bookmarks
+	fi
+	mkdir ${desktop}
+	mkdir Documents
+	if [ -d ../../public/apps/c64 ]; then
+		mkdir -p Emulators/C64
+	fi
+	if [ -d ../../public/apps/dosbox ]; then
+		mkdir -p Emulators/DosBox
+	fi
+	mkdir Pictures
+	mkdir Temporary
+	if [ "${user_websites}" = "yes" ]; then
+		mkdir Website
+	fi
+	ln -s ../Shared
+
+	cp ../../extra/wallpaper.jpg Pictures
+	cp ../../extra/user.settings .settings
+	cd ${swd}
+
+	alert "Home directory ${homedir}/${username} and settings file ${homedir}/${username}/.settings created. Make sure that they are writable for your webserver."
+}
+
+# Create new Taida application from template
+#
+function create_application {
+	app=""
+	while [ "${app}" = "" ]; do
+		app=$(whiptail \
+			--backtitle "${backtitle}" \
+			--inputbox "Application name:" 8 60 \
+			3>&1 1>&2 2>&3)
+
+		if [ $? = 1 ]; then
+			return
+		fi
+	done
+
+	app=`echo ${app} | tr '[:upper:]' '[:lower:]'`
+	name=`echo ${app} | sed 's/./\u&/'`
+	upper=`echo ${app} | tr '[:lower:]' '[:upper:]'`
+	app=`echo ${app} | sed 's/ /_/g'`
+	author=`grep "^${USER}:" /etc/passwd | cut -f5 -d: | cut -f1 -d,`
+
+	if [ "${app}" = "taida" ]; then
+		alert "That application name is not allowed."
+		exit
+	fi
+
+	if [ -d "public/apps/${app}" ]; then
+		alert "Application ${app} already exists."
+		exit
+	fi
+
+	mkdir public/apps/${app}
+
+	cat extra/template/template.js | \
+		sed "s/template/${app}/g" | \
+		sed "s/Template/${name}/g" | \
+		sed "s/TEMPLATE/${upper}/g" | \
+		sed "s/NAME/${author}/g" > \
+		public/apps/${app}/${app}.js
+	sed "s/template/${app}/g" < extra/template/template.css > public/apps/${app}/${app}.css
+	sed "s/template/${app}/g" < extra/template/template.php > public/apps/${app}/${app}.php
+
+	alert "New application available in public/apps/${app}."
+}
+
+# Main menu
+#
+function main_menu {
+	while [ true ]; do
+		choice=$(whiptail \
+			--backtitle "${backtitle}" \
+			--title "Setup options" \
+			--clear --notags \
+			--cancel-button "Exit" \
+			--menu "" 0 0 0 \
+			"U" "Create user account" \
+			"P" "Change user password" \
+			"M" "Set maximum storage capacity" \
+			"H" "Create user home directory" \
+			"A" "Create new application" \
+			3>&1 1>&2 2>&3)
+
+		if [ $? = 1 ]; then
+			break
+		fi
+
+		case ${choice} in
+			"U") create_user;;
+			"P") change_password;;
+			"M") set_maximum_storage_capacity;;
+			"H") create_home_directory;;
+			"A") create_application;;
+		esac
+	done
+}
+
+main_menu

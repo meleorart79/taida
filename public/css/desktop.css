@@ -1,0 +1,122 @@
+/* ================================
+   DESKTOP LAYER
+   ================================ */
+div.desktop {
+	position: absolute;
+	inset: 0;
+	min-width: 375px;
+	min-height: 350px;
+	background-size: cover;
+	background-position: center;
+	isolation: auto;
+ }
+
+.desktop video.bg-video {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  pointer-events: none;
+}
+.desktop .video-warm-overlay {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: #76421c;
+  mix-blend-mode: soft-light;
+  opacity: 0.3;
+  z-index: 1;
+  pointer-events: none;
+  transition: opacity 2s ease-in-out;
+}
+
+/* ================================
+   ICONS ON DESKTOP
+   ================================ */
+div.icons {
+	position: absolute;
+	inset: 0;
+	bottom: 36px; /* Leave space for taskbar */
+	overflow: hidden;
+	z-index: 1;
+}
+
+div.icons .icon {
+	position: absolute;
+	padding: 15px 45px;
+}
+
+div.icons .icon span {
+	color: #fff;
+	text-shadow: #404040 1px 1px 3px,
+	             #404040 1px -1px 3px,
+	             #404040 -1px 1px 3px,
+	             #404040 -1px -1px 3px;
+}
+
+div.icons .icon span:nth-of-type(2) {
+	display: none; /* Likely a hidden tooltip or alt label */
+}
+
+div.icons .icon:hover span {
+  text-shadow: 0 0 8px #f7fff7;
+}
+
+
+/* ================================
+   CONTEXT MENU
+   ================================ */
+
+ul.context-menu {
+  display: none;
+  position: absolute;
+  list-style: none;
+  padding: 4px 1px;
+  margin: 0;
+  background: #333333;
+  color: #f7fff7;
+  z-index: 9999;
+  font-size: 13px;
+  border-top: 2px rgb(255, 235, 243, 0.6);
+	border-style: outset;
+	border-top-left-radius: 10px;
+	border-bottom-right-radius: 10px;
+}
+
+ul.context-menu li {
+  display: flex;
+	align-items: center;
+  padding: 6px 16px;
+  cursor: pointer;
+}
+
+/* ================================
+  IDLE-SCREEN   
+   ================================ */
+
+#sleep-screen {
+	position: fixed;
+	top: 0; left: 0;
+	width: 100vw;
+	height: 100vh;
+	background-color: black;
+	z-index: 2147483647; /* Max possible to ensure coverage */
+	display: none;
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity 0.8s ease;
+}
+
+#sleep-screen.show {
+	display: block;
+	pointer-events: auto;
+	opacity: 1;
+}
+
+#idle-video {
+	width: 100vw;
+	height: 100vh;
+	object-fit: cover;
+}
+

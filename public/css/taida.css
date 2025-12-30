@@ -1,0 +1,120 @@
+/* ------------------------------------------------------
+   GLOBAL RULES
+------------------------------------------------------- */
+body {
+	user-select: none;
+}
+
+html, body {
+	height: 100%;
+}
+
+/* ------------------------------------------------------
+   TAIDA CORE UI
+------------------------------------------------------- */
+div.ui-draggable-dragging div.plus {
+	width: 15px;
+	height: 15px;
+	text-align: center;
+	line-height: 14px;
+	border: 1px solid #000000;
+	background-color: #ffffff;
+	margin-bottom: -15px;
+	position: absolute;
+	left: 80px;
+	top: 50px;
+}
+
+div.taida_dialog img.about {
+	float: right;
+	width: 75px;
+	height: 75px;
+}
+
+/* ------------------------------------------------------
+   NOTIFICATION SCREEN
+   - full-screen info panels and warnings
+------------------------------------------------------- */
+body.notification-screen {
+	background-color: #a0a0a0;
+	background-image: url(/images/background.jpg);
+	background-size: cover;
+	background-position: center;
+	padding: 50px 25px 0 25px;
+}
+
+.notification .content {
+	display: block;
+	width: 100%;
+	max-width: 500px;
+	background-color: #e0e0e0;
+	border: 1px solid #404040;
+	border-radius: 4px;
+	padding: 25px;
+	margin: 0 auto;
+}
+
+@media (min-width: 992px) {
+	.notification {
+		position: absolute;
+		top: 45%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		margin: 0;
+	}
+}
+
+.notification h1 {
+	margin: 0 0 20px 0;
+}
+
+.notification h1::after {
+	background-image: url(/images/taidasansfond.png);
+	background-size: 50px 50px;
+	display: block;
+	float: right;
+	width: 50px;
+	height: 50px;
+	content: "";
+}
+
+p.warning {
+	color: #ff0000;
+}
+
+.notification .btn-group {
+	margin-top: 15px;
+}
+
+.notification .btn-group button {
+	padding: 5px 25px;
+}
+
+/* ------------------------------------------------------
+   LOGIN SCREEN
+------------------------------------------------------- */
+body.login div.content:first-child {
+	background-image: none;
+	margin-bottom: 50px;
+}
+
+body.login h1:after {
+	background-image: none;
+}
+
+body.login div.source {
+	margin-top: -20px;
+	text-align: right;
+}
+
+body.login div.source a {
+	color: #a0a0a0;
+}
+
+/* ------------------------------------------------------
+   MISCELLANEOUS / LEGACY
+------------------------------------------------------- */
+/* Legacy button styling from old taida button component */
+.taida-btn {
+	background-image: linear-gradient(to bottom, #fff 0, #e0e0e0 100%);
+}

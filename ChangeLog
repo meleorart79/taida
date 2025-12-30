@@ -1,0 +1,281 @@
+taida (1.4) stable; urgency=low
+
+  * System notifications.
+  * Small improvements.
+
+ -- Hugo Leisink <hugo@leisink.net>  Wed, 22 May 2024 22:30:23 +0200
+
+taida (1.3) stable; urgency=low
+
+  * Added Life application.
+  * Added support for file uploading by others.
+  * User Javascript error window for mobile devices.
+  * Small improvements.
+
+ -- Hugo Leisink <hugo@leisink.net>  Thu, 28 Mar 2024 13:41:07 +0100
+
+taida (1.2) stable; urgency=low
+
+  * Minimize and maximize animations.
+  * Set .ujs as user-Javascript extension.
+  * Small bugfixes and improvements.
+
+ -- Hugo Leisink <hugo@leisink.net>  Fri, 19 Jan 2024 16:52:31 +0100
+
+taida (1.1) stable; urgency=low
+
+  * Added Sticky Note application.
+  * Small bugfixes and improvements.
+
+ -- Hugo Leisink <hugo@leisink.net>  Wed, 29 Nov 2023 08:53:08 +0100
+
+taida (1.0) stable; urgency=low
+
+  * Improved paint application.
+  * Small improvements.
+
+ -- Hugo Leisink <hugo@leisink.net>  Sun,  1 Oct 2023 09:43:27 +0200
+
+taida (0.25) stable; urgency=low
+
+  * Added Office Viewer application.
+  * Added maps to Wolfenstein 3D.
+  * Improved slow server handling by Explorer.
+  * Improved Archive.
+  * Small bugfixes and improvements.
+
+ -- Hugo Leisink <hugo@leisink.net>  Thu,  7 Sep 2023 09:15:52 +0200
+
+taida (0.24) stable; urgency=low
+
+  * User Javascripts support.
+  * Manual updated.
+  * Small improvements.
+  * Bugfix: window minWidth setting.
+
+ -- Hugo Leisink <hugo@leisink.net>  Sun,  6 Aug 2023 23:40:13 +0200
+
+taida (0.23) stable; urgency=low
+
+  * Improved window focus detection.
+  * Coder's Ace editor updated to 1.23.4.
+  * Writer's CKEditor 5 updated to 38.1.0.
+  * Small bugfixes and improvements.
+
+ -- Hugo Leisink <hugo@leisink.net>  Sun, 23 Jul 2023 09:20:41 +0200
+
+taida (0.22) stable; urgency=low
+
+  * Improved mobile support.
+  * Added Clock application.
+  * Improved window and desktop resize handling.
+  * Small bugfixes.
+
+ -- Hugo Leisink <hugo@leisink.net>  Fri,  7 Jul 2023 13:25:38 +0200
+
+taida (0.21) stable; urgency=low
+
+  * Added Taida namespace to PHP files.
+  * Manual application corrections and improvements.
+  * jQuery updated to 3.7.0.
+  * Writer's CKEditor 5 updated to 38.0.1.
+  * Extra security logging.
+  * Small improvements.
+
+ -- Hugo Leisink <hugo@leisink.net>  Sun, 11 Jun 2023 10:03:21 +0200
+
+taida (0.20) stable; urgency=low
+
+  * Search for files via Explorer.
+  * Improved auto-save handling after re-login or page refresh.
+  * Small bugfixes and improvements.
+
+ -- Hugo Leisink <hugo@leisink.net>  Tue, 25 Apr 2023 20:24:57 +0200
+
+taida (0.19) stable; urgency=low
+
+  * Download remote file via Explorer.
+  * Reduced jQuery-ui size.
+  * Small improvements.
+
+ -- Hugo Leisink <hugo@leisink.net>  Mon,  3 Apr 2023 11:34:21 +0200
+
+taida (0.18) stable; urgency=low
+
+  * Added WebCam application.
+  * Auto-save for Coder, Notepad, Paint and Writer.
+  * Optional password for file sharing via Explorer.
+  * Small improvements.
+
+ -- Hugo Leisink <hugo@leisink.net>  Fri, 10 Feb 2023 11:33:19 +0100
+
+taida (0.17) stable; urgency=low
+
+  * Added Manual application.
+  * Added 2048 application.
+  * Timeouts added to AJAX calls.
+  * Small bugfixes and improvements.
+
+ -- Hugo Leisink <hugo@leisink.net>  Fri,  3 Feb 2023 20:05:41 +0100
+
+taida (0.16) stable; urgency=low
+
+  * Added Coder application.
+  * Added quickstart in taskbar.
+  * User website support.
+  * Password option in Settings.
+  * Small bugfixes and improvements.
+
+ -- Hugo Leisink <hugo@leisink.net>  Wed, 28 Dec 2022 15:51:23 +0100
+
+taida (0.15) stable; urgency=low
+
+  * Optional maximum storage capacity.
+  * Added authentication type 'none'.
+  * Small bugfixes and improvements.
+
+ -- Hugo Leisink <hugo@leisink.net>  Mon, 31 Oct 2022 13:33:04 +0100
+
+taida (0.14) stable; urgency=low
+
+  * Added Paint application.
+  * Added hacker funnies to Terminal.
+  * Small improvements.
+
+ -- Hugo Leisink <hugo@leisink.net>  Mon, 26 Sep 2022 11:14:28 +0200
+
+taida (0.13) stable; urgency=low
+
+  * File sharing via Explorer.
+  * Improved error handling.
+  * Small improvements.
+
+ -- Hugo Leisink <hugo@leisink.net>  Thu,  1 Sep 2022 11:02:41 +0200
+
+taida (0.12) stable; urgency=low
+
+  * PHP 8 compatibility.
+  * Added Archive application.
+  * Added Temporary directory.
+  * Small bugfixes and improvements.
+
+ -- Hugo Leisink <hugo@leisink.net>  Fri, 26 Aug 2022 16:24:03 +0200
+
+taida (0.11) stable; urgency=low
+
+  * Improved icon context menus.
+  * Added Sheep application.
+  * Support for soft links.
+  * Added Shared directory.
+  * Small bugfixes.
+
+ -- Hugo Leisink <hugo@leisink.net>  Mon, 22 Aug 2022 09:03:28 +0200
+
+taida (0.10) stable; urgency=low
+
+  * Added taskbar clock.
+  * Added applications DiskView, Wolfenstein 3D and Writer.
+  * Improved Terminal application.
+  * Taida alert window.
+  * Small improvements.
+
+ -- Hugo Leisink <hugo@leisink.net>  Sat, 13 Aug 2022 14:37:43 +0200
+
+taida (0.9) stable; urgency=low
+
+  * Added system and network commands to Terminal.
+  * Taida Terminal Script support.
+  * Improved C64 application.
+  * Multiple scripts combined in one setup script.
+  * Taida4Pi script included. See directory 'extra'.
+  * Small improvements.
+  
+ -- Hugo Leisink <hugo@leisink.net>  Tue, 19 Jul 2022 16:34:22 +0200
+
+taida (0.8) stable; urgency=low
+
+  * Added applications Browser, PDF and Terminal.
+  * Minor API changes.
+  * Small bugfixes and improvements.
+
+ -- Hugo Leisink <hugo@leisink.net>  Thu, 14 Jul 2022 12:13:51 +0200
+
+taida (0.7) stable; urgency=low
+
+  * Added mobile zoom setting.
+  * Improved mobile support for Explorer and Minesweeper.
+  * Small bugfixes and improvements.
+  * Bugfix: dialog window always returned 'undefined' filename.
+
+ -- Hugo Leisink <hugo@leisink.net>  Tue,  5 Jul 2022 08:52:37 +0200
+
+taida (0.6) stable; urgency=low
+
+  * Improved authentication.
+  * Support for mobile devices.
+  * Notepad handles tab key.
+  * Small bugfixes and improvements.
+
+ -- Hugo Leisink <hugo@leisink.net>  Fri,  1 Jul 2022 10:02:09 +0200
+
+taida (0.5) stable; urgency=low
+
+  * Added Minesweeper application.
+  * Improved Notepad application.
+  * Explorer detailed list view.
+  * Added file copy functionality to Explorer (hold CTRL for copy).
+  * Integrated Uploader in Explorer. Uploader removed.
+  * User settings file moved to home/{username}/.settings.
+  * Small bugfixes and improvements.
+
+ -- Hugo Leisink <hugo@leisink.net>  Sun, 26 Jun 2022 07:50:21 +0200
+
+taida (0.4) stable; urgency=low
+
+  * Added C64 application.
+  * Improved file dialogs.
+  * Improved Uploader application.
+  * Improved internal signaling about file system changes.
+  * Added interaction menu to desktop icons.
+  * Added Javascript API taida_file_upon_directory_update().
+  * Renamed taida_register_file_handler to taida_file_upon_file_open().
+  * Small improvements.
+
+ -- Hugo Leisink <hugo@leisink.net>  Tue, 21 Jun 2022 09:10:57 +0200
+
+taida (0.3) stable; urgency=low
+
+  * Added logout button.
+  * Added color setting.
+  * Movable desktop icons.
+  * Improved windows ordening.
+  * Improved internal signaling about file system changes.
+  * Added DosBox application, js-dos support moved to this application.
+  * Small bugfixes and improvements.
+
+ -- Hugo Leisink <hugo@leisink.net>  Thu, 16 Jun 2022 10:21:57 +0200
+
+taida (0.2) stable; urgency=low
+
+  * Added user settings API.
+  * Added Settings system application.
+  * Added wallpaper setting.
+  * Added js-dos support.
+  * Added applications Audio and Video.
+  * Improved taida_backend class.
+  * Improved several applications.
+  * Small improvements.
+  * Added Javascript APIs taida_setting_get() and taida_setting_set().
+
+ -- Hugo Leisink <hugo@leisink.net>  Mon, 13 Jun 2022 17:20:41 +0200
+
+taida (0.1) stable; urgency=low
+
+  * Initial release.
+  * Added system applications About, Explorer and Uploader.
+  * Added applications Calculator, Notepad and Picture.
+  * Added Javascript APIs taida_startmenu_add(), taida_register_file_handler()
+    taida_file_dialog(), taida_file_open(), taida_file_save(), taida_file_delete(),
+    taida_load_javascript() and taida_load_stylesheet().
+
+ -- Hugo Leisink <hugo@leisink.net>  Sat, 11 Jun 2022 17:10:23 +0200
