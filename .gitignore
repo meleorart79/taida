@@ -1,0 +1,9 @@
+# Runtime / user state
+home/
+logfiles/
+
+# Logs
+*.log
+
+# Environment
+.env

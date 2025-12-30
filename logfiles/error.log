@@ -1,8 +1,0 @@
-127.0.0.1|Wed 21 May 2025 08:00:49|/notifications/waiting|public|=> filesize(): stat failed for C:/laragon/www/taida/home/public/.notifications
-line 8 in C:\laragon\www\taida\public\apps\notifications\notifications.php
-127.0.0.1|Wed 21 May 2025 08:00:49|/taida/autosave|public|=> opendir(C:/laragon/www/taida/home/public/Temporary): The system cannot find the path specifi (code: 3)
-line 69 in C:\laragon\www\taida\libraries\taida.php
-=> opendir(C:/laragon/www/taida/home/public/Temporary): Failed to open directory: No such file or directory
-line 69 in C:\laragon\www\taida\libraries\taida.php
-127.0.0.1|Wed 21 May 2025 08:05:49|/notifications/waiting|public|=> filesize(): stat failed for C:/laragon/www/taida/home/public/.notifications
-line 8 in C:\laragon\www\taida\public\apps\notifications\notifications.php
