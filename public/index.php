@@ -1,7 +1,4 @@
 <?php
-
-	namespace Taida;
-
 	/* Copyright (c) by Hugo Leisink <hugo@leisink.net>
 	 * This file is part of the Orb web desktop
 	 * https://gitlab.com/hsleisink/orb
@@ -9,7 +6,10 @@
 	 * Licensed under the GPLv2 License
 	 */
 	 
-	require_once __DIR__ . '/../config/bootstrap.php';
+	namespace Taida;
+
+	require_once __DIR__ . '/../libraries/general.php';
+	require_once __DIR__ . '/../libraries/error.php';
 
 
 	ob_start();
