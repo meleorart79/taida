@@ -12,6 +12,11 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
 # Allow .htaccess overrides
 RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
 
+# Install XSL extension
+RUN apt-get update && apt-get install -y libxslt1-dev \
+    && docker-php-ext-install xsl \
+    && rm -rf /var/lib/apt/lists/*
+
 # Copy project
 COPY . /var/www/html/
 
