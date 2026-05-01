@@ -8,7 +8,10 @@
 ## Directory Tree
 
 ```text
+.gitignore
 ChangeLog
+config
+config\directory_tree.conf.php
 home
 home\.notifications
 home\users.txt
@@ -18,6 +21,25 @@ libraries\dir.php
 libraries\email.php
 libraries\error.php
 libraries\file.php
+libraries\fs
+libraries\fs\DirectoryTree.php
+libraries\fs\entities
+libraries\fs\entities\Directory.php
+libraries\fs\entities\DirectoryEntry.php
+libraries\fs\entities\FileReference.php
+libraries\fs\invariants
+libraries\fs\invariants\DirectoryInvariants.php
+libraries\fs\migration
+libraries\fs\migration\FlatToTreeMigration.php
+libraries\fs\migration\MigrationValidator.php
+libraries\fs\operations
+libraries\fs\operations\CycleDetector.php
+libraries\fs\operations\MoveOperation.php
+libraries\fs\operations\PathResolver.php
+libraries\fs\persistence
+libraries\fs\persistence\DirectoryTreePersistence.php
+libraries\fs\persistence\schema
+libraries\fs\persistence\schema\directory_tree.sql
 libraries\general.php
 libraries\icon.php
 libraries\logfile.php
@@ -101,9 +123,18 @@ public\js\taida.js
 public\js\taskbar.js
 public\js\user_javascript.js
 public\js\windows.js
+README.md
 setup
 taida.conf
 taida_structure.py
+tests
+tests\fixtures
+tests\fixtures\sample_directory_tree.sql
+tests\fs
+tests\fs\ConcurrencyTest.php
+tests\fs\DirectoryTreeTest.php
+tests\fs\InvariantTest.php
+tests\fs\PathResolverTest.php
 views
 views\desktop.xslt
 views\error.xslt
@@ -111,6 +142,98 @@ views\login.xslt
 ```
 
 ## Files
+
+### `config\directory_tree.conf.php`
+
+- **Size:** 2278 bytes
+- **Extension:** `.php`
+
+```php
+<?php
+/**
+ * DirectoryTree Configuration
+ */
+
+return [
+    // Database configuration
+    'database' => [
+        'dsn' => 'mysql:host=localhost;dbname=taida;charset=utf8mb4',
+        'username' => 'taida_user',
+        'password' => 'secure_password',
+        'options' => [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false,
+        ]
+    ],
+    
+    // Table configuration
+    'tables' => [
+        'prefix' => 'fs_',  // Table name prefix
+        'directories' => 'directories',
+        'entries' => 'directory_entries',
+        'files' => 'file_references',
+        'metadata' => 'metadata'
+    ],
+    
+    // Root directory
+    'root_dir_id' => 'ROOT',
+    
+    // Limits
+    'max_path_depth' => 100,
+    'max_name_length' => 255,
+    'max_refcount' => 10000,  // Sanity check
+    
+    // Performance
+    'enable_cache' => true,
+    'cache_ttl' => 3600,  // seconds
+    'cache_size' => 1000,  // max cached entries
+    
+    // Garbage collection
+    'gc_enabled' => true,
+    'gc_batch_size' => 100,
+    'gc_interval' => 3600,  // Run every hour
+    
+    // Debug and logging
+    'debug_mode' => false,
+    'log_level' => 'warning',  // error, warning, info, debug
+    'log_file' => '/var/log/taida/directory_tree.log',
+    
+    // Migration settings
+    'migration' => [
+        'backup_before_migration' => true,
+        'verify_after_migration' => true,
+        'rollback_on_error' => true
+    ],
+    
+    // Storage
+    'storage' => [
+        'root' => '/var/www/taida/storage/files',
+        'strategy' => 'hash',  // hash, date, uuid
+        'hash_depth' => 2      // For hash strategy: ab/cd/ef/file
+    ]
+];
+
+/*
+        Usage in code?:
+<?php
+// Load configuration
+$config = require 'config/directory_tree.conf.php';
+
+// Initialize database
+$db = new PDO(
+    $config['database']['dsn'],
+    $config['database']['username'],
+    $config['database']['password'],
+    $config['database']['options']
+);
+
+// Create DirectoryTree
+$persistence = new DirectoryTreePersistence($db);
+$tree = new DirectoryTree($persistence);
+$tree->setDebugMode($config['debug_mode']);
+    */
+```
 
 ### `home\users.txt`
 
@@ -123,17 +246,17 @@ taida:$2y$10$wHP3pk4hm2g4aJV0nscC8el8zX1OeX5FnsbObY26QwOiPj7Zk8gv6
 
 ### `libraries\desktop.php`
 
-- **Size:** 4694 bytes
+- **Size:** 4685 bytes
 - **Extension:** `.php`
 
 ```php
 <?php
 	/* Copyright (c) by Hugo Leisink <hugo@leisink.net>
-	 * This file is part of the Taida web desktop
-	 * https://gitlab.com/hsleisink/taida
-	 *
-	 * Licensed under the GPLv2 License
-	 */
+	* This file is part of the Orb web desktop
+	* https://gitlab.com/hsleisink/orb
+	*
+	* Licensed under the GPLv2 License
+	*/
 
 	namespace Taida;
 
@@ -334,192 +457,119 @@ taida:$2y$10$wHP3pk4hm2g4aJV0nscC8el8zX1OeX5FnsbObY26QwOiPj7Zk8gv6
 
 ### `libraries\dir.php`
 
-- **Size:** 4173 bytes
+- **Size:** 3268 bytes
 - **Extension:** `.php`
 
 ```php
 <?php
-	/* Copyright (c) by Hugo Leisink <hugo@leisink.net>
-	 * This file is part of the Taida web desktop
-	 * https://gitlab.com/hsleisink/taida
-	 *
-	 * Licensed under the GPLv2 License
-	 */
+/**
+ * Directory operations wrapper
+ * NOW: Thin layer over DirectoryTree
+ */
 
-	namespace Taida;
+require_once 'taida_backend.php';
+require_once 'fs/DirectoryTree.php';
 
-	class dir extends taida_backend {
-		/* Read directory
-		 */
-		public function get_list() {
-			if (is_dir($this->get_filename) == false) {
-				$this->view->return_error(404);
-				return;
-			}
+use Taida\FS\DirectoryTree;
+use Taida\FS\Persistence\DirectoryTreePersistence;
 
-			if (($dp = opendir($this->get_filename)) == false) {
-				$this->view->return_error(403);
-				return;
-			}
-
-			$files = array();
-			while (($file = readdir($dp)) !== false) {
-				if (substr($file, 0, 1) == ".") {
-					continue;
-				}
-
-				array_push($files, $file);
-			}
-
-			usort($files, function($a, $b) {
-				return strcmp(strtolower($a), strtolower($b));
-			});
-
-			foreach ($files as $file) {
-				$target = $this->get_filename."/".$file;
-
-				$this->view->open_tag("item");
-
-				$this->view->add_tag("name", $file);
-				$this->view->add_tag("type", is_dir($target) ? "directory" : "file");
-
-				if (is_link($target)) {
-					$to = readlink($target);
-					$len = strlen($this->home_directory);
-					if (substr($to, 0, $len) == $this->home_directory) {
-						$this->view->add_tag("link", "yes");
-						$this->view->add_tag("target", substr($to, $len));
-					} else {
-						$this->view->add_tag("link", "no");
-					}
-				} else {
-					$this->view->add_tag("link", "no");
-				}
-
-				ob_start();
-				$size = filesize($this->get_filename."/".$file);
-				$create = filectime($target);
-				$access = fileatime($target);
-				ob_end_clean();
-
-				$this->view->add_tag("size", $size);
-
-				$this->view->add_tag("create", date("j F Y, H:i:s", $create), array("timestamp" => $create));
-				$this->view->add_tag("access", date("j F Y, H:i:s", $access), array("timestamp" => $access));
-
-				$this->view->close_tag();
-			}
-
-			closedir($dp);
-		}
-
-		/* Make directory
-		 */
-		public function post_make() {
-			if (is_true(READ_ONLY)) {
-				$this->view->return_error(403);
-				return;
-			}
-
-			if (file_exists($_POST["directory"])) {
-				$this->view->return_error(403);
-				return;
-			}
-
-			if (mkdir($_POST["directory"]) == false) {
-				$this->view->return_error(403);
-				return;
-			}
-		}
-
-		/* Check directory exists
-		 */
-		public function get_exists() {
-			$this->view->add_tag("exists", show_boolean(is_dir($this->get_filename)));
-		}
-
-		/* Remove directory
-		 */
-		public function post_remove() {
-			if (is_true(READ_ONLY)) {
-				$this->view->return_error(403);
-				return;
-			}
-
-			if ($this->is_system_directory($_POST["directory"])) {
-				$this->view->return_error(403);
-				return;
-			}
-
-			if (is_link($_POST["directory"])) {
-				unlink($_POST["directory"]);
-				return;
-			}
-
-			if (is_dir($_POST["directory"]) == false) {
-				$this->view->add_tag("dir", $_POST["directory"]);
-				$this->view->return_error(404);
-				return;
-			}
-
-			if (($dp = opendir($_POST["directory"])) == false) {
-				$this->view->add_tag("dir", $_POST["directory"]);
-				$this->view->return_error(403);
-			}
-
-			$dotfiles = array();
-			while (($file = readdir($dp)) != false) {
-				if (($file == ".") || ($file == "..")) {
-					continue;
-				}
-
-				if (substr($file, 0, 1) == ".") {
-					array_push($dotfiles, $file);
-					continue;
-				}
-
-				closedir($dp);
-				$this->view->return_error(403);
-				return;
-			}
-
-			closedir($dp);
-
-			foreach ($dotfiles as $file) {
-				unlink($_POST["directory"]."/".$file);
-			}
-
-			ob_start();
-			$result = rmdir($_POST["directory"]);
-			ob_end_clean();
-
-			if ($result == false) {
-				$this->view->return_error(403);
-				return;
-			}
-		}
-
-		/* General security checks
-		 */
-		public function execute() {
-			$prepare = array("directory");
-			foreach ($prepare as $item) {
-				if (isset($_POST[$item])) {
-					$_POST[$item] = "/".trim($_POST[$item], "/ ");
-
-					if ($this->valid_filename($_POST[$item]) == false) {
-						$this->view->return_error(400);
-						return;
-					}
-
-					$_POST[$item] = $this->home_directory.$_POST[$item];
-				}
-			}
-
-			parent::execute();
-		}
-	}
-?>
+class dir extends taida_backend {
+    private static ?DirectoryTree $tree = null;
+    
+    private static function getTree(): DirectoryTree {
+        if (self::$tree === null) {
+            // Initialize DirectoryTree (using existing DB connection)
+            global $db; // Assuming global PDO instance
+            $persistence = new DirectoryTreePersistence($db);
+            self::$tree = new DirectoryTree($persistence);
+        }
+        return self::$tree;
+    }
+    
+    /**
+     * Create directory
+     * OLD: mkdir($path)
+     * NEW: DirectoryTree->createDirectory($path)
+     */
+    public static function mkdir($path) {
+        try {
+            $tree = self::getTree();
+            $dir_id = $tree->createDirectory($path);
+            return ['success' => true, 'dir_id' => $dir_id];
+        } catch (\Exception $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+    
+    /**
+     * Remove directory
+     * OLD: rmdir($path)
+     * NEW: DirectoryTree->removeDirectory($path)
+     */
+    public static function rmdir($path) {
+        try {
+            $tree = self::getTree();
+            $tree->removeDirectory($path);
+            return ['success' => true];
+        } catch (\Exception $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+    
+    /**
+     * List directory contents
+     * OLD: Direct filesystem scandir()
+     * NEW: DirectoryTree->listDirectory($path)
+     */
+    public static function listdir($path) {
+        try {
+            $tree = self::getTree();
+            $entries = $tree->listDirectory($path);
+            
+            // Format for backward compatibility
+            $result = [];
+            foreach ($entries as $entry) {
+                $result[] = [
+                    'name' => $entry['name'],
+                    'type' => $entry['type'],
+                    'path' => $path . '/' . $entry['name']
+                ];
+            }
+            
+            return ['success' => true, 'entries' => $result];
+        } catch (\Exception $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+    
+    /**
+     * Move/rename directory
+     * OLD: Physical rename()
+     * NEW: DirectoryTree->move() (metadata only)
+     */
+    public static function move($source, $dest) {
+        try {
+            $tree = self::getTree();
+            $tree->move($source, $dest);
+            return ['success' => true];
+        } catch (\Exception $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+    
+    /**
+     * Check if directory exists
+     */
+    public static function exists($path) {
+        try {
+            $tree = self::getTree();
+            $result = $tree->resolvePath($path);
+            return $result && $result['type'] === 'dir';
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+}
 ```
 
 ### `libraries\email.php`
@@ -996,14 +1046,14 @@ taida:$2y$10$wHP3pk4hm2g4aJV0nscC8el8zX1OeX5FnsbObY26QwOiPj7Zk8gv6
 
 ### `libraries\error.php`
 
-- **Size:** 1714 bytes
+- **Size:** 1710 bytes
 - **Extension:** `.php`
 
 ```php
 <?php
 	/* Copyright (c) by Hugo Leisink <hugo@leisink.net>
-	 * This file is part of the Taida web desktop
-	 * https://gitlab.com/hsleisink/taida
+	 * This file is part of the Orb web desktop
+	 * https://gitlab.com/hsleisink/orb
 	 *
 	 * Licensed under the GPLv2 License
 	 */
@@ -1066,383 +1116,1659 @@ taida:$2y$10$wHP3pk4hm2g4aJV0nscC8el8zX1OeX5FnsbObY26QwOiPj7Zk8gv6
 
 ### `libraries\file.php`
 
-- **Size:** 8180 bytes
+- **Size:** 4758 bytes
 - **Extension:** `.php`
 
 ```php
 <?php
-	/* Copyright (c) by Hugo Leisink <hugo@leisink.net>
-	 * This file is part of the Taida web desktop
-	 * https://gitlab.com/hsleisink/taida
-	 *
-	 * Licensed under the GPLv2 License
-	 */
-
-	namespace Taida;
-
-	class file extends taida_backend {
-		/* Check file exists
-		 */
-		public function get_exists() {
-			$this->view->add_tag("exists", show_boolean(file_exists($this->get_filename)));
-		}
-
-		/* Check file type
-		 */
-		public function get_type() {
-			if (file_exists($this->get_filename) == false) {
-				$this->view->return_error(404);
-			} else if (is_dir($this->get_filename) == false) {
-				$this->view->add_tag("type", "file");
-			} else {
-				$this->view->add_tag("type", "directory");
-			}
-		}
-
-		/* Download file
-		 */
-		public function get_download() {
-			if (file_exists($this->get_filename) == false) {
-				$this->view->return_error(404);
-				print "File not found.";
-				exit;
-			}
-
-			if (is_dir($this->get_filename)) {
-				$this->view->return_error(400);
-				print "File not found.";
-				exit;
-			}
-
-			ob_end_clean();
-
-			header("Pragma: no-cache");
-			header("Cache-Control: no-store, no-cache, max-age=0, must-revalidate");
-			header("Expires: 0");
-
-			header("Content-Type: ".get_mimetype($this->get_filename));
-			header("Content-Disposition: inline; filename=\"".basename($this->get_filename)."\"");
-			readfile($this->get_filename);
-
-			exit;
-		}
-
-		/* Load file
-		 */
-		public function get_load() {
-			if (file_exists($this->get_filename) == false) {
-				$this->view->return_error(404);
-				return;
-			}
-
-			if (($content = file_get_contents($this->get_filename)) === false) {
-				$this->view->return_error(403);
-				return;
-			}
-
-			$this->view->add_tag("content", base64_encode($content), array("encoding" => "base64"));
-		}
-
-		/* Save file
-		 */
-		public function post_save() {
-			if (is_true(READ_ONLY)) {
-				$this->view->return_error(403);
-				return;
-			}
-
-			if ($_POST["encoding"] == "base64") {
-				$_POST["content"] = base64_decode($_POST["content"]);
-			}
-
-			if (file_put_contents($_POST["filename"], $_POST["content"]) === false) {
-				$this->view->return_error(403);
-			}
-		}
-
-		/* Remove file
-		 */
-		public function post_remove() {
-			if (is_true(READ_ONLY)) {
-				$this->view->return_error(403);
-				return;
-			}
-
-			if (file_exists($_POST["filename"]) == false) {
-				if (is_link($_POST["filename"]) == false) {
-					$this->view->return_error(404);
-					return;
-				}
-			}
-
-			if (is_dir($_POST["filename"])) {
-				$this->view->return_error(403);
-				return;
-			}
-
-			ob_start();
-			$result = unlink($_POST["filename"]);
-			ob_end_clean();
-
-			if ($result == false) {
-				$this->view->return_error(403);
-			}
-		}
-
-		/* Move file
-		 */
-		public function post_move() {
-			if (is_true(READ_ONLY)) {
-				$this->view->return_error(403);
-				return;
-			}
-
-			if ($this->is_system_directory($_POST["source"])) {
-				$this->view->return_error(403);
-				return;
-			}
-
-			if (file_exists($_POST["source"]) == false) {
-				if (is_link($_POST["source"]) == false) {
-					$this->view->return_error(404);
-					return;
-				}
-			}
-
-			$parts = explode("/", $_POST["source"]);
-			$filename = array_pop($parts);
-			$destination = rtrim($_POST["destination"], "/");
-
-			if (is_dir($destination)) {
-				$destination .= "/".$filename;
-			} else if (is_dir(dirname($destination)) == false) {
-				$this->view->return_error(400);
-				return;
-			}
-
-			if ($destination == $_POST["source"]) {
-				$this->view->return_error(400);
-				return;
-			}
-
-			if (rename($_POST["source"], $destination) == false) {
-				$this->view->return_error(403);
-			}
-		}
-
-		/* Copy file
-		 */
-		public function post_copy() {
-			if (is_true(READ_ONLY)) {
-				$this->view->return_error(403);
-				return;
-			}
-
-			if (is_dir($_POST["source"])) {
-				$this->view->return_error(403);
-				return;
-			}
-
-			if (file_exists($_POST["source"]) == false) {
-				if (is_link($_POST["source"]) == false) {
-		  			$this->view->return_error(404);
-					return;
-				}
-			}
-
-			$parts = explode("/", $_POST["source"]);
-			$filename = array_pop($parts);
-			$destination = rtrim($_POST["destination"], "/");
-
-			if (is_dir($destination)) {
-				$destination .= "/".$filename;
-			} else if (is_dir(dirname($destination)) == false) {
-				$this->view->return_error(400);
-				return;
-			}
-
-			if ($destination == $_POST["source"]) {
-				$this->view->return_error(400);
-				return;
-			}
-
-			if (copy($_POST["source"], $destination) == false) {
-				$this->view->return_error(403);
-			}
-		}
-
-		/* Rename file
-		 */
-		public function post_rename() {
-			if (is_true(READ_ONLY)) {
-				$this->view->return_error(403);
-				return;
-			}
-
-			if ($this->is_system_directory($_POST["source"])) {
-				$this->view->return_error(403);
-				return;
-			}
-
-			if (file_exists($_POST["source"]) == false) {
-				if (is_link($_POST["source"]) == false) {
-					$this->view->return_error(404);
-					return;
-				}
-			}
-
-			if (strpos($_POST["new_filename"], "/") !== false) {
-				$this->view->return_error(400);
-				return;
-			}
-
-			if (substr($_POST["new_filename"], 0, 1) == ".") {
-				$this->view->return_error(403);
-				return;
-			}
-
-			if (($pos = strrpos($_POST["source"], "/")) === false) {
-				$this->view->return_error(400);
-				return;
-			}
-
-			$destination = substr($_POST["source"], 0, $pos + 1).trim($_POST["new_filename"]);
-
-			if (file_exists($destination) || is_link($destination)) {
-				$this->view->return_error(406);
-				return;
-			}
-
-			if (rename($_POST["source"], $destination) == false) {
-				$this->view->return_error(403);
-			}
-		}
-
-		/* Link file
-		 */
-		public function post_link() {
-			if (is_true(READ_ONLY)) {
-				$this->view->return_error(403);
-				return;
-			}
-
-			if (file_exists($_POST["source"]) == false) {
-				$this->view->return_error(404);
-				return;
-			}
-
-			if (file_exists($_POST["destination"])) {
-				$this->view->return_error(406);
-				return;
-			}
-
-			if (symlink($_POST["source"], $_POST["destination"]) == false) {
-				$this->view->return_error(403);
-				return;
-			}
-		}
-
-		/* Search file
-		 */
-		private function search_file($search, $directory, $follow_link) {
-			if (($dp = opendir($directory)) == false) {
-				return;
-			}
-
-			$hd_ofs = strlen($this->home_directory);
-
-			$files = array();
-			while (($file = readdir($dp)) != false) {
-				if (substr($file, 0, 1) == ".") {
-					continue;
-				}
-
-				array_push($files, $file);
-			}
-
-			closedir($dp);
-
-			sort($files);
-
-			foreach ($files as $file) {
-				$path = $directory."/".$file;
-
-				$is_dir = is_dir($path);
-
-				if ($is_dir) {
-					if (is_link($path)) {
-						if ($follow_link == false) {
-							continue;
-						}
-						$follow = false;
-					} else {
-						$follow = $follow_link;
-					}
-				}
-
-				if (strpos(strtolower($file), $search) !== false) {
-					$attr = array("type" => $is_dir ? "dir" : "file");
-					$this->view->add_tag("file", substr($directory."/".$file, $hd_ofs), $attr);
-				}
-
-				if ($is_dir) {
-					$this->search_file($search, $directory."/".$file, $follow);
-				}
-			}
-		}
-
-		public function post_search() {
-			$search = strtolower($_POST["search"]);
-
-			if (strlen($search) <= 2) {
-				$this->view->return_error(400);
-				return;
-			}
-
-			$directory = $this->home_directory;
-			if (($path = $_POST["path"] ?? "") != "") {
-				if (substr($path, 0, 1) != "/") {
-					$directory .= "/";
-				}
-				$directory .= $path;
-			}
-
-			$this->search_file($search, $directory, true);
-		}
-
-		/* General security checks
-		 */
-		public function execute() {
-			$prepare = array("filename", "source", "destination");
-			foreach ($prepare as $item) {
-				if (isset($_POST[$item])) {
-					$_POST[$item] = "/".trim($_POST[$item], "/ ");
-
-					if ($this->valid_filename($_POST[$item]) == false) {
-						$this->view->return_error(400);
-						return;
-					}
-
-					$_POST[$item] = $this->home_directory.$_POST[$item];
-				}
-			}
-
-			parent::execute();
-		}
-	}
-?>
+/**
+ * File operations wrapper
+ * NOW: Thin layer over DirectoryTree
+ */
+
+require_once 'taida_backend.php';
+require_once 'fs/DirectoryTree.php';
+
+use Taida\FS\DirectoryTree;
+use Taida\FS\Persistence\DirectoryTreePersistence;
+
+class file extends taida_backend {
+    private static ?DirectoryTree $tree = null;
+    
+    private static function getTree(): DirectoryTree {
+        if (self::$tree === null) {
+            global $db;
+            $persistence = new DirectoryTreePersistence($db);
+            self::$tree = new DirectoryTree($persistence);
+        }
+        return self::$tree;
+    }
+    
+    /**
+     * Upload/create file
+     * OLD: Direct file_put_contents() + path storage
+     * NEW: Physical storage + DirectoryTree->createFileReference() + addFileEntry()
+     */
+    public static function upload($path, $physical_file) {
+        try {
+            $tree = self::getTree();
+            
+            // Store physical file (using existing storage strategy)
+            $storage_path = self::getStoragePath($physical_file);
+            if (!move_uploaded_file($physical_file['tmp_name'], $storage_path)) {
+                throw new \RuntimeException("Failed to store file");
+            }
+            
+            // Register in DirectoryTree
+            $file_id = $tree->createFileReference($storage_path);
+            $tree->addFileEntry($path, $file_id);
+            
+            return ['success' => true, 'file_id' => $file_id];
+        } catch (\Exception $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+    
+    /**
+     * Delete file
+     * OLD: unlink() on physical path
+     * NEW: DirectoryTree->removeFileEntry() (decrements refcount, GC handles deletion)
+     */
+    public static function delete($path) {
+        try {
+            $tree = self::getTree();
+            $file_id = $tree->removeFileEntry($path);
+            return ['success' => true, 'file_id' => $file_id];
+        } catch (\Exception $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+    
+    /**
+     * Create hard link
+     * NEW: DirectoryTree->addFileEntry() with existing file_id
+     */
+    public static function hardlink($source_path, $dest_path) {
+        try {
+            $tree = self::getTree();
+            
+            // Resolve source to get file_id
+            $result = $tree->resolvePath($source_path);
+            if (!$result || $result['type'] !== 'file') {
+                throw new \RuntimeException("Source file not found");
+            }
+            
+            // Create new entry pointing to same file_id
+            $tree->addFileEntry($dest_path, $result['id']);
+            
+            return ['success' => true];
+        } catch (\Exception $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+    
+    /**
+     * Get file info
+     */
+    public static function info($path) {
+        try {
+            $tree = self::getTree();
+            $result = $tree->resolvePath($path);
+            
+            if (!$result || $result['type'] !== 'file') {
+                throw new \RuntimeException("File not found");
+            }
+            
+            $file_ref = $tree->getFileReference($result['id']);
+            
+            return [
+                'success' => true,
+                'file_id' => $file_ref->file_id,
+                'size' => $file_ref->size_bytes,
+                'mime_type' => $file_ref->mime_type,
+                'refcount' => $file_ref->refcount,
+                'storage_path' => $file_ref->storage_path
+            ];
+        } catch (\Exception $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+    
+    /**
+     * Move/rename file
+     */
+    public static function move($source, $dest) {
+        try {
+            $tree = self::getTree();
+            $tree->move($source, $dest);
+            return ['success' => true];
+        } catch (\Exception $e) {
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+    
+    /**
+     * Helper: Generate storage path for physical file
+     */
+    private static function getStoragePath($file): string {
+        // Use existing storage strategy (hash-based, date-based, etc.)
+        // Example:
+        $hash = md5(uniqid() . $file['name']);
+        $subdir = substr($hash, 0, 2);
+        $storage_root = '/var/www/taida/storage/files';
+        
+        $dir = "$storage_root/$subdir";
+        if (!is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+        
+        return "$dir/$hash";
+    }
+}
+```
+
+### `libraries\fs\DirectoryTree.php`
+
+- **Size:** 17578 bytes
+- **Extension:** `.php`
+
+```php
+<?php
+namespace Taida\FS;
+
+use Taida\FS\Entities\Directory;
+use Taida\FS\Entities\DirectoryEntry;
+use Taida\FS\Entities\FileReference;
+use Taida\FS\Persistence\DirectoryTreePersistence;
+use Taida\FS\Operations\PathResolver;
+use Taida\FS\Operations\MoveOperation;
+use Taida\FS\Operations\CycleDetector;
+use Taida\FS\Invariants\DirectoryInvariants;
+
+class DirectoryTree {
+    private DirectoryTreePersistence $persistence;
+    private CycleDetector $cycleDetector;
+    private DirectoryInvariants $invariants;
+    private MoveOperation $moveOperation;
+    
+    private string $root_dir_id = 'ROOT';
+    private bool $debug_mode = false;
+    
+    // In-memory cache (optional optimization)
+    private array $directoryCache = [];
+    private array $fileCache = [];
+    
+    public function __construct(DirectoryTreePersistence $persistence) {
+        $this->persistence = $persistence;
+        $this->cycleDetector = new CycleDetector($this);
+        $this->invariants = new DirectoryInvariants($this);
+        $this->moveOperation = new MoveOperation($this, $this->persistence, $this->cycleDetector);
+    }
+    
+    // ============ PUBLIC API ============
+    
+    /**
+     * Resolve path to target ID and type
+     * 
+     * @param string $path Absolute path (e.g., '/users/alice/docs')
+     * @return array|null ['type' => 'dir'|'file', 'id' => string] or null if not found
+     */
+    public function resolvePath(string $path): ?array {
+        $this->debugLog("resolvePath", ['path' => $path]);
+        
+        $path = PathResolver::normalizePath($path);
+        
+        if (!PathResolver::checkDepth($path)) {
+            throw new \RuntimeException("Path exceeds maximum depth: $path");
+        }
+        
+        // Root special case
+        if ($path === '/') {
+            return ['type' => 'dir', 'id' => $this->root_dir_id];
+        }
+        
+        // Split into segments and traverse
+        $segments = array_filter(explode('/', trim($path, '/')));
+        $current_dir_id = $this->root_dir_id;
+        
+        foreach ($segments as $idx => $segment) {
+            $dir = $this->getDirectory($current_dir_id);
+            if (!$dir) {
+                $this->debugLog("resolvePath: directory not found", ['dir_id' => $current_dir_id]);
+                return null;
+            }
+            
+            $entry = $dir->getEntry($segment);
+            if (!$entry) {
+                $this->debugLog("resolvePath: entry not found", [
+                    'dir_id' => $current_dir_id,
+                    'segment' => $segment
+                ]);
+                return null;
+            }
+            
+            // If this is the last segment, return the target
+            if ($idx === count($segments) - 1) {
+                return [
+                    'type' => $entry->target_type,
+                    'id' => $entry->target_id
+                ];
+            }
+            
+            // Otherwise, must be a directory to continue
+            if ($entry->target_type !== 'dir') {
+                $this->debugLog("resolvePath: path component is not a directory", [
+                    'segment' => $segment,
+                    'type' => $entry->target_type
+                ]);
+                return null;
+            }
+            
+            $current_dir_id = $entry->target_id;
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Create new directory
+     * 
+     * @param string $path Absolute path for new directory
+     * @return string The new dir_id
+     * @throws \RuntimeException If parent doesn't exist or name already taken
+     */
+    public function createDirectory(string $path): string {
+        $this->debugLog("createDirectory", ['path' => $path]);
+        
+        [$parent_path, $name] = PathResolver::splitPath($path);
+        
+        // Validate name
+        if ($error = PathResolver::validateName($name)) {
+            throw new \InvalidArgumentException($error);
+        }
+        
+        // Resolve parent
+        $parent_result = $this->resolvePath($parent_path);
+        if (!$parent_result || $parent_result['type'] !== 'dir') {
+            throw new \RuntimeException("Parent directory not found: $parent_path");
+        }
+        
+        $parent_id = $parent_result['id'];
+        $parent_dir = $this->getDirectory($parent_id);
+        
+        // Check uniqueness
+        if ($parent_dir->hasEntry($name)) {
+            throw new \RuntimeException("Entry already exists: $path");
+        }
+        
+        $this->persistence->beginTransaction();
+        try {
+            // Create new directory
+            $new_dir_id = $this->generateDirId();
+            $new_dir = new Directory($new_dir_id, $parent_id);
+            $this->persistence->saveDirectory($new_dir);
+            
+            // Add entry in parent
+            $entry = new DirectoryEntry($name, $new_dir_id, 'dir');
+            $parent_dir->addEntry($entry);
+            $this->persistence->saveEntry($parent_id, $entry);
+            $this->persistence->saveDirectory($parent_dir);
+            
+            $this->persistence->commit();
+            
+            // Update cache
+            $this->directoryCache[$new_dir_id] = $new_dir;
+            
+            $this->debugLog("createDirectory: success", ['dir_id' => $new_dir_id, 'path' => $path]);
+            return $new_dir_id;
+            
+        } catch (\Exception $e) {
+            $this->persistence->rollback();
+            $this->debugLog("createDirectory: failed", ['error' => $e->getMessage()]);
+            throw $e;
+        }
+    }
+    
+    /**
+     * Remove directory (must be empty)
+     * 
+     * @param string $path Absolute path to directory
+     * @return bool True on success
+     * @throws \RuntimeException If not empty or doesn't exist
+     */
+    public function removeDirectory(string $path): bool {
+        $this->debugLog("removeDirectory", ['path' => $path]);
+        
+        $result = $this->resolvePath($path);
+        if (!$result || $result['type'] !== 'dir') {
+            throw new \RuntimeException("Directory not found: $path");
+        }
+        
+        $dir_id = $result['id'];
+        
+        // Cannot remove root
+        if ($dir_id === $this->root_dir_id) {
+            throw new \RuntimeException("Cannot remove root directory");
+        }
+        
+        $dir = $this->getDirectory($dir_id);
+        
+        // Check if empty (only hidden dot-files allowed, per spec)
+        foreach ($dir->entries as $name => $entry) {
+            if (substr($name, 0, 1) !== '.') {
+                throw new \RuntimeException("Directory not empty: $path");
+            }
+        }
+        
+        $this->persistence->beginTransaction();
+        try {
+            // Remove from parent
+            [$parent_path, $name] = PathResolver::splitPath($path);
+            $parent_result = $this->resolvePath($parent_path);
+            $parent_dir = $this->getDirectory($parent_result['id']);
+            
+            $parent_dir->removeEntry($name);
+            $this->persistence->deleteEntry($parent_result['id'], $name);
+            $this->persistence->saveDirectory($parent_dir);
+            
+            // Delete directory itself
+            $this->persistence->deleteDirectory($dir_id);
+            
+            $this->persistence->commit();
+            
+            // Update cache
+            unset($this->directoryCache[$dir_id]);
+            
+            $this->debugLog("removeDirectory: success", ['path' => $path]);
+            return true;
+            
+        } catch (\Exception $e) {
+            $this->persistence->rollback();
+            $this->debugLog("removeDirectory: failed", ['error' => $e->getMessage()]);
+            throw $e;
+        }
+    }
+    
+    /**
+     * List directory contents
+     * 
+     * @param string $path Absolute path to directory
+     * @return array Array of ['name' => string, 'type' => 'dir'|'file', 'id' => string]
+     */
+    public function listDirectory(string $path): array {
+        $result = $this->resolvePath($path);
+        if (!$result || $result['type'] !== 'dir') {
+            throw new \RuntimeException("Directory not found: $path");
+        }
+        
+        $dir = $this->getDirectory($result['id']);
+        $entries = [];
+        
+        foreach ($dir->entries as $name => $entry) {
+            $entries[] = [
+                'name' => $name,
+                'type' => $entry->target_type,
+                'id' => $entry->target_id
+            ];
+        }
+        
+        return $entries;
+    }
+    
+    /**
+     * Add file entry (create hard link)
+     * 
+     * @param string $path Absolute path for new file entry
+     * @param string $file_id Existing file_id to link to
+     * @return bool True on success
+     */
+    public function addFileEntry(string $path, string $file_id): bool {
+        $this->debugLog("addFileEntry", ['path' => $path, 'file_id' => $file_id]);
+        
+        [$parent_path, $name] = PathResolver::splitPath($path);
+        
+        // Validate name
+        if ($error = PathResolver::validateName($name)) {
+            throw new \InvalidArgumentException($error);
+        }
+        
+        // Resolve parent
+        $parent_result = $this->resolvePath($parent_path);
+        if (!$parent_result || $parent_result['type'] !== 'dir') {
+            throw new \RuntimeException("Parent directory not found: $parent_path");
+        }
+        
+        $parent_id = $parent_result['id'];
+        $parent_dir = $this->getDirectory($parent_id);
+        
+        // Check uniqueness
+        if ($parent_dir->hasEntry($name)) {
+            throw new \RuntimeException("Entry already exists: $path");
+        }
+        
+        // Check file exists
+        $file_ref = $this->getFileReference($file_id);
+        if (!$file_ref) {
+            throw new \RuntimeException("File not found: $file_id");
+        }
+        
+        $this->persistence->beginTransaction();
+        try {
+            // Add entry
+            $entry = new DirectoryEntry($name, $file_id, 'file');
+            $parent_dir->addEntry($entry);
+            $this->persistence->saveEntry($parent_id, $entry);
+            $this->persistence->saveDirectory($parent_dir);
+            
+            // Increment refcount
+            $file_ref->incrementRefcount();
+            $this->persistence->saveFileReference($file_ref);
+            
+            $this->persistence->commit();
+            
+            $this->debugLog("addFileEntry: success", [
+                'path' => $path,
+                'refcount' => $file_ref->refcount
+            ]);
+            return true;
+            
+        } catch (\Exception $e) {
+            $this->persistence->rollback();
+            $this->debugLog("addFileEntry: failed", ['error' => $e->getMessage()]);
+            throw $e;
+        }
+    }
+    
+    /**
+     * Remove file entry (unlink)
+     * 
+     * @param string $path Absolute path to file entry
+     * @return string The file_id that was unlinked
+     */
+    public function removeFileEntry(string $path): string {
+        $this->debugLog("removeFileEntry", ['path' => $path]);
+        
+        $result = $this->resolvePath($path);
+        if (!$result || $result['type'] !== 'file') {
+            throw new \RuntimeException("File not found: $path");
+        }
+        
+        $file_id = $result['id'];
+        
+        $this->persistence->beginTransaction();
+        try {
+            // Remove from parent
+            [$parent_path, $name] = PathResolver::splitPath($path);
+            $parent_result = $this->resolvePath($parent_path);
+            $parent_dir = $this->getDirectory($parent_result['id']);
+            
+            $parent_dir->removeEntry($name);
+            $this->persistence->deleteEntry($parent_result['id'], $name);
+            $this->persistence->saveDirectory($parent_dir);
+            
+            // Decrement refcount
+            $file_ref = $this->getFileReference($file_id);
+            if ($file_ref) {
+                $file_ref->decrementRefcount();
+                $this->persistence->saveFileReference($file_ref);
+                
+                $this->debugLog("removeFileEntry: decremented refcount", [
+                    'file_id' => $file_id,
+                    'refcount' => $file_ref->refcount
+                ]);
+                
+                // Trigger GC if orphaned
+                if ($file_ref->isOrphaned()) {
+                    $this->emitOrphanedFile($file_id);
+                }
+            }
+            
+            $this->persistence->commit();
+            return $file_id;
+            
+        } catch (\Exception $e) {
+            $this->persistence->rollback();
+            $this->debugLog("removeFileEntry: failed", ['error' => $e->getMessage()]);
+            throw $e;
+        }
+    }
+    
+    /**
+     * Create new file reference in system
+     * 
+     * @param string $storage_path Physical path where file is stored
+     * @return string New file_id
+     */
+    public function createFileReference(string $storage_path): string {
+        $this->debugLog("createFileReference", ['storage_path' => $storage_path]);
+        
+        $file_id = $this->generateFileId();
+        $file_ref = new FileReference($file_id, $storage_path);
+        
+        // Get file info
+        if (file_exists($storage_path)) {
+            $file_ref->size_bytes = filesize($storage_path);
+            $file_ref->mime_type = mime_content_type($storage_path) ?: null;
+        }
+        
+        $this->persistence->saveFileReference($file_ref);
+        $this->fileCache[$file_id] = $file_ref;
+        
+        $this->debugLog("createFileReference: success", ['file_id' => $file_id]);
+        return $file_id;
+    }
+    
+    /**
+     * Move/rename entry atomically
+     * 
+     * @param string $source_path Current path
+     * @param string $dest_path Destination path
+     * @return bool True on success
+     */
+    public function move(string $source_path, string $dest_path): bool {
+        $this->debugLog("move", ['source' => $source_path, 'dest' => $dest_path]);
+        return $this->moveOperation->execute($source_path, $dest_path);
+    }
+    
+    /**
+     * Run garbage collection on orphaned files
+     * 
+     * @return array Array of deleted file_ids
+     */
+    public function collectGarbage(): array {
+        $this->debugLog("collectGarbage: starting");
+        
+        $orphaned = $this->persistence->getOrphanedFiles();
+        $deleted = [];
+        
+        foreach ($orphaned as $file_id) {
+            $file_ref = $this->getFileReference($file_id);
+            if ($file_ref && $file_ref->isOrphaned()) {
+                // Delete physical file
+                if (file_exists($file_ref->storage_path)) {
+                    @unlink($file_ref->storage_path);
+                    $this->debugLog("collectGarbage: deleted physical file", [
+                        'file_id' => $file_id,
+                        'path' => $file_ref->storage_path
+                    ]);
+                }
+                
+                // Delete metadata
+                $this->persistence->deleteFileReference($file_id);
+                unset($this->fileCache[$file_id]);
+                
+                $deleted[] = $file_id;
+            }
+        }
+        
+        $this->debugLog("collectGarbage: completed", ['deleted_count' => count($deleted)]);
+        return $deleted;
+    }
+    
+    // ============ INTERNAL METHODS ============
+    
+    public function getDirectory(string $dir_id): ?Directory {
+        // Check cache first
+        if (isset($this->directoryCache[$dir_id])) {
+            return $this->directoryCache[$dir_id];
+        }
+        
+        $dir = $this->persistence->loadDirectory($dir_id);
+        if ($dir) {
+            $this->directoryCache[$dir_id] = $dir;
+        }
+        
+        return $dir;
+    }
+    
+    public function getFileReference(string $file_id): ?FileReference {
+        if (isset($this->fileCache[$file_id])) {
+            return $this->fileCache[$file_id];
+        }
+        
+        $file = $this->persistence->loadFileReference($file_id);
+        if ($file) {
+            $this->fileCache[$file_id] = $file;
+        }
+        
+        return $file;
+    }
+    
+    private function emitOrphanedFile(string $file_id): void {
+        error_log("[DirectoryTree] File orphaned, ready for GC: $file_id");
+        // Could publish to message queue for async GC
+    }
+    
+    private function generateDirId(): string {
+        return 'd_' . bin2hex(random_bytes(16));
+    }
+    
+    private function generateFileId(): string {
+        return 'f_' . bin2hex(random_bytes(16));
+    }
+    
+    public function getRootDirId(): string {
+        return $this->root_dir_id;
+    }
+    
+    public function setDebugMode(bool $enabled): void {
+        $this->debug_mode = $enabled;
+    }
+    
+    private function debugLog(string $message, array $context = []): void {
+        if ($this->debug_mode) {
+            error_log("[DirectoryTree] $message " . json_encode($context));
+        }
+    }
+    
+    public function clearCache(): void {
+        $this->directoryCache = [];
+        $this->fileCache = [];
+    }
+}
+```
+
+### `libraries\fs\entities\Directory.php`
+
+- **Size:** 1198 bytes
+- **Extension:** `.php`
+
+```php
+<?php
+namespace Taida\FS\Entities;
+
+class Directory {
+    public string $dir_id;
+    public ?string $parent_id;  // NULL for root
+    public array $entries;      // Array of DirectoryEntry objects
+    public \DateTime $created_at;
+    public \DateTime $modified_at;
+    
+    public function __construct(string $dir_id, ?string $parent_id) {
+        $this->dir_id = $dir_id;
+        $this->parent_id = $parent_id;
+        $this->entries = [];
+        $this->created_at = new \DateTime();
+        $this->modified_at = new \DateTime();
+    }
+    
+    public function hasEntry(string $name): bool {
+        return isset($this->entries[$name]);
+    }
+    
+    public function getEntry(string $name): ?DirectoryEntry {
+        return $this->entries[$name] ?? null;
+    }
+    
+    public function addEntry(DirectoryEntry $entry): void {
+        $this->entries[$entry->name] = $entry;
+        $this->modified_at = new \DateTime();
+    }
+    
+    public function removeEntry(string $name): ?DirectoryEntry {
+        $entry = $this->entries[$name] ?? null;
+        unset($this->entries[$name]);
+        $this->modified_at = new \DateTime();
+        return $entry;
+    }
+}
+```
+
+### `libraries\fs\entities\DirectoryEntry.php`
+
+- **Size:** 858 bytes
+- **Extension:** `.php`
+
+```php
+<?php
+namespace Taida\FS\Entities;
+
+class DirectoryEntry {
+    public string $name;
+    public string $target_id;   // dir_id or file_id
+    public string $target_type; // 'dir' or 'file'
+    public \DateTime $created_at;
+    
+    public function __construct(string $name, string $target_id, string $target_type) {
+        if (!in_array($target_type, ['dir', 'file'])) {
+            throw new \InvalidArgumentException("Invalid target_type: $target_type");
+        }
+        
+        $this->name = $name;
+        $this->target_id = $target_id;
+        $this->target_type = $target_type;
+        $this->created_at = new \DateTime();
+    }
+    
+    public function isDirectory(): bool {
+        return $this->target_type === 'dir';
+    }
+    
+    public function isFile(): bool {
+        return $this->target_type === 'file';
+    }
+}
+```
+
+### `libraries\fs\entities\FileReference.php`
+
+- **Size:** 907 bytes
+- **Extension:** `.php`
+
+```php
+<?php
+namespace Taida\FS\Entities;
+
+class FileReference {
+    public string $file_id;
+    public int $refcount;
+    public string $storage_path;  // Physical location
+    public \DateTime $created_at;
+    public int $size_bytes;
+    public ?string $mime_type;
+    
+    public function __construct(string $file_id, string $storage_path) {
+        $this->file_id = $file_id;
+        $this->storage_path = $storage_path;
+        $this->refcount = 0;
+        $this->created_at = new \DateTime();
+        $this->size_bytes = 0;
+        $this->mime_type = null;
+    }
+    
+    public function incrementRefcount(): void {
+        $this->refcount++;
+    }
+    
+    public function decrementRefcount(): void {
+        if ($this->refcount > 0) {
+            $this->refcount--;
+        }
+    }
+    
+    public function isOrphaned(): bool {
+        return $this->refcount === 0;
+    }
+}
+```
+
+### `libraries\fs\invariants\DirectoryInvariants.php`
+
+- **Size:** 3424 bytes
+- **Extension:** `.php`
+
+```php
+<?php
+namespace Taida\FS\Invariants;
+
+use Taida\FS\DirectoryTree;
+
+class DirectoryInvariants {
+    private DirectoryTree $tree;
+    
+    public function __construct(DirectoryTree $tree) {
+        $this->tree = $tree;
+    }
+    
+    /**
+     * Check all invariants for a directory
+     */
+    public function validateDirectory(string $dir_id): array {
+        $errors = [];
+        $dir = $this->tree->getDirectory($dir_id);
+        
+        if (!$dir) {
+            return ["Directory not found: $dir_id"];
+        }
+        
+        // Invariant 1: Unique names within directory
+        $names = [];
+        foreach ($dir->entries as $name => $entry) {
+            if (isset($names[$name])) {
+                $errors[] = "Duplicate name in directory $dir_id: $name";
+            }
+            $names[$name] = true;
+        }
+        
+        // Invariant 2: All targets exist
+        foreach ($dir->entries as $name => $entry) {
+            if ($entry->target_type === 'dir') {
+                if (!$this->tree->getDirectory($entry->target_id)) {
+                    $errors[] = "Entry '$name' points to non-existent directory: {$entry->target_id}";
+                }
+            } else {
+                if (!$this->tree->getFileReference($entry->target_id)) {
+                    $errors[] = "Entry '$name' points to non-existent file: {$entry->target_id}";
+                }
+            }
+        }
+        
+        // Invariant 3: Parent pointer is valid
+        if ($dir->parent_id !== null) {
+            $parent = $this->tree->getDirectory($dir->parent_id);
+            if (!$parent) {
+                $errors[] = "Directory $dir_id has invalid parent: {$dir->parent_id}";
+            }
+        } elseif ($dir->dir_id !== $this->tree->getRootDirId()) {
+            $errors[] = "Non-root directory $dir_id has null parent";
+        }
+        
+        return $errors;
+    }
+    
+    /**
+     * Check for cycles starting from dir_id
+     */
+    public function checkForCycles(string $dir_id): ?string {
+        $current = $dir_id;
+        $visited = [];
+        
+        while ($current !== null) {
+            if (isset($visited[$current])) {
+                return "Cycle detected: $current";
+            }
+            $visited[$current] = true;
+            
+            $dir = $this->tree->getDirectory($current);
+            $current = $dir ? $dir->parent_id : null;
+        }
+        
+        return null; // No cycle
+    }
+    
+    /**
+     * Validate entire tree structure
+     */
+    public function validateTree(): array {
+        $all_errors = [];
+        
+        // Get all directories (would need to add method to DirectoryTree)
+        // For now, just validate from root
+        $this->validateTreeRecursive($this->tree->getRootDirId(), $all_errors);
+        
+        return $all_errors;
+    }
+    
+    private function validateTreeRecursive(string $dir_id, array &$errors): void {
+        $dir_errors = $this->validateDirectory($dir_id);
+        $errors = array_merge($errors, $dir_errors);
+        
+        $dir = $this->tree->getDirectory($dir_id);
+        if ($dir) {
+            foreach ($dir->entries as $entry) {
+                if ($entry->target_type === 'dir') {
+                    $this->validateTreeRecursive($entry->target_id, $errors);
+                }
+            }
+        }
+    }
+}
+```
+
+### `libraries\fs\migration\FlatToTreeMigration.php`
+
+- **Size:** 5345 bytes
+- **Extension:** `.php`
+
+```php
+<?php
+namespace Taida\FS\Migration;
+
+use Taida\FS\DirectoryTree;
+use Taida\FS\Operations\PathResolver;
+
+class FlatToTreeMigration {
+    private DirectoryTree $tree;
+    private string $base_path;
+    private array $stats = [
+        'directories' => 0,
+        'files' => 0,
+        'errors' => []
+    ];
+    
+    public function __construct(DirectoryTree $tree, string $base_path) {
+        $this->tree = $tree;
+        $this->base_path = rtrim($base_path, '/');
+    }
+    
+    /**
+     * Migrate entire filesystem tree
+     * 
+     * @param string $physical_root Physical directory to scan
+     * @return array Migration statistics
+     */
+    public function migrate(string $physical_root): array {
+        if (!is_dir($physical_root)) {
+            throw new \RuntimeException("Physical root does not exist: $physical_root");
+        }
+        
+        echo "Starting migration from: $physical_root\n";
+        $this->stats = ['directories' => 0, 'files' => 0, 'errors' => []];
+        
+        // Start recursive scan from root
+        $this->migrateDirectory($physical_root, '/');
+        
+        return $this->stats;
+    }
+    
+    /**
+     * Recursively migrate directory and its contents
+     */
+    private function migrateDirectory(string $physical_path, string $logical_path): void {
+        echo "Processing: $logical_path\n";
+        
+        $entries = scandir($physical_path);
+        if ($entries === false) {
+            $this->stats['errors'][] = "Cannot read directory: $physical_path";
+            return;
+        }
+        
+        foreach ($entries as $entry) {
+            // Skip . and ..
+            if ($entry === '.' || $entry === '..') {
+                continue;
+            }
+            
+            $entry_physical_path = $physical_path . '/' . $entry;
+            $entry_logical_path = $logical_path . ($logical_path === '/' ? '' : '/') . $entry;
+            
+            try {
+                if (is_dir($entry_physical_path)) {
+                    // Create directory in tree
+                    $this->tree->createDirectory($entry_logical_path);
+                    $this->stats['directories']++;
+                    
+                    // Recurse
+                    $this->migrateDirectory($entry_physical_path, $entry_logical_path);
+                    
+                } elseif (is_file($entry_physical_path)) {
+                    // Create file reference
+                    $file_id = $this->tree->createFileReference($entry_physical_path);
+                    
+                    // Add entry in tree
+                    $this->tree->addFileEntry($entry_logical_path, $file_id);
+                    $this->stats['files']++;
+                }
+                
+            } catch (\Exception $e) {
+                $this->stats['errors'][] = [
+                    'path' => $entry_logical_path,
+                    'error' => $e->getMessage()
+                ];
+                echo "  ERROR: " . $e->getMessage() . "\n";
+            }
+        }
+    }
+    
+    /**
+     * Verify migration completeness
+     * 
+     * @return array Validation results
+     */
+    public function verify(string $physical_root): array {
+        $issues = [];
+        $this->verifyDirectory($physical_root, '/', $issues);
+        return $issues;
+    }
+    
+    private function verifyDirectory(string $physical_path, string $logical_path, array &$issues): void {
+        $entries = scandir($physical_path);
+        if ($entries === false) {
+            $issues[] = "Cannot verify directory: $physical_path";
+            return;
+        }
+        
+        foreach ($entries as $entry) {
+            if ($entry === '.' || $entry === '..') continue;
+            
+            $entry_physical_path = $physical_path . '/' . $entry;
+            $entry_logical_path = $logical_path . ($logical_path === '/' ? '' : '/') . $entry;
+            
+            // Check if exists in tree
+            $result = $this->tree->resolvePath($entry_logical_path);
+            if (!$result) {
+                $issues[] = "Missing in tree: $entry_logical_path";
+            }
+            
+            if (is_dir($entry_physical_path)) {
+                $this->verifyDirectory($entry_physical_path, $entry_logical_path, $issues);
+            }
+        }
+    }
+    
+    /**
+     * Generate migration report
+     */
+    public function getReport(): string {
+        $report = "Migration Report\n";
+        $report .= "================\n";
+        $report .= "Directories: {$this->stats['directories']}\n";
+        $report .= "Files: {$this->stats['files']}\n";
+        $report .= "Directories created: {$this->stats['directories']}\n";
+        $report .= "Files migrated: {$this->stats['files']}\n";
+        $report .= "Errors: " . count($this->stats['errors']) . "\n\n";
+        
+        if (!empty($this->stats['errors'])) {
+            $report .= "Error Details:\n";
+            foreach ($this->stats['errors'] as $error) {
+                if (is_array($error)) {
+                    $report .= "  - {$error['path']}: {$error['error']}\n";
+                } else {
+                    $report .= "  - $error\n";
+                }
+            }
+        }
+        
+        return $report;
+    }
+}
+```
+
+### `libraries\fs\migration\MigrationValidator.php`
+
+- **Size:** 1713 bytes
+- **Extension:** `.php`
+
+```php
+<?php
+namespace Taida\FS\Migration;
+
+use Taida\FS\DirectoryTree;
+use Taida\FS\Invariants\DirectoryInvariants;
+
+class MigrationValidator {
+    private DirectoryTree $tree;
+    private DirectoryInvariants $invariants;
+    
+    public function __construct(DirectoryTree $tree) {
+        $this->tree = $tree;
+        $this->invariants = new DirectoryInvariants($tree);
+    }
+    
+    /**
+     * Run comprehensive post-migration checks
+     * 
+     * @return array ['valid' => bool, 'issues' => array]
+     */
+    public function validateMigration(): array {
+        $issues = [];
+        
+        // Check tree invariants
+        echo "Checking tree invariants...\n";
+        $invariant_errors = $this->invariants->validateTree();
+        if (!empty($invariant_errors)) {
+            $issues = array_merge($issues, $invariant_errors);
+        }
+        
+        // Check orphaned files
+        echo "Checking for orphaned files...\n";
+        $orphaned = $this->tree->collectGarbage();
+        if (!empty($orphaned)) {
+            $issues[] = "Found " . count($orphaned) . " orphaned files (cleaned up)";
+        }
+        
+        // Check reference counts
+        echo "Validating reference counts...\n";
+        $refcount_issues = $this->validateRefcounts();
+        if (!empty($refcount_issues)) {
+            $issues = array_merge($issues, $refcount_issues);
+        }
+        
+        return [
+            'valid' => empty($issues),
+            'issues' => $issues
+        ];
+    }
+    
+    private function validateRefcounts(): array {
+        // This would need a method to list all files
+        // For now, just a placeholder
+        return [];
+    }
+}
+```
+
+### `libraries\fs\operations\CycleDetector.php`
+
+- **Size:** 1476 bytes
+- **Extension:** `.php`
+
+```php
+<?php
+namespace Taida\FS\Operations;
+
+use Taida\FS\DirectoryTree;
+
+class CycleDetector {
+    private DirectoryTree $tree;
+    
+    public function __construct(DirectoryTree $tree) {
+        $this->tree = $tree;
+    }
+    
+    /**
+     * Check if moving dir_id into dest_parent_id would create a cycle
+     * 
+     * Returns true if cycle detected, false if safe
+     */
+    public function wouldCreateCycle(string $dir_id, string $dest_parent_id): bool {
+        // If moving into itself, that's a cycle
+        if ($dir_id === $dest_parent_id) {
+            return true;
+        }
+        
+        // Walk up from dest_parent_id to root
+        // If we encounter dir_id along the way, it's a cycle
+        $current = $dest_parent_id;
+        $visited = [];
+        
+        while ($current !== null) {
+            // Cycle in tree structure itself (corruption)
+            if (isset($visited[$current])) {
+                throw new \RuntimeException("Cycle detected in existing tree structure");
+            }
+            $visited[$current] = true;
+            
+            // Found our target in the ancestry - would create cycle
+            if ($current === $dir_id) {
+                return true;
+            }
+            
+            // Move to parent
+            $dir = $this->tree->getDirectory($current);
+            $current = $dir ? $dir->parent_id : null;
+        }
+        
+        return false; // No cycle
+    }
+}
+```
+
+### `libraries\fs\operations\MoveOperation.php`
+
+- **Size:** 4652 bytes
+- **Extension:** `.php`
+
+```php
+<?php
+namespace Taida\FS\Operations;
+
+use Taida\FS\DirectoryTree;
+use Taida\FS\Entities\DirectoryEntry;
+use Taida\FS\Persistence\DirectoryTreePersistence;
+
+class MoveOperation {
+    private DirectoryTree $tree;
+    private DirectoryTreePersistence $persistence;
+    private CycleDetector $cycleDetector;
+    
+    public function __construct(
+        DirectoryTree $tree,
+        DirectoryTreePersistence $persistence,
+        CycleDetector $cycleDetector
+    ) {
+        $this->tree = $tree;
+        $this->persistence = $persistence;
+        $this->cycleDetector = $cycleDetector;
+    }
+    
+    /**
+     * Execute move/rename operation atomically
+     * 
+     * This is metadata-only - no physical file operations
+     */
+    public function execute(string $source_path, string $dest_path): bool {
+        // Normalize paths
+        $source_path = PathResolver::normalizePath($source_path);
+        $dest_path = PathResolver::normalizePath($dest_path);
+        
+        // Cannot move root
+        if ($source_path === '/') {
+            throw new \RuntimeException("Cannot move root directory");
+        }
+        
+        // Cannot move to same location
+        if ($source_path === $dest_path) {
+            return true; // No-op
+        }
+        
+        // Resolve source
+        $source_result = $this->tree->resolvePath($source_path);
+        if (!$source_result) {
+            throw new \RuntimeException("Source not found: $source_path");
+        }
+        
+        // Parse paths
+        [$source_parent_path, $source_name] = PathResolver::splitPath($source_path);
+        [$dest_parent_path, $dest_name] = PathResolver::splitPath($dest_path);
+        
+        // Validate destination name
+        if ($error = PathResolver::validateName($dest_name)) {
+            throw new \InvalidArgumentException("Invalid destination name: $error");
+        }
+        
+        // Resolve parents
+        $source_parent_result = $this->tree->resolvePath($source_parent_path);
+        $dest_parent_result = $this->tree->resolvePath($dest_parent_path);
+        
+        if (!$source_parent_result || $source_parent_result['type'] !== 'dir') {
+            throw new \RuntimeException("Source parent not found: $source_parent_path");
+        }
+        
+        if (!$dest_parent_result || $dest_parent_result['type'] !== 'dir') {
+            throw new \RuntimeException("Destination parent not found: $dest_parent_path");
+        }
+        
+        $source_parent_id = $source_parent_result['id'];
+        $dest_parent_id = $dest_parent_result['id'];
+        
+        // If moving directory, check for cycles
+        if ($source_result['type'] === 'dir') {
+            if ($this->cycleDetector->wouldCreateCycle($source_result['id'], $dest_parent_id)) {
+                throw new \RuntimeException("Move would create cycle in directory tree");
+            }
+        }
+        
+        // Check destination doesn't already exist
+        $dest_parent_dir = $this->tree->getDirectory($dest_parent_id);
+        if ($dest_parent_dir->hasEntry($dest_name)) {
+            throw new \RuntimeException("Destination already exists: $dest_path");
+        }
+        
+        // Execute transaction
+        $this->persistence->beginTransaction();
+        try {
+            // Remove from source parent
+            $source_parent_dir = $this->tree->getDirectory($source_parent_id);
+            $entry = $source_parent_dir->removeEntry($source_name);
+            $this->persistence->deleteEntry($source_parent_id, $source_name);
+            $this->persistence->saveDirectory($source_parent_dir);
+            
+            // Add to destination parent with new name
+            $new_entry = new DirectoryEntry($dest_name, $entry->target_id, $entry->target_type);
+            $dest_parent_dir->addEntry($new_entry);
+            $this->persistence->saveEntry($dest_parent_id, $new_entry);
+            $this->persistence->saveDirectory($dest_parent_dir);
+            
+            // Update parent pointer if moving directory
+            if ($source_result['type'] === 'dir') {
+                $moved_dir = $this->tree->getDirectory($source_result['id']);
+                $moved_dir->parent_id = $dest_parent_id;
+                $this->persistence->saveDirectory($moved_dir);
+            }
+            
+            $this->persistence->commit();
+            return true;
+            
+        } catch (\Exception $e) {
+            $this->persistence->rollback();
+            throw new \RuntimeException("Move failed: " . $e->getMessage(), 0, $e);
+        }
+    }
+}
+```
+
+### `libraries\fs\operations\PathResolver.php`
+
+- **Size:** 2688 bytes
+- **Extension:** `.php`
+
+```php
+<?php
+namespace Taida\FS\Operations;
+
+class PathResolver {
+    const MAX_PATH_DEPTH = 100;
+    
+    /**
+     * Normalize path: remove trailing slashes, resolve . and .., ensure leading /
+     */
+    public static function normalizePath(string $path): string {
+        // Ensure leading slash
+        if (empty($path) || $path[0] !== '/') {
+            $path = '/' . $path;
+        }
+        
+        // Split into segments
+        $segments = explode('/', trim($path, '/'));
+        $normalized = [];
+        
+        foreach ($segments as $segment) {
+            if ($segment === '' || $segment === '.') {
+                // Skip empty and current directory
+                continue;
+            } elseif ($segment === '..') {
+                // Go up one level (if possible)
+                if (count($normalized) > 0) {
+                    array_pop($normalized);
+                }
+            } else {
+                $normalized[] = $segment;
+            }
+        }
+        
+        return '/' . implode('/', $normalized);
+    }
+    
+    /**
+     * Validate filename/dirname (no path separators, no nulls, etc.)
+     */
+    public static function validateName(string $name): ?string {
+        // Check length
+        if (strlen($name) === 0 || strlen($name) > 255) {
+            return "Name must be 1-255 characters";
+        }
+        
+        // Check forbidden characters
+        if (strpos($name, '/') !== false || strpos($name, "\0") !== false) {
+            return "Name cannot contain / or null bytes";
+        }
+        
+        // Check reserved names
+        if ($name === '.' || $name === '..') {
+            return "Name cannot be . or ..";
+        }
+        
+        // Check for control characters
+        if (preg_match('/[\x00-\x1F\x7F]/', $name)) {
+            return "Name cannot contain control characters";
+        }
+        
+        return null; // Valid
+    }
+    
+    /**
+     * Split path into parent path and filename
+     */
+    public static function splitPath(string $path): array {
+        $path = self::normalizePath($path);
+        
+        if ($path === '/') {
+            return ['/', ''];
+        }
+        
+        $lastSlash = strrpos($path, '/');
+        $parent = $lastSlash === 0 ? '/' : substr($path, 0, $lastSlash);
+        $name = substr($path, $lastSlash + 1);
+        
+        return [$parent, $name];
+    }
+    
+    /**
+     * Check if path depth exceeds maximum
+     */
+    public static function checkDepth(string $path): bool {
+        $depth = substr_count(self::normalizePath($path), '/');
+        return $depth <= self::MAX_PATH_DEPTH;
+    }
+}
+```
+
+### `libraries\fs\persistence\DirectoryTreePersistence.php`
+
+- **Size:** 6550 bytes
+- **Extension:** `.php`
+
+```php
+<?php
+namespace Taida\FS\Persistence;
+
+use Taida\FS\Entities\Directory;
+use Taida\FS\Entities\DirectoryEntry;
+use Taida\FS\Entities\FileReference;
+
+class DirectoryTreePersistence {
+    private \PDO $db;
+    
+    public function __construct(\PDO $db) {
+        $this->db = $db;
+        $this->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+    }
+    
+    // ============ DIRECTORY OPERATIONS ============
+    
+    public function saveDirectory(Directory $dir): bool {
+        $stmt = $this->db->prepare("
+            INSERT INTO fs_directories (dir_id, parent_id, created_at, modified_at)
+            VALUES (:dir_id, :parent_id, :created, :modified)
+            ON DUPLICATE KEY UPDATE 
+                parent_id = :parent_id,
+                modified_at = :modified
+        ");
+        
+        return $stmt->execute([
+            ':dir_id' => $dir->dir_id,
+            ':parent_id' => $dir->parent_id,
+            ':created' => $dir->created_at->format('Y-m-d H:i:s'),
+            ':modified' => $dir->modified_at->format('Y-m-d H:i:s')
+        ]);
+    }
+    
+    public function loadDirectory(string $dir_id): ?Directory {
+        $stmt = $this->db->prepare("
+            SELECT dir_id, parent_id, created_at, modified_at
+            FROM fs_directories
+            WHERE dir_id = :dir_id
+        ");
+        $stmt->execute([':dir_id' => $dir_id]);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        
+        if (!$row) {
+            return null;
+        }
+        
+        $dir = new Directory($row['dir_id'], $row['parent_id']);
+        $dir->created_at = new \DateTime($row['created_at']);
+        $dir->modified_at = new \DateTime($row['modified_at']);
+        
+        // Load entries
+        $dir->entries = $this->loadEntriesForDirectory($dir_id);
+        
+        return $dir;
+    }
+    
+    public function deleteDirectory(string $dir_id): bool {
+        $stmt = $this->db->prepare("DELETE FROM fs_directories WHERE dir_id = :dir_id");
+        return $stmt->execute([':dir_id' => $dir_id]);
+    }
+    
+    // ============ ENTRY OPERATIONS ============
+    
+    private function loadEntriesForDirectory(string $dir_id): array {
+        $stmt = $this->db->prepare("
+            SELECT name, target_id, target_type, created_at
+            FROM fs_directory_entries
+            WHERE parent_id = :parent_id
+            ORDER BY name
+        ");
+        $stmt->execute([':parent_id' => $dir_id]);
+        
+        $entries = [];
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $entry = new DirectoryEntry(
+                $row['name'],
+                $row['target_id'],
+                $row['target_type']
+            );
+            $entry->created_at = new \DateTime($row['created_at']);
+            $entries[$row['name']] = $entry;
+        }
+        
+        return $entries;
+    }
+    
+    public function saveEntry(string $parent_id, DirectoryEntry $entry): bool {
+        $stmt = $this->db->prepare("
+            INSERT INTO fs_directory_entries (parent_id, name, target_id, target_type, created_at)
+            VALUES (:parent_id, :name, :target_id, :target_type, :created)
+            ON DUPLICATE KEY UPDATE
+                target_id = :target_id,
+                target_type = :target_type
+        ");
+        
+        return $stmt->execute([
+            ':parent_id' => $parent_id,
+            ':name' => $entry->name,
+            ':target_id' => $entry->target_id,
+            ':target_type' => $entry->target_type,
+            ':created' => $entry->created_at->format('Y-m-d H:i:s')
+        ]);
+    }
+    
+    public function deleteEntry(string $parent_id, string $name): bool {
+        $stmt = $this->db->prepare("
+            DELETE FROM fs_directory_entries
+            WHERE parent_id = :parent_id AND name = :name
+        ");
+        return $stmt->execute([
+            ':parent_id' => $parent_id,
+            ':name' => $name
+        ]);
+    }
+    
+    // ============ FILE REFERENCE OPERATIONS ============
+    
+    public function saveFileReference(FileReference $file): bool {
+        $stmt = $this->db->prepare("
+            INSERT INTO fs_file_references 
+            (file_id, refcount, storage_path, created_at, size_bytes, mime_type)
+            VALUES (:file_id, :refcount, :storage_path, :created, :size, :mime)
+            ON DUPLICATE KEY UPDATE
+                refcount = :refcount,
+                size_bytes = :size,
+                mime_type = :mime
+        ");
+        
+        return $stmt->execute([
+            ':file_id' => $file->file_id,
+            ':refcount' => $file->refcount,
+            ':storage_path' => $file->storage_path,
+            ':created' => $file->created_at->format('Y-m-d H:i:s'),
+            ':size' => $file->size_bytes,
+            ':mime' => $file->mime_type
+        ]);
+    }
+    
+    public function loadFileReference(string $file_id): ?FileReference {
+        $stmt = $this->db->prepare("
+            SELECT file_id, refcount, storage_path, created_at, size_bytes, mime_type
+            FROM fs_file_references
+            WHERE file_id = :file_id
+        ");
+        $stmt->execute([':file_id' => $file_id]);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        
+        if (!$row) {
+            return null;
+        }
+        
+        $file = new FileReference($row['file_id'], $row['storage_path']);
+        $file->refcount = (int)$row['refcount'];
+        $file->created_at = new \DateTime($row['created_at']);
+        $file->size_bytes = (int)$row['size_bytes'];
+        $file->mime_type = $row['mime_type'];
+        
+        return $file;
+    }
+    
+    public function getOrphanedFiles(): array {
+        $stmt = $this->db->query("
+            SELECT file_id FROM fs_file_references WHERE refcount = 0
+        ");
+        return $stmt->fetchAll(\PDO::FETCH_COLUMN);
+    }
+    
+    public function deleteFileReference(string $file_id): bool {
+        $stmt = $this->db->prepare("DELETE FROM fs_file_references WHERE file_id = :file_id");
+        return $stmt->execute([':file_id' => $file_id]);
+    }
+    
+    // ============ TRANSACTION SUPPORT ============
+    
+    public function beginTransaction(): bool {
+        return $this->db->beginTransaction();
+    }
+    
+    public function commit(): bool {
+        return $this->db->commit();
+    }
+    
+    public function rollback(): bool {
+        return $this->db->rollBack();
+    }
+}
+```
+
+### `libraries\fs\persistence\schema\directory_tree.sql`
+
+- **Size:** 2334 bytes
+- **Extension:** `.sql`
+
+```sql
+-- Directories table
+CREATE TABLE IF NOT EXISTS fs_directories (
+    dir_id VARCHAR(36) PRIMARY KEY,           -- UUID for directory
+    parent_id VARCHAR(36) NULL,               -- NULL only for root
+    created_at DATETIME NOT NULL,
+    modified_at DATETIME NOT NULL,
+    
+    FOREIGN KEY (parent_id) REFERENCES fs_directories(dir_id) ON DELETE RESTRICT,
+    INDEX idx_parent (parent_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Directory entries table (name → target mapping)
+CREATE TABLE IF NOT EXISTS fs_directory_entries (
+    entry_id INT AUTO_INCREMENT PRIMARY KEY,
+    parent_id VARCHAR(36) NOT NULL,           -- Which directory owns this entry
+    name VARCHAR(255) NOT NULL,               -- Entry name (filename/dirname)
+    target_id VARCHAR(36) NOT NULL,           -- Points to dir_id or file_id
+    target_type ENUM('dir', 'file') NOT NULL, -- Target type
+    created_at DATETIME NOT NULL,
+    
+    FOREIGN KEY (parent_id) REFERENCES fs_directories(dir_id) ON DELETE CASCADE,
+    UNIQUE KEY unique_name_per_dir (parent_id, name),
+    INDEX idx_target (target_id, target_type)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- File references table (file metadata)
+CREATE TABLE IF NOT EXISTS fs_file_references (
+    file_id VARCHAR(36) PRIMARY KEY,          -- UUID for file
+    refcount INT NOT NULL DEFAULT 0,          -- Hard link count
+    storage_path VARCHAR(512) NOT NULL,       -- Physical path (opaque)
+    created_at DATETIME NOT NULL,
+    size_bytes BIGINT NOT NULL DEFAULT 0,
+    mime_type VARCHAR(127) NULL,
+    
+    INDEX idx_refcount (refcount),
+    INDEX idx_storage (storage_path(191))     -- For orphan detection
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- System metadata (root directory, etc.)
+CREATE TABLE IF NOT EXISTS fs_metadata (
+    key_name VARCHAR(64) PRIMARY KEY,
+    value_data TEXT NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Insert root directory
+INSERT INTO fs_directories (dir_id, parent_id, created_at, modified_at)
+VALUES ('ROOT', NULL, NOW(), NOW())
+ON DUPLICATE KEY UPDATE dir_id=dir_id;
+
+INSERT INTO fs_metadata (key_name, value_data)
+VALUES ('root_dir_id', 'ROOT')
+ON DUPLICATE KEY UPDATE value_data='ROOT';
 ```
 
 ### `libraries\general.php`
 
-- **Size:** 5983 bytes
+- **Size:** 5979 bytes
 - **Extension:** `.php`
 
 ```php
 <?php
 	/* Copyright (c) by Hugo Leisink <hugo@leisink.net>
-	 * This file is part of the Taida web desktop
-	 * https://gitlab.com/hsleisink/taida
+	 * This file is part of the Orb web desktop
+	 * https://gitlab.com/hsleisink/orb
 	 *
 	 * Licensed under the GPLv2 License
 	 */
@@ -1703,14 +3029,14 @@ taida:$2y$10$wHP3pk4hm2g4aJV0nscC8el8zX1OeX5FnsbObY26QwOiPj7Zk8gv6
 
 ### `libraries\icon.php`
 
-- **Size:** 660 bytes
+- **Size:** 656 bytes
 - **Extension:** `.php`
 
 ```php
 <?php
 	/* Copyright (c) by Hugo Leisink <hugo@leisink.net>
-	 * This file is part of the Taida web desktop
-	 * https://gitlab.com/hsleisink/taida
+	 * This file is part of the Orb web desktop
+	 * https://gitlab.com/hsleisink/orb
 	 *
 	 * Licensed under the GPLv2 License
 	 */
@@ -1888,14 +3214,14 @@ taida:$2y$10$wHP3pk4hm2g4aJV0nscC8el8zX1OeX5FnsbObY26QwOiPj7Zk8gv6
 
 ### `libraries\login.php`
 
-- **Size:** 4952 bytes
+- **Size:** 4948 bytes
 - **Extension:** `.php`
 
 ```php
 <?php
 	/* Copyright (c) by Hugo Leisink <hugo@leisink.net>
-	 * This file is part of the Taida web desktop
-	 * https://gitlab.com/hsleisink/taida
+	 * This file is part of the Orb web desktop
+	 * https://gitlab.com/hsleisink/orb
 	 *
 	 * Licensed under the GPLv2 License
 	 */
@@ -2135,14 +3461,14 @@ taida:$2y$10$wHP3pk4hm2g4aJV0nscC8el8zX1OeX5FnsbObY26QwOiPj7Zk8gv6
 
 ### `libraries\setting.php`
 
-- **Size:** 2251 bytes
+- **Size:** 2247 bytes
 - **Extension:** `.php`
 
 ```php
 <?php
 	/* Copyright (c) by Hugo Leisink <hugo@leisink.net>
-	 * This file is part of the Taida web desktop
-	 * https://gitlab.com/hsleisink/taida
+	 * This file is part of the Orb web desktop
+	 * https://gitlab.com/hsleisink/orb
 	 *
 	 * Licensed under the GPLv2 License
 	 */
@@ -2250,14 +3576,14 @@ taida:$2y$10$wHP3pk4hm2g4aJV0nscC8el8zX1OeX5FnsbObY26QwOiPj7Zk8gv6
 
 ### `libraries\taida.php`
 
-- **Size:** 1919 bytes
+- **Size:** 1915 bytes
 - **Extension:** `.php`
 
 ```php
 <?php
 	/* Copyright (c) by Hugo Leisink <hugo@leisink.net>
-	 * This file is part of the Taida web desktop
-	 * https://gitlab.com/hsleisink/taida
+	 * This file is part of the Orb web desktop
+	 * https://gitlab.com/hsleisink/orb
 	 *
 	 * Licensed under the GPLv2 License
 	 */
@@ -2337,14 +3663,14 @@ taida:$2y$10$wHP3pk4hm2g4aJV0nscC8el8zX1OeX5FnsbObY26QwOiPj7Zk8gv6
 
 ### `libraries\taida_backend.php`
 
-- **Size:** 4584 bytes
+- **Size:** 4580 bytes
 - **Extension:** `.php`
 
 ```php
 <?php
 	/* Copyright (c) by Hugo Leisink <hugo@leisink.net>
-	 * This file is part of the Taida web desktop
-	 * https://gitlab.com/hsleisink/taida
+	 * This file is part of the Orb web desktop
+	 * https://gitlab.com/hsleisink/orb
 	 *
 	 * Licensed under the GPLv2 License
 	 */
@@ -2593,14 +3919,14 @@ taida:$2y$10$wHP3pk4hm2g4aJV0nscC8el8zX1OeX5FnsbObY26QwOiPj7Zk8gv6
 
 ### `libraries\user_website.php`
 
-- **Size:** 2388 bytes
+- **Size:** 2384 bytes
 - **Extension:** `.php`
 
 ```php
 <?php
 	/* Copyright (c) by Hugo Leisink <hugo@leisink.net>
-	 * This file is part of the Taida web desktop
-	 * https://gitlab.com/hsleisink/taida
+	 * This file is part of the Orb web desktop
+	 * https://gitlab.com/hsleisink/orb
 	 *
 	 * Licensed under the GPLv2 License
 	 */
@@ -4774,14 +6100,14 @@ div.file_dialog div.btn-group input {
 
 ### `public\index.php`
 
-- **Size:** 1896 bytes
+- **Size:** 1892 bytes
 - **Extension:** `.php`
 
 ```php
 <?php
 	/* Copyright (c) by Hugo Leisink <hugo@leisink.net>
-	 * This file is part of the Taida web desktop
-	 * https://gitlab.com/hsleisink/taida
+	 * This file is part of the Orb web desktop
+	 * https://gitlab.com/hsleisink/orb
 	 *
 	 * Licensed under the GPLv2 License
 	 */
@@ -4868,13 +6194,13 @@ div.file_dialog div.btn-group input {
 
 ### `public\js\desktop.js`
 
-- **Size:** 14446 bytes
+- **Size:** 14442 bytes
 - **Extension:** `.js`
 
 ```javascript
 /* Copyright (c) by Hugo Leisink <hugo@leisink.net>
- * This file is part of the Taida web desktop
- * https://gitlab.com/hsleisink/taida
+ * This file is part of the Orb web desktop
+ * https://gitlab.com/hsleisink/orb
  *
  * Licensed under the GPLv2 License
  */
@@ -5447,13 +6773,13 @@ $(document).ready(function() {
 
 ### `public\js\directory.js`
 
-- **Size:** 3256 bytes
+- **Size:** 3252 bytes
 - **Extension:** `.js`
 
 ```javascript
 /* Copyright (c) by Hugo Leisink <hugo@leisink.net>
- * This file is part of the Taida web desktop
- * https://gitlab.com/hsleisink/taida
+ * This file is part of the Orb web desktop
+ * https://gitlab.com/hsleisink/orb
  *
  * Licensed under the GPLv2 License
  */
@@ -5577,13 +6903,13 @@ function taida_directory_remove(directory, callback_done = undefined, callback_f
 
 ### `public\js\file.js`
 
-- **Size:** 13060 bytes
+- **Size:** 13056 bytes
 - **Extension:** `.js`
 
 ```javascript
 /* Copyright (c) by Hugo Leisink <hugo@leisink.net>
- * This file is part of the Taida web desktop
- * https://gitlab.com/hsleisink/taida
+ * This file is part of the Orb web desktop
+ * https://gitlab.com/hsleisink/orb
  *
  * Licensed under the GPLv2 License
  */
@@ -6149,13 +7475,13 @@ function taida_file_search(filename, path, callback_done, callback_fail = undefi
 
 ### `public\js\library.js`
 
-- **Size:** 3003 bytes
+- **Size:** 2999 bytes
 - **Extension:** `.js`
 
 ```javascript
 /* Copyright (c) by Hugo Leisink <hugo@leisink.net>
- * This file is part of the Taida web desktop
- * https://gitlab.com/hsleisink/taida
+ * This file is part of the Orb web desktop
+ * https://gitlab.com/hsleisink/orb
  *
  * Licensed under the GPLv2 License
  */
@@ -6284,13 +7610,13 @@ function sha256(ascii) {
 
 ### `public\js\login.js`
 
-- **Size:** 1115 bytes
+- **Size:** 1111 bytes
 - **Extension:** `.js`
 
 ```javascript
 /* Copyright (c) by Hugo Leisink <hugo@leisink.net>
- * This file is part of the Taida web desktop
- * https://gitlab.com/hsleisink/taida
+ * This file is part of the Orb web desktop
+ * https://gitlab.com/hsleisink/orb
  *
  * Licensed under the GPLv2 License
  */
@@ -6338,13 +7664,13 @@ $(document).ready(function() {
 
 ### `public\js\taida.js`
 
-- **Size:** 13717 bytes
+- **Size:** 13713 bytes
 - **Extension:** `.js`
 
 ```javascript
 /* Copyright (c) by Hugo Leisink <hugo@leisink.net>
- * This file is part of the Taida web desktop
- * https://gitlab.com/hsleisink/taida
+ * This file is part of the Orb web desktop
+ * https://gitlab.com/hsleisink/orb
  *
  * Licensed under the GPLv2 License
  */
@@ -6895,13 +8221,13 @@ $(document).ready(function() {
 
 ### `public\js\taskbar.js`
 
-- **Size:** 5053 bytes
+- **Size:** 5049 bytes
 - **Extension:** `.js`
 
 ```javascript
 /* Copyright (c) by Hugo Leisink <hugo@leisink.net>
- * This file is part of the Taida web desktop
- * https://gitlab.com/hsleisink/taida
+ * This file is part of the Orb web desktop
+ * https://gitlab.com/hsleisink/orb
  *
  * Licensed under the GPLv2 License
  */
@@ -7084,13 +8410,13 @@ $(document).ready(function() {
 
 ### `public\js\user_javascript.js`
 
-- **Size:** 2424 bytes
+- **Size:** 2420 bytes
 - **Extension:** `.js`
 
 ```javascript
 /* Copyright (c) by Hugo Leisink <hugo@leisink.net>
- * This file is part of the Taida web desktop
- * https://gitlab.com/hsleisink/taida
+ * This file is part of the Orb web desktop
+ * https://gitlab.com/hsleisink/orb
  *
  * Licensed under the GPLv2 License
  */
@@ -7189,13 +8515,13 @@ $(document).ready(function() {
 
 ### `public\js\windows.js`
 
-- **Size:** 16038 bytes
+- **Size:** 16034 bytes
 - **Extension:** `.js`
 
 ```javascript
 /* Copyright (c) by Hugo Leisink <hugo@leisink.net>
- * This file is part of the Taida web desktop
- * https://gitlab.com/hsleisink/taida
+ * This file is part of the Orb web desktop
+ * https://gitlab.com/hsleisink/orb
  *
  * Licensed under the GPLv2 License
  */
@@ -7778,6 +9104,20 @@ function taida_window_set_title(windowframe, title) {
 })(jQuery);
 ```
 
+### `README.md`
+
+- **Size:** 126 bytes
+- **Extension:** `.md`
+
+```markdown
+Taida HQ 
+
+
+Open-source & based on Orb
+
+![taida!](https://github.com/meleorart79/taida/public/images/taidasansfond.png)
+```
+
 ### `taida_structure.py`
 
 - **Size:** 4138 bytes
@@ -7937,6 +9277,498 @@ def dump_markdown_for_llm(root: Path, output_path: Path):
 if __name__ == "__main__":
     dump_markdown_for_llm(ROOT_DIR, Path(OUTPUT_FILE))
     print(f"Markdown export completed → {OUTPUT_FILE}")
+```
+
+### `tests\fixtures\sample_directory_tree.sql`
+
+- **Size:** 0 bytes
+- **Extension:** `.sql`
+
+```sql
+
+```
+
+### `tests\fs\ConcurrencyTest.php`
+
+- **Size:** 2369 bytes
+- **Extension:** `.php`
+
+```php
+<?php
+namespace Taida\Tests\FS;
+
+use PHPUnit\Framework\TestCase;
+use Taida\FS\DirectoryTree;
+use Taida\FS\Persistence\DirectoryTreePersistence;
+
+class ConcurrencyTest extends TestCase {
+    /**
+     * Test that concurrent operations maintain consistency
+     * 
+     * Note: This test simulates concurrency by rapid sequential operations.
+     * For true concurrency testing, use separate processes or threads.
+     */
+    public function testRapidDirectoryCreation(): void {
+        $db = new \PDO('sqlite::memory:');
+        $schema = file_get_contents(__DIR__ . '/../../libraries/fs/persistence/schema/directory_tree.sql');
+        $schema = str_replace('ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci', '', $schema);
+        $db->exec($schema);
+        
+        $persistence = new DirectoryTreePersistence($db);
+        $tree = new DirectoryTree($persistence);
+        
+        // Create many directories rapidly
+        for ($i = 0; $i < 100; $i++) {
+            $tree->createDirectory("/test_$i");
+        }
+        
+        // Verify all were created
+        for ($i = 0; $i < 100; $i++) {
+            $result = $tree->resolvePath("/test_$i");
+            $this->assertNotNull($result);
+        }
+    }
+    
+    public function testConcurrentFileOperations(): void {
+        $db = new \PDO('sqlite::memory:');
+        $schema = file_get_contents(__DIR__ . '/../../libraries/fs/persistence/schema/directory_tree.sql');
+        $schema = str_replace('ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci', '', $schema);
+        $db->exec($schema);
+        
+        $persistence = new DirectoryTreePersistence($db);
+        $tree = new DirectoryTree($persistence);
+        
+        $tree->createDirectory('/files');
+        
+        // Create multiple hard links to same file rapidly
+        $storage_path = tempnam(sys_get_temp_dir(), 'test_');
+        file_put_contents($storage_path, 'shared');
+        $file_id = $tree->createFileReference($storage_path);
+        
+        for ($i = 0; $i < 50; $i++) {
+            $tree->addFileEntry("/files/link_$i.txt", $file_id);
+        }
+        
+        // Verify refcount
+        $file_ref = $tree->getFileReference($file_id);
+        $this->assertEquals(50, $file_ref->refcount);
+        
+        unlink($storage_path);
+    }
+}
+```
+
+### `tests\fs\DirectoryTreeTest.php`
+
+- **Size:** 11485 bytes
+- **Extension:** `.php`
+
+```php
+<?php
+namespace Taida\Tests\FS;
+
+use PHPUnit\Framework\TestCase;
+use Taida\FS\DirectoryTree;
+use Taida\FS\Persistence\DirectoryTreePersistence;
+
+class DirectoryTreeTest extends TestCase {
+    private DirectoryTree $tree;
+    private \PDO $db;
+    
+    protected function setUp(): void {
+        // Create in-memory SQLite database
+        $this->db = new \PDO('sqlite::memory:');
+        
+        // Load schema
+        $schema = file_get_contents(__DIR__ . '/../../libraries/fs/persistence/schema/directory_tree.sql');
+        // Convert MySQL syntax to SQLite if needed
+        $schema = str_replace('ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci', '', $schema);
+        $schema = str_replace('AUTO_INCREMENT', 'AUTOINCREMENT', $schema);
+        $this->db->exec($schema);
+        
+        $persistence = new DirectoryTreePersistence($this->db);
+        $this->tree = new DirectoryTree($persistence);
+        $this->tree->setDebugMode(true);
+    }
+    
+    protected function tearDown(): void {
+        $this->db = null;
+        $this->tree = null;
+    }
+    
+    // ===== BASIC OPERATIONS =====
+    
+    public function testCreateDirectory(): void {
+        $dir_id = $this->tree->createDirectory('/test');
+        $this->assertNotNull($dir_id);
+        $this->assertStringStartsWith('d_', $dir_id);
+        
+        $result = $this->tree->resolvePath('/test');
+        $this->assertEquals('dir', $result['type']);
+        $this->assertEquals($dir_id, $result['id']);
+    }
+    
+    public function testCreateNestedDirectory(): void {
+        $this->tree->createDirectory('/parent');
+        $child_id = $this->tree->createDirectory('/parent/child');
+        
+        $result = $this->tree->resolvePath('/parent/child');
+        $this->assertEquals($child_id, $result['id']);
+    }
+    
+    public function testCannotCreateDuplicateDirectory(): void {
+        $this->tree->createDirectory('/test');
+        
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Entry already exists');
+        $this->tree->createDirectory('/test');
+    }
+    
+    public function testCannotCreateDirectoryWithInvalidParent(): void {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Parent directory not found');
+        $this->tree->createDirectory('/nonexistent/child');
+    }
+    
+    public function testRemoveEmptyDirectory(): void {
+        $this->tree->createDirectory('/temp');
+        $result = $this->tree->removeDirectory('/temp');
+        
+        $this->assertTrue($result);
+        $this->assertNull($this->tree->resolvePath('/temp'));
+    }
+    
+    public function testCannotRemoveNonEmptyDirectory(): void {
+        $this->tree->createDirectory('/parent');
+        $this->tree->createDirectory('/parent/child');
+        
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Directory not empty');
+        $this->tree->removeDirectory('/parent');
+    }
+    
+    public function testCannotRemoveRootDirectory(): void {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Cannot remove root');
+        $this->tree->removeDirectory('/');
+    }
+    
+    // ===== PATH RESOLUTION =====
+    
+    public function testResolveRootPath(): void {
+        $result = $this->tree->resolvePath('/');
+        $this->assertEquals('dir', $result['type']);
+        $this->assertEquals($this->tree->getRootDirId(), $result['id']);
+    }
+    
+    public function testResolveNonExistentPath(): void {
+        $result = $this->tree->resolvePath('/does/not/exist');
+        $this->assertNull($result);
+    }
+    
+    public function testPathNormalization(): void {
+        $this->tree->createDirectory('/test');
+        
+        $r1 = $this->tree->resolvePath('/test');
+        $r2 = $this->tree->resolvePath('//test//');
+        $r3 = $this->tree->resolvePath('/test/./');
+        
+        $this->assertEquals($r1['id'], $r2['id']);
+        $this->assertEquals($r1['id'], $r3['id']);
+    }
+    
+    public function testParentDirectoryResolution(): void {
+        $this->tree->createDirectory('/a');
+        $this->tree->createDirectory('/a/b');
+        $this->tree->createDirectory('/a/b/c');
+        
+        $result = $this->tree->resolvePath('/a/b/c/../..');
+        $a_result = $this->tree->resolvePath('/a');
+        
+        $this->assertEquals($a_result['id'], $result['id']);
+    }
+    
+    // ===== FILE OPERATIONS =====
+    
+    public function testAddFileEntry(): void {
+        $this->tree->createDirectory('/files');
+        
+        $storage_path = $this->createTempFile('test content');
+        $file_id = $this->tree->createFileReference($storage_path);
+        
+        $success = $this->tree->addFileEntry('/files/test.txt', $file_id);
+        $this->assertTrue($success);
+        
+        $file_ref = $this->tree->getFileReference($file_id);
+        $this->assertEquals(1, $file_ref->refcount);
+        
+        unlink($storage_path);
+    }
+    
+    public function testHardLinks(): void {
+        $this->tree->createDirectory('/dir1');
+        $this->tree->createDirectory('/dir2');
+        
+        $storage_path = $this->createTempFile('shared content');
+        $file_id = $this->tree->createFileReference($storage_path);
+        
+        // Create first link
+        $this->tree->addFileEntry('/dir1/file.txt', $file_id);
+        $file_ref = $this->tree->getFileReference($file_id);
+        $this->assertEquals(1, $file_ref->refcount);
+        
+        // Create second link (hard link)
+        $this->tree->addFileEntry('/dir2/same_file.txt', $file_id);
+        $file_ref = $this->tree->getFileReference($file_id);
+        $this->assertEquals(2, $file_ref->refcount);
+        
+        // Both should resolve to same file_id
+        $r1 = $this->tree->resolvePath('/dir1/file.txt');
+        $r2 = $this->tree->resolvePath('/dir2/same_file.txt');
+        $this->assertEquals($r1['id'], $r2['id']);
+        
+        unlink($storage_path);
+    }
+    
+    public function testRemoveFileEntry(): void {
+        $this->tree->createDirectory('/files');
+        
+        $storage_path = $this->createTempFile('test');
+        $file_id = $this->tree->createFileReference($storage_path);
+        $this->tree->addFileEntry('/files/test.txt', $file_id);
+        
+        $removed_id = $this->tree->removeFileEntry('/files/test.txt');
+        $this->assertEquals($file_id, $removed_id);
+        
+        $file_ref = $this->tree->getFileReference($file_id);
+        $this->assertEquals(0, $file_ref->refcount);
+        
+        unlink($storage_path);
+    }
+    
+    public function testReferenceCountDecrement(): void {
+        $this->tree->createDirectory('/dir1');
+        $this->tree->createDirectory('/dir2');
+        
+        $storage_path = $this->createTempFile('content');
+        $file_id = $this->tree->createFileReference($storage_path);
+        
+        $this->tree->addFileEntry('/dir1/file.txt', $file_id);
+        $this->tree->addFileEntry('/dir2/file.txt', $file_id);
+        
+        $file_ref = $this->tree->getFileReference($file_id);
+        $this->assertEquals(2, $file_ref->refcount);
+        
+        // Remove one link
+        $this->tree->removeFileEntry('/dir1/file.txt');
+        $file_ref = $this->tree->getFileReference($file_id);
+        $this->assertEquals(1, $file_ref->refcount);
+        
+        // Remove second link
+        $this->tree->removeFileEntry('/dir2/file.txt');
+        $file_ref = $this->tree->getFileReference($file_id);
+        $this->assertEquals(0, $file_ref->refcount);
+        
+        unlink($storage_path);
+    }
+    
+    // ===== MOVE OPERATIONS =====
+    
+    public function testMoveDirectory(): void {
+        $this->tree->createDirectory('/source');
+        $this->tree->createDirectory('/dest');
+        
+        $this->tree->move('/source', '/dest/moved');
+        
+        $this->assertNull($this->tree->resolvePath('/source'));
+        $this->assertNotNull($this->tree->resolvePath('/dest/moved'));
+    }
+    
+    public function testRenameDirectory(): void {
+        $dir_id = $this->tree->createDirectory('/old_name');
+        
+        $this->tree->move('/old_name', '/new_name');
+        
+        $this->assertNull($this->tree->resolvePath('/old_name'));
+        $result = $this->tree->resolvePath('/new_name');
+        $this->assertEquals($dir_id, $result['id']);
+    }
+    
+    public function testMoveFile(): void {
+        $this->tree->createDirectory('/files');
+        $this->tree->createDirectory('/archive');
+        
+        $storage_path = $this->createTempFile('content');
+        $file_id = $this->tree->createFileReference($storage_path);
+        $this->tree->addFileEntry('/files/doc.txt', $file_id);
+        
+        $this->tree->move('/files/doc.txt', '/archive/doc.txt');
+        
+        $this->assertNull($this->tree->resolvePath('/files/doc.txt'));
+        $result = $this->tree->resolvePath('/archive/doc.txt');
+        $this->assertEquals($file_id, $result['id']);
+        
+        unlink($storage_path);
+    }
+    
+    public function testCannotMoveToCauseNameCollision(): void {
+        $this->tree->createDirectory('/dir1');
+        $this->tree->createDirectory('/dir2');
+        $this->tree->createDirectory('/dir2/existing');
+        
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Destination already exists');
+        $this->tree->move('/dir1', '/dir2/existing');
+    }
+    
+    public function testCannotMoveDirectoryIntoItself(): void {
+        $this->tree->createDirectory('/parent');
+        
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('cycle');
+        $this->tree->move('/parent', '/parent/child');
+    }
+    
+    public function testCannotMoveDirectoryIntoDescendant(): void {
+        $this->tree->createDirectory('/parent');
+        $this->tree->createDirectory('/parent/child');
+        $this->tree->createDirectory('/parent/child/grandchild');
+        
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('cycle');
+        $this->tree->move('/parent', '/parent/child/grandchild/moved');
+    }
+    
+    // ===== GARBAGE COLLECTION =====
+    
+    public function testGarbageCollection(): void {
+        $this->tree->createDirectory('/files');
+        
+        $storage_path = $this->createTempFile('orphan');
+        $file_id = $this->tree->createFileReference($storage_path);
+        $this->tree->addFileEntry('/files/temp.txt', $file_id);
+        
+        // Remove entry (orphans file)
+        $this->tree->removeFileEntry('/files/temp.txt');
+        
+        // Run GC
+        $deleted = $this->tree->collectGarbage();
+        
+        $this->assertContains($file_id, $deleted);
+        $this->assertNull($this->tree->getFileReference($file_id));
+        $this->assertFileDoesNotExist($storage_path);
+    }
+    
+    // ===== HELPER METHODS =====
+    
+    private function createTempFile(string $content): string {
+        $path = tempnam(sys_get_temp_dir(), 'test_');
+        file_put_contents($path, $content);
+        return $path;
+    }
+}
+```
+
+### `tests\fs\InvariantTest.php`
+
+- **Size:** 1582 bytes
+- **Extension:** `.php`
+
+```php
+<?php
+namespace Taida\Tests\FS;
+
+use PHPUnit\Framework\TestCase;
+use Taida\FS\DirectoryTree;
+use Taida\FS\Persistence\DirectoryTreePersistence;
+use Taida\FS\Invariants\DirectoryInvariants;
+
+class InvariantTest extends TestCase {
+    private DirectoryTree $tree;
+    private DirectoryInvariants $invariants;
+    private \PDO $db;
+    
+    protected function setUp(): void {
+        $this->db = new \PDO('sqlite::memory:');
+        $schema = file_get_contents(__DIR__ . '/../../libraries/fs/persistence/schema/directory_tree.sql');
+        $schema = str_replace('ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci', '', $schema);
+        $this->db->exec($schema);
+        
+        $persistence = new DirectoryTreePersistence($this->db);
+        $this->tree = new DirectoryTree($persistence);
+        $this->invariants = new DirectoryInvariants($this->tree);
+    }
+    
+    public function testValidTreeHasNoInvariantViolations(): void {
+        $this->tree->createDirectory('/valid');
+        $this->tree->createDirectory('/valid/child');
+        
+        $errors = $this->invariants->validateTree();
+        $this->assertEmpty($errors);
+    }
+    
+    public function testDetectsNoCycles(): void {
+        $this->tree->createDirectory('/a');
+        $this->tree->createDirectory('/a/b');
+        $this->tree->createDirectory('/a/b/c');
+        
+        $dir_c = $this->tree->resolvePath('/a/b/c');
+        $cycle_error = $this->invariants->checkForCycles($dir_c['id']);
+        
+        $this->assertNull($cycle_error);
+    }
+}
+```
+
+### `tests\fs\PathResolverTest.php`
+
+- **Size:** 1912 bytes
+- **Extension:** `.php`
+
+```php
+<?php
+namespace Taida\Tests\FS;
+
+use PHPUnit\Framework\TestCase;
+use Taida\FS\Operations\PathResolver;
+
+class PathResolverTest extends TestCase {
+    public function testNormalizePath(): void {
+        $this->assertEquals('/', PathResolver::normalizePath('/'));
+        $this->assertEquals('/test', PathResolver::normalizePath('/test'));
+        $this->assertEquals('/test', PathResolver::normalizePath('//test//'));
+        $this->assertEquals('/test', PathResolver::normalizePath('/./test'));
+        $this->assertEquals('/', PathResolver::normalizePath('/test/..'));
+        $this->assertEquals('/a/c', PathResolver::normalizePath('/a/b/../c'));
+    }
+    
+    public function testValidateName(): void {
+        $this->assertNull(PathResolver::validateName('valid_name'));
+        $this->assertNull(PathResolver::validateName('file.txt'));
+        $this->assertNull(PathResolver::validateName('my-file_123'));
+        
+        $this->assertNotNull(PathResolver::validateName(''));
+        $this->assertNotNull(PathResolver::validateName('.'));
+        $this->assertNotNull(PathResolver::validateName('..'));
+        $this->assertNotNull(PathResolver::validateName('has/slash'));
+        $this->assertNotNull(PathResolver::validateName("has\0null"));
+    }
+    
+    public function testSplitPath(): void {
+        $this->assertEquals(['/', 'test'], PathResolver::splitPath('/test'));
+        $this->assertEquals(['/parent', 'child'], PathResolver::splitPath('/parent/child'));
+        $this->assertEquals(['/', ''], PathResolver::splitPath('/'));
+    }
+    
+    public function testCheckDepth(): void {
+        $shallow = '/a/b/c';
+        $this->assertTrue(PathResolver::checkDepth($shallow));
+        
+        // Create very deep path
+        $deep = '/' . implode('/', array_fill(0, 150, 'dir'));
+        $this->assertFalse(PathResolver::checkDepth($deep));
+    }
+}
 ```
 
 ---

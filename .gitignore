@@ -7,3 +7,14 @@ logfiles/
 
 # Environment
 .env
+
+taida_dump.md
+taida_structure.py
+
+taida.conf
+
+.vs/
+
+node_modules/
+dist/
+build/
