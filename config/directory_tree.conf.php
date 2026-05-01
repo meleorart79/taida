@@ -7,8 +7,8 @@ return [
     // Database configuration
     'database' => [
         'dsn' => 'mysql:host=localhost;dbname=taida;charset=utf8mb4',
-        'username' => 'taida_user',
-        'password' => 'secure_password',
+        'username' => 'root',
+        'password' => '',
         'options' => [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,

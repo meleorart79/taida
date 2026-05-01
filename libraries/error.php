@@ -12,6 +12,7 @@
 	 * OUTPUT: -
 	 * ERROR:  -
 	 */
+
 	function taida_exception_handler($error) {
 		$previous = ob_get_clean();
 
@@ -19,7 +20,7 @@
 		print "<!DOCTYPE html><html><body>\n";
 		print "<h1>Exception</h1>\n";
 
-		if (is_true(DEBUG_MODE)) {
+		if (defined('DEBUG_MODE') && is_true(DEBUG_MODE)) {
 			printf("<p style=\"white-space:pre-wrap\">%s</p>\n", $error->getMessage());
 			printf("<p>line %d in %s.</p>\n",  $error->getLine(), $error->getFile());
 		} else {

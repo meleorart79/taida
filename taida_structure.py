@@ -10,7 +10,7 @@ OUTPUT_FILE = "taida_dump.md"
 
 EXCLUDE_DIRS = {
     ".git", "__pycache__", "node_modules",
-    ".venv", "dist", "build", "apps"
+    ".venv", "dist", "build", "apps", ".vs"
 }
 
 EXCLUDE_FILES = {OUTPUT_FILE}
@@ -25,7 +25,7 @@ TEXT_EXTENSIONS = {
 # --- Unlimited content ---
 KEEP_RATIO = 1.0                 # keep 100%
 MIN_LINES_REQUIRED = 5           # irrelevant but kept for safety
-MAX_LINES_PER_FILE = None        # None = NO LIMIT
+MAX_LINES_PER_FILE = None       # None = NO LIMIT
 
 
 # =========================
@@ -90,12 +90,8 @@ def dump_markdown_for_llm(root: Path, output_path: Path):
     with output_path.open("w", encoding="utf-8") as out:
 
         # -------- PROJECT CONTEXT --------
-        out.write("# Project Dump (Unlimited, Claude-Oriented)\n\n")
-        out.write("## Context\n")
-        out.write(f"- **Root path:** `{root.resolve()}`\n")
-        out.write("- **Policy:** No truncation, full content preserved\n")
-        out.write("- **Note:** Claude may still selectively load content due to context limits\n\n")
-
+        out.write("# Project Dump\n\n")
+        
         # -------- DIRECTORY TREE --------
         out.write("## Directory Tree\n\n")
         out.write("```text\n")

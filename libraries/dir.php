@@ -4,8 +4,8 @@
  * NOW: Thin layer over DirectoryTree
  */
 
-require_once 'taida_backend.php';
-require_once 'fs/DirectoryTree.php';
+require_once BASE_PATH . '/libraries/taida_backend.php';
+require_once BASE_PATH . '/libraries/fs/DirectoryTree.php';
 
 use Taida\FS\DirectoryTree;
 use Taida\FS\Persistence\DirectoryTreePersistence;

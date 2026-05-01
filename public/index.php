@@ -1,12 +1,16 @@
 <?php
+
+	namespace Taida;
+
 	/* Copyright (c) by Hugo Leisink <hugo@leisink.net>
 	 * This file is part of the Orb web desktop
 	 * https://gitlab.com/hsleisink/orb
 	 *
 	 * Licensed under the GPLv2 License
 	 */
+	 
+	require_once __DIR__ . '/../config/bootstrap.php';
 
-	namespace Taida;
 
 	ob_start();
 
@@ -21,9 +25,8 @@
 	session_set_cookie_params($options);
 	session_start();
 
-	require "../libraries/error.php";
-	require "../libraries/general.php";
 	spl_autoload_register("autoloader");
+
 	require "../libraries/taida.php";
 	require "../libraries/user_website.php";
 

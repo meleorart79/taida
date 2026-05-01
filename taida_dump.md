@@ -1,9 +1,4 @@
-# Project Dump (Unlimited, Claude-Oriented)
-
-## Context
-- **Root path:** `C:\xampp\htdocs\taida`
-- **Policy:** No truncation, full content preserved
-- **Note:** Claude may still selectively load content due to context limits
+# Project Dump
 
 ## Directory Tree
 
@@ -11,7 +6,9 @@
 .gitignore
 ChangeLog
 config
+config\bootstrap.php
 config\directory_tree.conf.php
+Dockerfile
 home
 home\.notifications
 home\users.txt
@@ -143,9 +140,62 @@ views\login.xslt
 
 ## Files
 
+### `config\bootstrap.php`
+
+- **Size:** 1251 bytes
+- **Extension:** `.php`
+
+```php
+<?php
+
+// --- MINIMAL BOOTSTRAP TO MAKE ORB-BASED CODE RUN ---
+
+// Debug
+define('DEBUG_MODE', true);
+
+// Core settings (guesses, but safe defaults)
+define('AUTHENTICATION', 'session');
+define('USER_JAVASCRIPT', false);
+define('APPLICATIONS', []);
+
+// Paths
+define('HOME_ROOT', __DIR__ . '/../home');
+if (!defined('DESKTOP_PATH')) define('DESKTOP_PATH', '/');
+define('BASE_PATH', realpath(__DIR__ . '/..'));
+
+// UI / system
+if (!defined('EDITOR'))       define('EDITOR', 'text');
+define('READ_ONLY', false);
+
+// Helpers (Orb expects this but it's missing)
+if (!function_exists('is_true')) {
+    function is_true($value) {
+        return $value === true || $value === 1 || $value === "true";
+    }
+}
+
+// Dummy debug logger (so it doesn’t crash)
+function debug_log($data) {
+    file_put_contents(__DIR__ . '/../logfiles/debug.log', print_r($data, true), FILE_APPEND);
+}
+
+// autoloader for classes (Orb expects this but it's missing)
+function autoloader($class) {
+    // Strip namespace prefix
+    $class = str_replace('Taida\\', '', $class);
+    $class = strtolower($class);
+    
+    $file = __DIR__ . '/../libraries/' . $class . '.php';
+    
+    if (file_exists($file)) {
+        require_once $file;
+    }
+}
+```
+
 ### `config\directory_tree.conf.php`
 
-- **Size:** 2278 bytes
+- **Size:** 2257 bytes
 - **Extension:** `.php`
 
 ```php
@@ -158,8 +208,8 @@ return [
     // Database configuration
     'database' => [
         'dsn' => 'mysql:host=localhost;dbname=taida;charset=utf8mb4',
-        'username' => 'taida_user',
-        'password' => 'secure_password',
+        'username' => 'root',
+        'password' => '',
         'options' => [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -457,7 +507,7 @@ taida:$2y$10$wHP3pk4hm2g4aJV0nscC8el8zX1OeX5FnsbObY26QwOiPj7Zk8gv6
 
 ### `libraries\dir.php`
 
-- **Size:** 3268 bytes
+- **Size:** 3314 bytes
 - **Extension:** `.php`
 
 ```php
@@ -467,8 +517,8 @@ taida:$2y$10$wHP3pk4hm2g4aJV0nscC8el8zX1OeX5FnsbObY26QwOiPj7Zk8gv6
  * NOW: Thin layer over DirectoryTree
  */
 
-require_once 'taida_backend.php';
-require_once 'fs/DirectoryTree.php';
+require_once BASE_PATH . '/libraries/taida_backend.php';
+require_once BASE_PATH . '/libraries/fs/DirectoryTree.php';
 
 use Taida\FS\DirectoryTree;
 use Taida\FS\Persistence\DirectoryTreePersistence;
@@ -1046,7 +1096,7 @@ class dir extends taida_backend {
 
 ### `libraries\error.php`
 
-- **Size:** 1710 bytes
+- **Size:** 1737 bytes
 - **Extension:** `.php`
 
 ```php
@@ -1064,6 +1114,7 @@ class dir extends taida_backend {
 	 * OUTPUT: -
 	 * ERROR:  -
 	 */
+
 	function taida_exception_handler($error) {
 		$previous = ob_get_clean();
 
@@ -1071,7 +1122,7 @@ class dir extends taida_backend {
 		print "<!DOCTYPE html><html><body>\n";
 		print "<h1>Exception</h1>\n";
 
-		if (is_true(DEBUG_MODE)) {
+		if (defined('DEBUG_MODE') && is_true(DEBUG_MODE)) {
 			printf("<p style=\"white-space:pre-wrap\">%s</p>\n", $error->getMessage());
 			printf("<p>line %d in %s.</p>\n",  $error->getLine(), $error->getFile());
 		} else {
@@ -1116,7 +1167,7 @@ class dir extends taida_backend {
 
 ### `libraries\file.php`
 
-- **Size:** 4758 bytes
+- **Size:** 4804 bytes
 - **Extension:** `.php`
 
 ```php
@@ -1126,8 +1177,8 @@ class dir extends taida_backend {
  * NOW: Thin layer over DirectoryTree
  */
 
-require_once 'taida_backend.php';
-require_once 'fs/DirectoryTree.php';
+require_once BASE_PATH . '/libraries/taida_backend.php';
+require_once BASE_PATH . '/libraries/fs/DirectoryTree.php';
 
 use Taida\FS\DirectoryTree;
 use Taida\FS\Persistence\DirectoryTreePersistence;
@@ -6100,19 +6151,23 @@ div.file_dialog div.btn-group input {
 
 ### `public\index.php`
 
-- **Size:** 1892 bytes
+- **Size:** 1881 bytes
 - **Extension:** `.php`
 
 ```php
 <?php
+
+	namespace Taida;
+
 	/* Copyright (c) by Hugo Leisink <hugo@leisink.net>
 	 * This file is part of the Orb web desktop
 	 * https://gitlab.com/hsleisink/orb
 	 *
 	 * Licensed under the GPLv2 License
 	 */
+	 
+	require_once __DIR__ . '/../config/bootstrap.php';
 
-	namespace Taida;
 
 	ob_start();
 
@@ -6127,9 +6182,8 @@ div.file_dialog div.btn-group input {
 	session_set_cookie_params($options);
 	session_start();
 
-	require "../libraries/error.php";
-	require "../libraries/general.php";
 	spl_autoload_register("autoloader");
+
 	require "../libraries/taida.php";
 	require "../libraries/user_website.php";
 
@@ -9120,7 +9174,7 @@ Open-source & based on Orb
 
 ### `taida_structure.py`
 
-- **Size:** 4138 bytes
+- **Size:** 3849 bytes
 - **Extension:** `.py`
 
 ```python
@@ -9136,7 +9190,7 @@ OUTPUT_FILE = "taida_dump.md"
 
 EXCLUDE_DIRS = {
     ".git", "__pycache__", "node_modules",
-    ".venv", "dist", "build", "apps"
+    ".venv", "dist", "build", "apps", ".vs"
 }
 
 EXCLUDE_FILES = {OUTPUT_FILE}
@@ -9151,7 +9205,7 @@ TEXT_EXTENSIONS = {
 # --- Unlimited content ---
 KEEP_RATIO = 1.0                 # keep 100%
 MIN_LINES_REQUIRED = 5           # irrelevant but kept for safety
-MAX_LINES_PER_FILE = None        # None = NO LIMIT
+MAX_LINES_PER_FILE = None       # None = NO LIMIT
 
 
 # =========================
@@ -9216,12 +9270,8 @@ def dump_markdown_for_llm(root: Path, output_path: Path):
     with output_path.open("w", encoding="utf-8") as out:
 
         # -------- PROJECT CONTEXT --------
-        out.write("# Project Dump (Unlimited, Claude-Oriented)\n\n")
-        out.write("## Context\n")
-        out.write(f"- **Root path:** `{root.resolve()}`\n")
-        out.write("- **Policy:** No truncation, full content preserved\n")
-        out.write("- **Note:** Claude may still selectively load content due to context limits\n\n")
-
+        out.write("# Project Dump\n\n")
+        
         # -------- DIRECTORY TREE --------
         out.write("## Directory Tree\n\n")
         out.write("```text\n")
