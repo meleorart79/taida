@@ -1,12 +1,8 @@
 from pathlib import Path
 import math
 
-# =========================
-# CONFIG (NO SIZE LIMITS)
-# =========================
-
 ROOT_DIR = Path(r"C:\xampp\htdocs\taida")
-OUTPUT_FILE = "taida_dump.md"
+OUTPUT_FILE = "taida_dump.txt"
 
 EXCLUDE_DIRS = {
     ".git", "__pycache__", "node_modules",
@@ -23,7 +19,7 @@ TEXT_EXTENSIONS = {
 }
 
 # --- Unlimited content ---
-KEEP_RATIO = 1.0                 # keep 100%
+KEEP_RATIO = 0.25                # keep 100%
 MIN_LINES_REQUIRED = 5           # irrelevant but kept for safety
 MAX_LINES_PER_FILE = None       # None = NO LIMIT
 

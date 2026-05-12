@@ -1,0 +1,12 @@
+{
+    "name": "uneedme/taida",
+    "authors": [
+        {
+            "name": "meleorart79",
+            "email": "204237083+meleorart79@users.noreply.github.com"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^11.5"
+    }
+}
