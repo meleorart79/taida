@@ -21,7 +21,7 @@
 		"domain"   => "",
 		"secure"   => true,
 		"httponly" => true,
-		"samesite" => "none");
+		"samesite" => "lax");
 	session_set_cookie_params($options);
 	session_start();
 

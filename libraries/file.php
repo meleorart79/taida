@@ -4,8 +4,8 @@
  * NOW: Thin layer over DirectoryTree
  */
 
-require_once BASE_PATH . '/libraries/taida_backend.php';
-require_once BASE_PATH . '/libraries/fs/directorytree.php';
+require_once __DIR__ . '/../libraries/taida_backend.php';
+require_once __DIR__ . '/../libraries/fs/directorytree.php';
 
 use Taida\FS\DirectoryTree;
 use Taida\FS\Persistence\DirectoryTreePersistence;
@@ -17,7 +17,7 @@ class file extends taida_backend {
     private static function getTree(): DirectoryTree {
         if (self::$tree === null) {
             global $db;
-            $config = require BASE_PATH . '/config/directory_tree.conf.php';
+            $config = require __DIR__ . '/../config/directory_tree.conf.php';
             $storage = new LocalStorageBackend(
                 $config['storage']['root'],
                 $config['storage']['hash_depth']

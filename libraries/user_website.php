@@ -84,11 +84,13 @@
 		public function execute() {
 			$file = substr($_SERVER["REQUEST_URI"], strlen($this->username) + 2);
 
-			if ((strpos($file, "/.") !== false) || (strpos($file, "../") !== false)) {
+			// Proposed
+			$resolved = realpath(HOME_ROOT . '/' . $this->username . '/Website' . $file);
+			$allowed_base = realpath(HOME_ROOT . '/' . $this->username . '/Website');
+			if ($resolved === false || strpos($resolved, $allowed_base) !== 0) {
 				return $this->show_error();
 			}
-
-			$path = HOME_ROOT."/".$this->username."/Website".$file;
+			$path = $resolved;
 
 			if (is_dir($path)) {
 				if (substr($path, -1) == "/") {
