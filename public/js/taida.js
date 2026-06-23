@@ -312,13 +312,53 @@ function taida_upon_file_open(extension, callback, icon = undefined) {
 	var handler = {
 		callback: callback,
 		icon: icon
-	}
+	};
 
 	if (_taida_callbacks_open_file[extension] == undefined) {
 		_taida_callbacks_open_file[extension] = handler;
 	} else {
 		taida_alert('Duplicate extension handler for .' + extension + ' files.', 'Taida error');
+		return; // ← was missing; without this the map entry is still overwritten
 	}
+}
+
+/* Create a .taida shortcut file on the user's desktop.
+ *
+ * @param string   target    JS function name to call on launch, e.g. 'notepad_open'
+ * @param string   label     Display label shown under the icon
+ * @param string   icon      URL to the icon image
+ * @param function callback  Optional — called with (success, error) when done
+ *
+ * Usage:
+ *   taida_desktop_shortcut_create('notepad_open', 'Notepad', '/apps/notepad/icon.png');
+ */
+function taida_desktop_shortcut_create(target, label, icon, callback) {
+	if (taida_read_only) {
+		if (typeof callback === 'function') callback(false, 'read-only');
+		return;
+	}
+
+	var sc = JSON.stringify({
+		type: 'shortcut',
+		target: target,
+		label: label,
+		icon: icon
+	});
+
+	// Sanitise label for use as a filename
+	var filename = label.replace(/[^a-zA-Z0-9 _-]/g, '').trim().replace(/\s+/g, '_');
+	if (!filename) filename = target;
+
+	var dest = _taida_desktop_path + '/' + filename + '.taida';
+
+	taida_file_save(dest, sc, false,
+		function () {
+			if (typeof callback === 'function') callback(true, null);
+		},
+		function (status, text) {
+			if (typeof callback === 'function') callback(false, text);
+		}
+	);
 }
 
 function taida_upon_directory_open(callback) {

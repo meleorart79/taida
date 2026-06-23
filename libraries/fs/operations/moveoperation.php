@@ -4,6 +4,7 @@ namespace Taida\FS\Operations;
 use Taida\FS\DirectoryTree;
 use Taida\FS\Entities\DirectoryEntry;
 use Taida\FS\Persistence\DirectoryTreePersistence;
+use Taida\FS\Operations\PathResolver;
 
 class MoveOperation {
     private DirectoryTree $tree;
@@ -106,6 +107,10 @@ class MoveOperation {
             }
             
             $this->persistence->commit();
+
+            // Invalidate cached directory objects affected by this move
+            $this->tree->clearCache();
+
             return true;
             
         } catch (\Exception $e) {

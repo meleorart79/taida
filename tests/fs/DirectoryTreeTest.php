@@ -6,19 +6,14 @@ use Taida\FS\DirectoryTree;
 use Taida\FS\Persistence\DirectoryTreePersistence;
 
 class DirectoryTreeTest extends TestCase {
-    private DirectoryTree $tree;
-    private \PDO $db;
+    private ?DirectoryTree $tree = null;
+    private ?\PDO $db = null;
     
     protected function setUp(): void {
         // Create in-memory SQLite database
         $this->db = new \PDO('sqlite::memory:');
         
-        // Load schema
-        $schema = file_get_contents(__DIR__ . '/../../libraries/fs/persistence/schema/directory_tree.sql');
-        // Convert MySQL syntax to SQLite if needed
-        $schema = str_replace('ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci', '', $schema);
-        $schema = str_replace('AUTO_INCREMENT', 'AUTOINCREMENT', $schema);
-        $this->db->exec($schema);
+        $this->loadSqliteSchema($this->db);
         
         $persistence = new DirectoryTreePersistence($this->db);
         $this->tree = new DirectoryTree($persistence);
@@ -292,6 +287,31 @@ class DirectoryTreeTest extends TestCase {
         $this->assertNull($this->tree->getFileReference($file_id));
         $this->assertFileDoesNotExist($storage_path);
     }
+
+    public function testGarbageCollectionCallsStorageBackend(): void {
+        $mockStorage = $this->createMock(\Taida\FS\Contracts\StorageBackendInterface::class);
+        $mockStorage->expects($this->once())
+            ->method('delete')
+            ->willReturn(true);
+        $mockStorage->method('size')->willReturn(0);
+        $mockStorage->method('exists')->willReturn(true);
+        $mockStorage->method('retrieve')->willReturnCallback(fn(string $path): string => $path);
+
+        $persistence = new DirectoryTreePersistence($this->db);
+        $tree = new \Taida\FS\DirectoryTree($persistence, $mockStorage);
+        $tree->setDebugMode(true);
+        $tree->createDirectory('/gc_test');
+
+        $storage_path = $this->createTempFile('gc content');
+        $file_id = $tree->createFileReference($storage_path);
+        $tree->addFileEntry('/gc_test/file.txt', $file_id);
+        $tree->removeFileEntry('/gc_test/file.txt');
+
+        $deleted = $tree->collectGarbage();
+
+        $this->assertContains($file_id, $deleted);
+        unlink($storage_path);
+    }
     
     // ===== HELPER METHODS =====
     
@@ -299,5 +319,23 @@ class DirectoryTreeTest extends TestCase {
         $path = tempnam(sys_get_temp_dir(), 'test_');
         file_put_contents($path, $content);
         return $path;
+    }
+
+    private function loadSqliteSchema(\PDO $db): void {
+        $schema = file_get_contents(__DIR__ . '/../../libraries/fs/persistence/schema/directory_tree.sql');
+        $schema = str_replace('ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci', '', $schema);
+        $schema = str_replace("ENUM('dir', 'file')", 'VARCHAR(16)', $schema);
+        $schema = preg_replace('/\bINT AUTO_INCREMENT PRIMARY KEY\b/', 'INTEGER PRIMARY KEY AUTOINCREMENT', $schema);
+        $schema = preg_replace('/^\s*UNIQUE KEY\s+\w+\s+\(([^)]+)\),?\s*$/m', '    UNIQUE ($1),', $schema);
+        $schema = preg_replace('/^\s*(FOREIGN KEY|INDEX|KEY)\b.*(?:,)?\R?/m', '', $schema);
+        $schema = preg_replace('/,(\s*\))/m', '$1', $schema);
+        $schema = preg_replace('/ON DUPLICATE KEY UPDATE[^;]*/m', '', $schema);
+        $schema = str_replace('NOW()', "datetime('now')", $schema);
+
+        foreach (array_filter(array_map('trim', explode(';', $schema))) as $stmt) {
+            if ($stmt !== '') {
+                $db->exec($stmt);
+            }
+        }
     }
 }

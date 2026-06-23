@@ -13,9 +13,16 @@ class FlatToTreeMigration {
         'errors' => []
     ];
     
-    public function __construct(DirectoryTree $tree, string $base_path) {
-        $this->tree = $tree;
-        $this->base_path = rtrim($base_path, '/');
+    private bool $copyToStorage;
+
+    public function __construct(
+        DirectoryTree $tree,
+        string $base_path,
+        bool $copyToStorage = false   // false = reference in-place (migration); true = copy into managed storage
+    ) {
+        $this->tree          = $tree;
+        $this->base_path     = rtrim($base_path, '/');
+        $this->copyToStorage = $copyToStorage;
     }
     
     /**

@@ -1,0 +1,10 @@
+/* MyApp styles */
+div.myapp {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    box-sizing: border-box;
+    padding: 10px;
+    color: #f7fff7;
+    background-color: #333333;
+}

@@ -9,6 +9,8 @@ use Taida\FS\Operations\PathResolver;
 use Taida\FS\Operations\MoveOperation;
 use Taida\FS\Operations\CycleDetector;
 use Taida\FS\Invariants\DirectoryInvariants;
+use Taida\FS\Contracts\StorageBackendInterface;
+use Taida\FS\Storage\LocalStorageBackend;
 
 class DirectoryTree {
     private DirectoryTreePersistence $persistence;
@@ -23,11 +25,17 @@ class DirectoryTree {
     private array $directoryCache = [];
     private array $fileCache = [];
     
-    public function __construct(DirectoryTreePersistence $persistence) {
-        $this->persistence = $persistence;
-        $this->cycleDetector = new CycleDetector($this);
-        $this->invariants = new DirectoryInvariants($this);
-        $this->moveOperation = new MoveOperation($this, $this->persistence, $this->cycleDetector);
+    private StorageBackendInterface $storage;
+
+    public function __construct(
+        DirectoryTreePersistence $persistence,
+        ?StorageBackendInterface $storage = null
+    ) {
+        $this->persistence    = $persistence;
+        $this->storage        = $storage ?? new LocalStorageBackend('/var/www/taida/storage/files');
+        $this->cycleDetector  = new CycleDetector($this);
+        $this->invariants     = new DirectoryInvariants($this);
+        $this->moveOperation  = new MoveOperation($this, $this->persistence, $this->cycleDetector);
     }
     
     // ============ PUBLIC API ============
@@ -179,10 +187,8 @@ class DirectoryTree {
         $dir = $this->getDirectory($dir_id);
         
         // Check if empty (only hidden dot-files allowed, per spec)
-        foreach ($dir->entries as $name => $entry) {
-            if (substr($name, 0, 1) !== '.') {
-                throw new \RuntimeException("Directory not empty: $path");
-            }
+        if (!empty($dir->entries)) {
+            throw new \RuntimeException("Directory not empty: $path");
         }
         
         $this->persistence->beginTransaction();
@@ -366,19 +372,20 @@ class DirectoryTree {
      */
     public function createFileReference(string $storage_path): string {
         $this->debugLog("createFileReference", ['storage_path' => $storage_path]);
-        
-        $file_id = $this->generateFileId();
-        $file_ref = new FileReference($file_id, $storage_path);
-        
-        // Get file info
-        if (file_exists($storage_path)) {
-            $file_ref->size_bytes = filesize($storage_path);
-            $file_ref->mime_type = mime_content_type($storage_path) ?: null;
+
+        $file_id           = $this->generateFileId();
+        $file_ref          = new FileReference($file_id, $storage_path);
+        $file_ref->size_bytes = $this->storage->size($storage_path);
+
+        // mime detection stays local — it's metadata, not storage concern
+        if ($this->storage->exists($storage_path)) {
+            $resolved = $this->storage->retrieve($storage_path);
+            $file_ref->mime_type = mime_content_type($resolved) ?: null;
         }
-        
+
         $this->persistence->saveFileReference($file_ref);
         $this->fileCache[$file_id] = $file_ref;
-        
+
         $this->debugLog("createFileReference: success", ['file_id' => $file_id]);
         return $file_id;
     }
@@ -409,14 +416,12 @@ class DirectoryTree {
         foreach ($orphaned as $file_id) {
             $file_ref = $this->getFileReference($file_id);
             if ($file_ref && $file_ref->isOrphaned()) {
-                // Delete physical file
-                if (file_exists($file_ref->storage_path)) {
-                    @unlink($file_ref->storage_path);
-                    $this->debugLog("collectGarbage: deleted physical file", [
-                        'file_id' => $file_id,
-                        'path' => $file_ref->storage_path
-                    ]);
-                }
+                // Delete via storage backend — decouples tree from filesystem
+                $this->storage->delete($file_ref->storage_path);
+                $this->debugLog("collectGarbage: deleted file via backend", [
+                    'file_id' => $file_id,
+                    'ref'     => $file_ref->storage_path
+                ]);
                 
                 // Delete metadata
                 $this->persistence->deleteFileReference($file_id);

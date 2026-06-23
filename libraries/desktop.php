@@ -98,6 +98,12 @@
 
 			/* Stylesheets and javascripts
 			 */
+
+			$core_parts = array("taida", "desktop", "windows", "taskbar", "file", "directory");
+			foreach ($core_parts as $part) {
+				$this->view->add_css($part.".css");
+				$this->view->add_javascript($part.".js");
+			}
 			$this->view->add_css("jquery-ui.css");
 			$this->view->add_css("theme.css");
 			
@@ -111,12 +117,6 @@
 
 			foreach (APPLICATIONS as $application) {
 				$this->view->add_application($application);
-			}
-
-			$core_parts = array("taida", "desktop", "windows", "taskbar", "file", "directory");
-			foreach ($core_parts as $part) {
-				$this->view->add_css($part.".css");
-				$this->view->add_javascript($part.".js");
 			}
 
 			/* Login information

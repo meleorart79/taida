@@ -73,17 +73,22 @@ function taida_desktop_refresh() {
 
 		/* Fill explorer
 		 */
-		items.forEach(function(item) {
+		items.forEach(function (item) {
 			if (item.type == 'directory') {
 				var icon = taida_file_make_icon(item, _taida_desktop_path, 'directory');
 				desktop.append(icon);
 			}
 		});
 
-		items.forEach(function(item) {
+		items.forEach(function (item) {
 			if (item.type == 'file') {
-				var icon = taida_file_make_icon(item, _taida_desktop_path, 'file');
-				desktop.append(icon);
+				// Shortcut files (.taida) get a special icon and are not opened as raw files
+				if (taida_file_extension(item.name) === 'taida') {
+					taida_shortcut_load_icon(item, _taida_desktop_path, desktop);
+				} else {
+					var icon = taida_file_make_icon(item, _taida_desktop_path, 'file');
+					desktop.append(icon);
+				}
 			}
 		});
 
@@ -205,6 +210,68 @@ function taida_desktop_refresh() {
 		});
 	}, function(result) {
 		taida_alert('The directory "' + _taida_desktop_path + '" is missing in your home directory.', 'Error');
+	});
+}
+
+/* Load a .taida shortcut file and render its icon on the desktop.
+ * The shortcut JSON format:
+ *   { "type": "shortcut", "target": "appname_open",
+ *     "label": "Display Name", "icon": "/apps/appname/icon.png" }
+ */
+function taida_shortcut_load_icon(item, path, desktop) {
+	taida_file_open(path + '/' + item.name, function (raw) {
+		var sc;
+		try { sc = JSON.parse(raw); } catch (e) { return; }
+
+		if (!sc || sc.type !== 'shortcut' || !sc.target) return;
+
+		var label = sc.label || item.name.replace(/\.taida$/, '');
+		var iconSrc = sc.icon || '/images/application.png';
+		var target = sc.target;
+
+		// Build an icon div that looks like a normal desktop icon
+		var iconHtml =
+			'<div class="icon shortcut" type="shortcut" shortcut-target="' + target + '">' +
+			'<img src="' + iconSrc + '" alt="' + label + '" draggable="false" />' +
+			'<img src="/images/shortcut_overlay.svg" class="shortcut-overlay" draggable="false" />' +
+			'<span path="' + path + '" type="shortcut">' + label + '</span>' +
+			'</div>';
+
+		var iconEl = $(iconHtml);
+		desktop.append(iconEl);
+
+		// Double-click launches the app
+		iconEl.on('dblclick', function () {
+			var fn = window[target];
+			if (typeof fn === 'function') {
+				fn();
+			} else {
+				taida_alert('App not available: ' + target, 'Error');
+			}
+		});
+
+		// Right-click context menu for shortcuts
+		iconEl.on('contextmenu', function (event) {
+			taida_startmenu_close();
+			var menu_entries = [
+				{ name: 'Delete shortcut', icon: 'remove' }
+			];
+			taida_contextmenu_show($(this), event, menu_entries, function (tgt, option) {
+				if (option === 'Delete shortcut') {
+					taida_confirm('Delete shortcut "' + label + '"?', function () {
+						taida_file_remove(path + '/' + item.name, undefined, function () {
+							taida_alert('Error deleting shortcut.', 'Error');
+						});
+					});
+				}
+			});
+			return false;
+		});
+
+	}, function () {
+		// If the shortcut file can't be read, fall back to a generic file icon
+		var icon = taida_file_make_icon(item, path, 'file');
+		desktop.append(icon);
 	});
 }
 
@@ -400,7 +467,7 @@ $(document).ready(function() {
 	// Idle screen
 
 	let idleTimer;
-	const idleDelay = 60000; // 1 min
+	const idleDelay = 180000; // 3 min
 	const sleepScreen = document.getElementById('sleep-screen');
 
 	function showSleepScreen() {

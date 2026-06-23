@@ -5,10 +5,11 @@
  */
 
 require_once BASE_PATH . '/libraries/taida_backend.php';
-require_once BASE_PATH . '/libraries/fs/DirectoryTree.php';
+require_once BASE_PATH . '/libraries/fs/directorytree.php';
 
 use Taida\FS\DirectoryTree;
 use Taida\FS\Persistence\DirectoryTreePersistence;
+use Taida\FS\Storage\LocalStorageBackend;
 
 class file extends taida_backend {
     private static ?DirectoryTree $tree = null;
@@ -16,8 +17,13 @@ class file extends taida_backend {
     private static function getTree(): DirectoryTree {
         if (self::$tree === null) {
             global $db;
+            $config = require BASE_PATH . '/config/directory_tree.conf.php';
+            $storage = new LocalStorageBackend(
+                $config['storage']['root'],
+                $config['storage']['hash_depth']
+            );
             $persistence = new DirectoryTreePersistence($db);
-            self::$tree = new DirectoryTree($persistence);
+            self::$tree = new DirectoryTree($persistence, $storage);
         }
         return self::$tree;
     }

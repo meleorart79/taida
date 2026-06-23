@@ -9,8 +9,8 @@ logfiles/
 .env
 
 taida_dump.md
+taida_dump.txt
 taida_structure.py
-
 taida.conf
 
 .vs/
