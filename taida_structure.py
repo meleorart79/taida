@@ -19,9 +19,9 @@ TEXT_EXTENSIONS = {
 }
 
 # --- Unlimited content ---
-KEEP_RATIO = 0.25                # keep 100%
+KEEP_RATIO = 0.1                # keep 100%
 MIN_LINES_REQUIRED = 5           # irrelevant but kept for safety
-MAX_LINES_PER_FILE = None       # None = NO LIMIT
+MAX_LINES_PER_FILE = 20       # None = NO LIMIT
 
 
 # =========================

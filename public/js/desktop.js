@@ -363,25 +363,23 @@ function taida_desktop_rearrange() {
 /* Load wallpaper
  */
 function loadVideoBackground(videoUrl) {
-  const desktopDiv = document.querySelector('.desktop');
-  if (!desktopDiv) return console.error('Desktop div not found');
+	const desktopDiv = document.querySelector('.desktop');
+	if (!desktopDiv) return console.error('Desktop div not found');
 
-  // Assign to global
-  bgVideo = document.createElement('video');
-  bgVideo.classList.add('bg-video');
-  bgVideo.src = videoUrl;
-  bgVideo.autoplay = true;
-  bgVideo.muted = true;
-  bgVideo.loop = true;
-  bgVideo.playsInline = true;
+	bgVideo = document.createElement('video');
+	bgVideo.classList.add('bg-video');
+	bgVideo.src = videoUrl;
+	bgVideo.autoplay = true;
+	bgVideo.muted = true;
+	bgVideo.loop = true;
+	bgVideo.playsInline = true;
 
-  // Create the warm overlay
-  const warmOverlay = document.createElement('div');
-  warmOverlay.classList.add('video-warm-overlay');
+	const warmOverlay = document.createElement('div');
+	warmOverlay.classList.add('video-warm-overlay');
 
-  // Insert video and overlay
-  desktopDiv.insertBefore(bgVideo, desktopDiv.firstChild);
-  desktopDiv.appendChild(warmOverlay);
+	// Insert both before all other children so they sit behind icons/windows
+	desktopDiv.insertBefore(warmOverlay, desktopDiv.firstChild);
+	desktopDiv.insertBefore(bgVideo, desktopDiv.firstChild);
 }
 
 /* Menu handler
