@@ -24,7 +24,7 @@
 	 */
 	function autoloader($class_name) {
 		$parts = explode("\\", $class_name);
-		$class = strtolower(array_pop($parts));
+		$class = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', array_pop($parts)));
 		$path = __DIR__;
 
 		if (strtolower($parts[0] ?? "") == "taida") {

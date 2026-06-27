@@ -5,20 +5,17 @@ use PHPUnit\Framework\TestCase;
 use Taida\FS\DirectoryTree;
 use Taida\FS\Persistence\DirectoryTreePersistence;
 
-class DirectoryTreeTest extends TestCase {
-    private DirectoryTree $tree;
-    private \PDO $db;
+require_once __DIR__ . '/schema_loader.php';
+
+class directory_tree_test extends TestCase {
+    private ?DirectoryTree $tree = null;
+    private ?\PDO $db = null;
     
     protected function setUp(): void {
         // Create in-memory SQLite database
         $this->db = new \PDO('sqlite::memory:');
         
-        // Load schema
-        $schema = file_get_contents(__DIR__ . '/../../libraries/fs/persistence/schema/directory_tree.sql');
-        // Convert MySQL syntax to SQLite if needed
-        $schema = str_replace('ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci', '', $schema);
-        $schema = str_replace('AUTO_INCREMENT', 'AUTOINCREMENT', $schema);
-        $this->db->exec($schema);
+        load_sqlite_schema($this->db);
         
         $persistence = new DirectoryTreePersistence($this->db);
         $this->tree = new DirectoryTree($persistence);

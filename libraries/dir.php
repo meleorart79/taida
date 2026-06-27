@@ -5,7 +5,7 @@
  */
 
 require_once BASE_PATH . '/libraries/taida_backend.php';
-require_once BASE_PATH . '/libraries/fs/DirectoryTree.php';
+require_once BASE_PATH . '/libraries/fs/directory_tree.php';
 
 use Taida\FS\DirectoryTree;
 use Taida\FS\Persistence\DirectoryTreePersistence;

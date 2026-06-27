@@ -7,22 +7,34 @@ use Taida\FS\Entities\FileReference;
 
 class DirectoryTreePersistence {
     private \PDO $db;
+    private bool $is_sqlite;
     
     public function __construct(\PDO $db) {
         $this->db = $db;
         $this->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $this->is_sqlite = $this->db->getAttribute(\PDO::ATTR_DRIVER_NAME) === 'sqlite';
     }
     
     // ============ DIRECTORY OPERATIONS ============
     
     public function saveDirectory(Directory $dir): bool {
-        $stmt = $this->db->prepare("
-            INSERT INTO fs_directories (dir_id, parent_id, created_at, modified_at)
-            VALUES (:dir_id, :parent_id, :created, :modified)
-            ON DUPLICATE KEY UPDATE 
-                parent_id = :parent_id,
-                modified_at = :modified
-        ");
+        if ($this->is_sqlite) {
+            $stmt = $this->db->prepare("
+                INSERT INTO fs_directories (dir_id, parent_id, created_at, modified_at)
+                VALUES (:dir_id, :parent_id, :created, :modified)
+                ON CONFLICT(dir_id) DO UPDATE SET
+                    parent_id = excluded.parent_id,
+                    modified_at = excluded.modified_at
+            ");
+        } else {
+            $stmt = $this->db->prepare("
+                INSERT INTO fs_directories (dir_id, parent_id, created_at, modified_at)
+                VALUES (:dir_id, :parent_id, :created, :modified)
+                ON DUPLICATE KEY UPDATE 
+                    parent_id = :parent_id,
+                    modified_at = :modified
+            ");
+        }
         
         return $stmt->execute([
             ':dir_id' => $dir->dir_id,
@@ -86,13 +98,23 @@ class DirectoryTreePersistence {
     }
     
     public function saveEntry(string $parent_id, DirectoryEntry $entry): bool {
-        $stmt = $this->db->prepare("
-            INSERT INTO fs_directory_entries (parent_id, name, target_id, target_type, created_at)
-            VALUES (:parent_id, :name, :target_id, :target_type, :created)
-            ON DUPLICATE KEY UPDATE
-                target_id = :target_id,
-                target_type = :target_type
-        ");
+        if ($this->is_sqlite) {
+            $stmt = $this->db->prepare("
+                INSERT INTO fs_directory_entries (parent_id, name, target_id, target_type, created_at)
+                VALUES (:parent_id, :name, :target_id, :target_type, :created)
+                ON CONFLICT(parent_id, name) DO UPDATE SET
+                    target_id = excluded.target_id,
+                    target_type = excluded.target_type
+            ");
+        } else {
+            $stmt = $this->db->prepare("
+                INSERT INTO fs_directory_entries (parent_id, name, target_id, target_type, created_at)
+                VALUES (:parent_id, :name, :target_id, :target_type, :created)
+                ON DUPLICATE KEY UPDATE
+                    target_id = :target_id,
+                    target_type = :target_type
+            ");
+        }
         
         return $stmt->execute([
             ':parent_id' => $parent_id,
@@ -117,15 +139,27 @@ class DirectoryTreePersistence {
     // ============ FILE REFERENCE OPERATIONS ============
     
     public function saveFileReference(FileReference $file): bool {
-        $stmt = $this->db->prepare("
-            INSERT INTO fs_file_references 
-            (file_id, refcount, storage_path, created_at, size_bytes, mime_type)
-            VALUES (:file_id, :refcount, :storage_path, :created, :size, :mime)
-            ON DUPLICATE KEY UPDATE
-                refcount = :refcount,
-                size_bytes = :size,
-                mime_type = :mime
-        ");
+        if ($this->is_sqlite) {
+            $stmt = $this->db->prepare("
+                INSERT INTO fs_file_references 
+                (file_id, refcount, storage_path, created_at, size_bytes, mime_type)
+                VALUES (:file_id, :refcount, :storage_path, :created, :size, :mime)
+                ON CONFLICT(file_id) DO UPDATE SET
+                    refcount = excluded.refcount,
+                    size_bytes = excluded.size_bytes,
+                    mime_type = excluded.mime_type
+            ");
+        } else {
+            $stmt = $this->db->prepare("
+                INSERT INTO fs_file_references 
+                (file_id, refcount, storage_path, created_at, size_bytes, mime_type)
+                VALUES (:file_id, :refcount, :storage_path, :created, :size, :mime)
+                ON DUPLICATE KEY UPDATE
+                    refcount = :refcount,
+                    size_bytes = :size,
+                    mime_type = :mime
+            ");
+        }
         
         return $stmt->execute([
             ':file_id' => $file->file_id,

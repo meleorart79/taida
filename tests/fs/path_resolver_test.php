@@ -4,7 +4,7 @@ namespace Taida\Tests\FS;
 use PHPUnit\Framework\TestCase;
 use Taida\FS\Operations\PathResolver;
 
-class PathResolverTest extends TestCase {
+class path_resolver_test extends TestCase {
     public function testNormalizePath(): void {
         $this->assertEquals('/', PathResolver::normalizePath('/'));
         $this->assertEquals('/test', PathResolver::normalizePath('/test'));

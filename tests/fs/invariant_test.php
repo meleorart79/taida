@@ -6,16 +6,16 @@ use Taida\FS\DirectoryTree;
 use Taida\FS\Persistence\DirectoryTreePersistence;
 use Taida\FS\Invariants\DirectoryInvariants;
 
-class InvariantTest extends TestCase {
+require_once __DIR__ . '/schema_loader.php';
+
+class invariant_test extends TestCase {
     private DirectoryTree $tree;
     private DirectoryInvariants $invariants;
     private \PDO $db;
     
     protected function setUp(): void {
         $this->db = new \PDO('sqlite::memory:');
-        $schema = file_get_contents(__DIR__ . '/../../libraries/fs/persistence/schema/directory_tree.sql');
-        $schema = str_replace('ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci', '', $schema);
-        $this->db->exec($schema);
+        load_sqlite_schema($this->db);
         
         $persistence = new DirectoryTreePersistence($this->db);
         $this->tree = new DirectoryTree($persistence);

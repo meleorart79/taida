@@ -5,7 +5,9 @@ use PHPUnit\Framework\TestCase;
 use Taida\FS\DirectoryTree;
 use Taida\FS\Persistence\DirectoryTreePersistence;
 
-class ConcurrencyTest extends TestCase {
+require_once __DIR__ . '/schema_loader.php';
+
+class concurrency_test extends TestCase {
     /**
      * Test that concurrent operations maintain consistency
      * 
@@ -14,9 +16,7 @@ class ConcurrencyTest extends TestCase {
      */
     public function testRapidDirectoryCreation(): void {
         $db = new \PDO('sqlite::memory:');
-        $schema = file_get_contents(__DIR__ . '/../../libraries/fs/persistence/schema/directory_tree.sql');
-        $schema = str_replace('ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci', '', $schema);
-        $db->exec($schema);
+        load_sqlite_schema($db);
         
         $persistence = new DirectoryTreePersistence($db);
         $tree = new DirectoryTree($persistence);
@@ -35,9 +35,7 @@ class ConcurrencyTest extends TestCase {
     
     public function testConcurrentFileOperations(): void {
         $db = new \PDO('sqlite::memory:');
-        $schema = file_get_contents(__DIR__ . '/../../libraries/fs/persistence/schema/directory_tree.sql');
-        $schema = str_replace('ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci', '', $schema);
-        $db->exec($schema);
+        load_sqlite_schema($db);
         
         $persistence = new DirectoryTreePersistence($db);
         $tree = new DirectoryTree($persistence);
