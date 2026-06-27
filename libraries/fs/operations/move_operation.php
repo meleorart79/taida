@@ -8,16 +8,16 @@ use Taida\FS\Persistence\DirectoryTreePersistence;
 class MoveOperation {
     private DirectoryTree $tree;
     private DirectoryTreePersistence $persistence;
-    private CycleDetector $cycleDetector;
+    private CycleDetector $cycle_detector;
     
     public function __construct(
         DirectoryTree $tree,
         DirectoryTreePersistence $persistence,
-        CycleDetector $cycleDetector
+        CycleDetector $cycle_detector
     ) {
         $this->tree = $tree;
         $this->persistence = $persistence;
-        $this->cycleDetector = $cycleDetector;
+        $this->cycle_detector = $cycle_detector;
     }
     
     /**
@@ -72,7 +72,7 @@ class MoveOperation {
         
         // If moving directory, check for cycles
         if ($source_result['type'] === 'dir') {
-            if ($this->cycleDetector->wouldCreateCycle($source_result['id'], $dest_parent_id)) {
+            if ($this->cycle_detector->wouldCreateCycle($source_result['id'], $dest_parent_id)) {
                 throw new \RuntimeException("Move would create cycle in directory tree");
             }
         }

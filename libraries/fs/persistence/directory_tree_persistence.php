@@ -62,7 +62,7 @@ class DirectoryTreePersistence {
         $dir->modified_at = new \DateTime($row['modified_at']);
         
         // Load entries
-        $dir->entries = $this->loadEntriesForDirectory($dir_id);
+        $dir->entries = $this->load_entries_for_directory($dir_id);
         
         return $dir;
     }
@@ -74,7 +74,7 @@ class DirectoryTreePersistence {
     
     // ============ ENTRY OPERATIONS ============
     
-    private function loadEntriesForDirectory(string $dir_id): array {
+    private function load_entries_for_directory(string $dir_id): array {
         $stmt = $this->db->prepare("
             SELECT name, target_id, target_type, created_at
             FROM fs_directory_entries

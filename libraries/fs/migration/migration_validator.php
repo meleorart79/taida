@@ -37,7 +37,7 @@ class MigrationValidator {
         
         // Check reference counts
         echo "Validating reference counts...\n";
-        $refcount_issues = $this->validateRefcounts();
+        $refcount_issues = $this->validate_refcounts();
         if (!empty($refcount_issues)) {
             $issues = array_merge($issues, $refcount_issues);
         }
@@ -48,7 +48,7 @@ class MigrationValidator {
         ];
     }
     
-    private function validateRefcounts(): array {
+    private function validate_refcounts(): array {
         // This would need a method to list all files
         // For now, just a placeholder
         return [];

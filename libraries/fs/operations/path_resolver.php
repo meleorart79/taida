@@ -71,9 +71,9 @@ class PathResolver {
             return ['/', ''];
         }
         
-        $lastSlash = strrpos($path, '/');
-        $parent = $lastSlash === 0 ? '/' : substr($path, 0, $lastSlash);
-        $name = substr($path, $lastSlash + 1);
+        $last_slash = strrpos($path, '/');
+        $parent = $last_slash === 0 ? '/' : substr($path, 0, $last_slash);
+        $name = substr($path, $last_slash + 1);
         
         return [$parent, $name];
     }

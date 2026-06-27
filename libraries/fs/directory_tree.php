@@ -12,22 +12,22 @@ use Taida\FS\Invariants\DirectoryInvariants;
 
 class DirectoryTree {
     private DirectoryTreePersistence $persistence;
-    private CycleDetector $cycleDetector;
+    private CycleDetector $cycle_detector;
     private DirectoryInvariants $invariants;
-    private MoveOperation $moveOperation;
+    private MoveOperation $move_operation;
     
     private string $root_dir_id = 'ROOT';
     private bool $debug_mode = false;
     
     // In-memory cache (optional optimization)
-    private array $directoryCache = [];
-    private array $fileCache = [];
+    private array $directory_cache = [];
+    private array $file_cache = [];
     
     public function __construct(DirectoryTreePersistence $persistence) {
         $this->persistence = $persistence;
-        $this->cycleDetector = new CycleDetector($this);
+        $this->cycle_detector = new CycleDetector($this);
         $this->invariants = new DirectoryInvariants($this);
-        $this->moveOperation = new MoveOperation($this, $this->persistence, $this->cycleDetector);
+        $this->move_operation = new MoveOperation($this, $this->persistence, $this->cycle_detector);
     }
     
     // ============ PUBLIC API ============
@@ -39,7 +39,7 @@ class DirectoryTree {
      * @return array|null ['type' => 'dir'|'file', 'id' => string] or null if not found
      */
     public function resolvePath(string $path): ?array {
-        $this->debugLog("resolvePath", ['path' => $path]);
+        $this->debug_log("resolvePath", ['path' => $path]);
         
         $path = PathResolver::normalizePath($path);
         
@@ -59,13 +59,13 @@ class DirectoryTree {
         foreach ($segments as $idx => $segment) {
             $dir = $this->getDirectory($current_dir_id);
             if (!$dir) {
-                $this->debugLog("resolvePath: directory not found", ['dir_id' => $current_dir_id]);
+                $this->debug_log("resolvePath: directory not found", ['dir_id' => $current_dir_id]);
                 return null;
             }
             
             $entry = $dir->getEntry($segment);
             if (!$entry) {
-                $this->debugLog("resolvePath: entry not found", [
+                $this->debug_log("resolvePath: entry not found", [
                     'dir_id' => $current_dir_id,
                     'segment' => $segment
                 ]);
@@ -82,7 +82,7 @@ class DirectoryTree {
             
             // Otherwise, must be a directory to continue
             if ($entry->target_type !== 'dir') {
-                $this->debugLog("resolvePath: path component is not a directory", [
+                $this->debug_log("resolvePath: path component is not a directory", [
                     'segment' => $segment,
                     'type' => $entry->target_type
                 ]);
@@ -103,7 +103,7 @@ class DirectoryTree {
      * @throws \RuntimeException If parent doesn't exist or name already taken
      */
     public function createDirectory(string $path): string {
-        $this->debugLog("createDirectory", ['path' => $path]);
+        $this->debug_log("createDirectory", ['path' => $path]);
         
         [$parent_path, $name] = PathResolver::splitPath($path);
         
@@ -129,7 +129,7 @@ class DirectoryTree {
         $this->persistence->beginTransaction();
         try {
             // Create new directory
-            $new_dir_id = $this->generateDirId();
+            $new_dir_id = $this->generate_dir_id();
             $new_dir = new Directory($new_dir_id, $parent_id);
             $this->persistence->saveDirectory($new_dir);
             
@@ -142,14 +142,14 @@ class DirectoryTree {
             $this->persistence->commit();
             
             // Update cache
-            $this->directoryCache[$new_dir_id] = $new_dir;
+            $this->directory_cache[$new_dir_id] = $new_dir;
             
-            $this->debugLog("createDirectory: success", ['dir_id' => $new_dir_id, 'path' => $path]);
+            $this->debug_log("createDirectory: success", ['dir_id' => $new_dir_id, 'path' => $path]);
             return $new_dir_id;
             
         } catch (\Exception $e) {
             $this->persistence->rollback();
-            $this->debugLog("createDirectory: failed", ['error' => $e->getMessage()]);
+            $this->debug_log("createDirectory: failed", ['error' => $e->getMessage()]);
             throw $e;
         }
     }
@@ -162,7 +162,7 @@ class DirectoryTree {
      * @throws \RuntimeException If not empty or doesn't exist
      */
     public function removeDirectory(string $path): bool {
-        $this->debugLog("removeDirectory", ['path' => $path]);
+        $this->debug_log("removeDirectory", ['path' => $path]);
         
         $result = $this->resolvePath($path);
         if (!$result || $result['type'] !== 'dir') {
@@ -202,14 +202,14 @@ class DirectoryTree {
             $this->persistence->commit();
             
             // Update cache
-            unset($this->directoryCache[$dir_id]);
+            unset($this->directory_cache[$dir_id]);
             
-            $this->debugLog("removeDirectory: success", ['path' => $path]);
+            $this->debug_log("removeDirectory: success", ['path' => $path]);
             return true;
             
         } catch (\Exception $e) {
             $this->persistence->rollback();
-            $this->debugLog("removeDirectory: failed", ['error' => $e->getMessage()]);
+            $this->debug_log("removeDirectory: failed", ['error' => $e->getMessage()]);
             throw $e;
         }
     }
@@ -248,7 +248,7 @@ class DirectoryTree {
      * @return bool True on success
      */
     public function addFileEntry(string $path, string $file_id): bool {
-        $this->debugLog("addFileEntry", ['path' => $path, 'file_id' => $file_id]);
+        $this->debug_log("addFileEntry", ['path' => $path, 'file_id' => $file_id]);
         
         [$parent_path, $name] = PathResolver::splitPath($path);
         
@@ -291,7 +291,7 @@ class DirectoryTree {
             
             $this->persistence->commit();
             
-            $this->debugLog("addFileEntry: success", [
+            $this->debug_log("addFileEntry: success", [
                 'path' => $path,
                 'refcount' => $file_ref->refcount
             ]);
@@ -299,7 +299,7 @@ class DirectoryTree {
             
         } catch (\Exception $e) {
             $this->persistence->rollback();
-            $this->debugLog("addFileEntry: failed", ['error' => $e->getMessage()]);
+            $this->debug_log("addFileEntry: failed", ['error' => $e->getMessage()]);
             throw $e;
         }
     }
@@ -311,7 +311,7 @@ class DirectoryTree {
      * @return string The file_id that was unlinked
      */
     public function removeFileEntry(string $path): string {
-        $this->debugLog("removeFileEntry", ['path' => $path]);
+        $this->debug_log("removeFileEntry", ['path' => $path]);
         
         $result = $this->resolvePath($path);
         if (!$result || $result['type'] !== 'file') {
@@ -337,14 +337,14 @@ class DirectoryTree {
                 $file_ref->decrementRefcount();
                 $this->persistence->saveFileReference($file_ref);
                 
-                $this->debugLog("removeFileEntry: decremented refcount", [
+                $this->debug_log("removeFileEntry: decremented refcount", [
                     'file_id' => $file_id,
                     'refcount' => $file_ref->refcount
                 ]);
                 
                 // Trigger GC if orphaned
                 if ($file_ref->isOrphaned()) {
-                    $this->emitOrphanedFile($file_id);
+                    $this->emit_orphaned_file($file_id);
                 }
             }
             
@@ -353,7 +353,7 @@ class DirectoryTree {
             
         } catch (\Exception $e) {
             $this->persistence->rollback();
-            $this->debugLog("removeFileEntry: failed", ['error' => $e->getMessage()]);
+            $this->debug_log("removeFileEntry: failed", ['error' => $e->getMessage()]);
             throw $e;
         }
     }
@@ -365,9 +365,9 @@ class DirectoryTree {
      * @return string New file_id
      */
     public function createFileReference(string $storage_path): string {
-        $this->debugLog("createFileReference", ['storage_path' => $storage_path]);
+        $this->debug_log("createFileReference", ['storage_path' => $storage_path]);
         
-        $file_id = $this->generateFileId();
+        $file_id = $this->generate_file_id();
         $file_ref = new FileReference($file_id, $storage_path);
         
         // Get file info
@@ -377,9 +377,9 @@ class DirectoryTree {
         }
         
         $this->persistence->saveFileReference($file_ref);
-        $this->fileCache[$file_id] = $file_ref;
+        $this->file_cache[$file_id] = $file_ref;
         
-        $this->debugLog("createFileReference: success", ['file_id' => $file_id]);
+        $this->debug_log("createFileReference: success", ['file_id' => $file_id]);
         return $file_id;
     }
     
@@ -391,8 +391,8 @@ class DirectoryTree {
      * @return bool True on success
      */
     public function move(string $source_path, string $dest_path): bool {
-        $this->debugLog("move", ['source' => $source_path, 'dest' => $dest_path]);
-        return $this->moveOperation->execute($source_path, $dest_path);
+        $this->debug_log("move", ['source' => $source_path, 'dest' => $dest_path]);
+        return $this->move_operation->execute($source_path, $dest_path);
     }
     
     /**
@@ -401,7 +401,7 @@ class DirectoryTree {
      * @return array Array of deleted file_ids
      */
     public function collectGarbage(): array {
-        $this->debugLog("collectGarbage: starting");
+        $this->debug_log("collectGarbage: starting");
         
         $orphaned = $this->persistence->getOrphanedFiles();
         $deleted = [];
@@ -412,7 +412,7 @@ class DirectoryTree {
                 // Delete physical file
                 if (file_exists($file_ref->storage_path)) {
                     @unlink($file_ref->storage_path);
-                    $this->debugLog("collectGarbage: deleted physical file", [
+                    $this->debug_log("collectGarbage: deleted physical file", [
                         'file_id' => $file_id,
                         'path' => $file_ref->storage_path
                     ]);
@@ -420,13 +420,13 @@ class DirectoryTree {
                 
                 // Delete metadata
                 $this->persistence->deleteFileReference($file_id);
-                unset($this->fileCache[$file_id]);
+                unset($this->file_cache[$file_id]);
                 
                 $deleted[] = $file_id;
             }
         }
         
-        $this->debugLog("collectGarbage: completed", ['deleted_count' => count($deleted)]);
+        $this->debug_log("collectGarbage: completed", ['deleted_count' => count($deleted)]);
         return $deleted;
     }
     
@@ -434,41 +434,41 @@ class DirectoryTree {
     
     public function getDirectory(string $dir_id): ?Directory {
         // Check cache first
-        if (isset($this->directoryCache[$dir_id])) {
-            return $this->directoryCache[$dir_id];
+        if (isset($this->directory_cache[$dir_id])) {
+            return $this->directory_cache[$dir_id];
         }
         
         $dir = $this->persistence->loadDirectory($dir_id);
         if ($dir) {
-            $this->directoryCache[$dir_id] = $dir;
+            $this->directory_cache[$dir_id] = $dir;
         }
         
         return $dir;
     }
     
     public function getFileReference(string $file_id): ?FileReference {
-        if (isset($this->fileCache[$file_id])) {
-            return $this->fileCache[$file_id];
+        if (isset($this->file_cache[$file_id])) {
+            return $this->file_cache[$file_id];
         }
         
         $file = $this->persistence->loadFileReference($file_id);
         if ($file) {
-            $this->fileCache[$file_id] = $file;
+            $this->file_cache[$file_id] = $file;
         }
         
         return $file;
     }
     
-    private function emitOrphanedFile(string $file_id): void {
+    private function emit_orphaned_file(string $file_id): void {
         error_log("[DirectoryTree] File orphaned, ready for GC: $file_id");
         // Could publish to message queue for async GC
     }
     
-    private function generateDirId(): string {
+    private function generate_dir_id(): string {
         return 'd_' . bin2hex(random_bytes(16));
     }
     
-    private function generateFileId(): string {
+    private function generate_file_id(): string {
         return 'f_' . bin2hex(random_bytes(16));
     }
     
@@ -480,14 +480,14 @@ class DirectoryTree {
         $this->debug_mode = $enabled;
     }
     
-    private function debugLog(string $message, array $context = []): void {
+    private function debug_log(string $message, array $context = []): void {
         if ($this->debug_mode) {
             error_log("[DirectoryTree] $message " . json_encode($context));
         }
     }
     
     public function clearCache(): void {
-        $this->directoryCache = [];
-        $this->fileCache = [];
+        $this->directory_cache = [];
+        $this->file_cache = [];
     }
 }

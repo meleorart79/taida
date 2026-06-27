@@ -33,7 +33,7 @@ class FlatToTreeMigration {
         $this->stats = ['directories' => 0, 'files' => 0, 'errors' => []];
         
         // Start recursive scan from root
-        $this->migrateDirectory($physical_root, '/');
+        $this->migrate_directory($physical_root, '/');
         
         return $this->stats;
     }
@@ -41,7 +41,7 @@ class FlatToTreeMigration {
     /**
      * Recursively migrate directory and its contents
      */
-    private function migrateDirectory(string $physical_path, string $logical_path): void {
+    private function migrate_directory(string $physical_path, string $logical_path): void {
         echo "Processing: $logical_path\n";
         
         $entries = scandir($physical_path);
@@ -66,7 +66,7 @@ class FlatToTreeMigration {
                     $this->stats['directories']++;
                     
                     // Recurse
-                    $this->migrateDirectory($entry_physical_path, $entry_logical_path);
+                    $this->migrate_directory($entry_physical_path, $entry_logical_path);
                     
                 } elseif (is_file($entry_physical_path)) {
                     // Create file reference
@@ -94,11 +94,11 @@ class FlatToTreeMigration {
      */
     public function verify(string $physical_root): array {
         $issues = [];
-        $this->verifyDirectory($physical_root, '/', $issues);
+        $this->verify_directory($physical_root, '/', $issues);
         return $issues;
     }
     
-    private function verifyDirectory(string $physical_path, string $logical_path, array &$issues): void {
+    private function verify_directory(string $physical_path, string $logical_path, array &$issues): void {
         $entries = scandir($physical_path);
         if ($entries === false) {
             $issues[] = "Cannot verify directory: $physical_path";
@@ -118,7 +118,7 @@ class FlatToTreeMigration {
             }
             
             if (is_dir($entry_physical_path)) {
-                $this->verifyDirectory($entry_physical_path, $entry_logical_path, $issues);
+                $this->verify_directory($entry_physical_path, $entry_logical_path, $issues);
             }
         }
     }

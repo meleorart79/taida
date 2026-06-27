@@ -124,7 +124,7 @@ class directory_tree_test extends TestCase {
     public function testAddFileEntry(): void {
         $this->tree->createDirectory('/files');
         
-        $storage_path = $this->createTempFile('test content');
+        $storage_path = $this->create_temp_file('test content');
         $file_id = $this->tree->createFileReference($storage_path);
         
         $success = $this->tree->addFileEntry('/files/test.txt', $file_id);
@@ -140,7 +140,7 @@ class directory_tree_test extends TestCase {
         $this->tree->createDirectory('/dir1');
         $this->tree->createDirectory('/dir2');
         
-        $storage_path = $this->createTempFile('shared content');
+        $storage_path = $this->create_temp_file('shared content');
         $file_id = $this->tree->createFileReference($storage_path);
         
         // Create first link
@@ -164,7 +164,7 @@ class directory_tree_test extends TestCase {
     public function testRemoveFileEntry(): void {
         $this->tree->createDirectory('/files');
         
-        $storage_path = $this->createTempFile('test');
+        $storage_path = $this->create_temp_file('test');
         $file_id = $this->tree->createFileReference($storage_path);
         $this->tree->addFileEntry('/files/test.txt', $file_id);
         
@@ -181,7 +181,7 @@ class directory_tree_test extends TestCase {
         $this->tree->createDirectory('/dir1');
         $this->tree->createDirectory('/dir2');
         
-        $storage_path = $this->createTempFile('content');
+        $storage_path = $this->create_temp_file('content');
         $file_id = $this->tree->createFileReference($storage_path);
         
         $this->tree->addFileEntry('/dir1/file.txt', $file_id);
@@ -229,7 +229,7 @@ class directory_tree_test extends TestCase {
         $this->tree->createDirectory('/files');
         $this->tree->createDirectory('/archive');
         
-        $storage_path = $this->createTempFile('content');
+        $storage_path = $this->create_temp_file('content');
         $file_id = $this->tree->createFileReference($storage_path);
         $this->tree->addFileEntry('/files/doc.txt', $file_id);
         
@@ -275,7 +275,7 @@ class directory_tree_test extends TestCase {
     public function testGarbageCollection(): void {
         $this->tree->createDirectory('/files');
         
-        $storage_path = $this->createTempFile('orphan');
+        $storage_path = $this->create_temp_file('orphan');
         $file_id = $this->tree->createFileReference($storage_path);
         $this->tree->addFileEntry('/files/temp.txt', $file_id);
         
@@ -292,7 +292,7 @@ class directory_tree_test extends TestCase {
     
     // ===== HELPER METHODS =====
     
-    private function createTempFile(string $content): string {
+    private function create_temp_file(string $content): string {
         $path = tempnam(sys_get_temp_dir(), 'test_');
         file_put_contents($path, $content);
         return $path;

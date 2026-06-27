@@ -84,12 +84,12 @@ class DirectoryInvariants {
         
         // Get all directories (would need to add method to DirectoryTree)
         // For now, just validate from root
-        $this->validateTreeRecursive($this->tree->getRootDirId(), $all_errors);
+        $this->validate_tree_recursive($this->tree->getRootDirId(), $all_errors);
         
         return $all_errors;
     }
     
-    private function validateTreeRecursive(string $dir_id, array &$errors): void {
+    private function validate_tree_recursive(string $dir_id, array &$errors): void {
         $dir_errors = $this->validateDirectory($dir_id);
         $errors = array_merge($errors, $dir_errors);
         
@@ -97,7 +97,7 @@ class DirectoryInvariants {
         if ($dir) {
             foreach ($dir->entries as $entry) {
                 if ($entry->target_type === 'dir') {
-                    $this->validateTreeRecursive($entry->target_id, $errors);
+                    $this->validate_tree_recursive($entry->target_id, $errors);
                 }
             }
         }
