@@ -5,8 +5,8 @@
  * Licensed under the GPLv2 License
  */
 
-const kB = 1024;
-const MB = 1024 * kB;
+const KB = 1024;
+const MB = 1024 * KB;
 const GB = 1024 * MB;
 
 const TAIDA_NO_EXTENSION = '___';
@@ -260,8 +260,8 @@ function taida_file_nice_size(size, bytes = false) {
 		size = (size / GB).toFixed(1) + " GB";
 	} else if (size > MB) {
 		size = (size / MB).toFixed(1) + " MB";
-	} else if (size > kB) {
-		size = (size / kB).toFixed(1) + " kB";
+	} else if (size > KB) {
+		size = (size / KB).toFixed(1) + " kB";
 	} else if (bytes) {
 		size = size + " bytes";
 	}

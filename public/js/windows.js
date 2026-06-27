@@ -188,7 +188,7 @@ function taida_window_set_title(windowframe, title) {
 (function($) {
 	const MARGIN_BOTTOM = 30;
 
-	var pluginName = 'taida_window';
+	var plugin_name = 'taida_window';
 	var defaults = {
 		top: undefined,
 		width: 600,
@@ -568,7 +568,7 @@ function taida_window_set_title(windowframe, title) {
 
 	/* jQuery prototype
 	 */
-	$.fn[pluginName] = function(options) {
+	$.fn[plugin_name] = function(options) {
 		return this.each(function() {
 			(new plugin(this, options));
 		});

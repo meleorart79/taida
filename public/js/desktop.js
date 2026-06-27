@@ -7,7 +7,7 @@
 
 var _taida_desktop_path;
 var taida_read_only;
-let bgVideo = null;
+let bg_video = null;
 
 
 /* Icon
@@ -25,8 +25,8 @@ function taida_icon_coord_to_grid(coord, grid_size) {
 
 /* Context menu
  */
-function getContextMenuIcon(iconName) {
-	switch (iconName) {
+function get_context_menu_icon(icon_name) {
+	switch (icon_name) {
 		case 'play':
 			return `<img src="/images/play.svg" width="16" height="16" style="vertical-align: middle; margin-right: 8px; filter: invert(1);">`;
 		case 'pause':
@@ -44,7 +44,7 @@ function taida_contextmenu_show(target, event, items, handler) {
 		const $entry = $('<li></li>')
 			.text(item.name)
 			.addClass('context-item')
-			.prepend(getContextMenuIcon(item.icon))
+			.prepend(get_context_menu_icon(item.icon))
 			.on('click', function(e) {
 				e.stopPropagation();
 				$menu.hide();
@@ -295,26 +295,26 @@ function taida_desktop_rearrange() {
 
 /* Load wallpaper
  */
-function loadVideoBackground(videoUrl) {
-  const desktopDiv = document.querySelector('.desktop');
-  if (!desktopDiv) return console.error('Desktop div not found');
+function load_video_background(video_url) {
+  const desktop_div = document.querySelector('.desktop');
+  if (!desktop_div) return console.error('Desktop div not found');
 
   // Assign to global
-  bgVideo = document.createElement('video');
-  bgVideo.classList.add('bg-video');
-  bgVideo.src = videoUrl;
-  bgVideo.autoplay = true;
-  bgVideo.muted = true;
-  bgVideo.loop = true;
-  bgVideo.playsInline = true;
+  bg_video = document.createElement('video');
+  bg_video.classList.add('bg-video');
+  bg_video.src = video_url;
+  bg_video.autoplay = true;
+  bg_video.muted = true;
+  bg_video.loop = true;
+  bg_video.playsInline = true;
 
   // Create the warm overlay
-  const warmOverlay = document.createElement('div');
-  warmOverlay.classList.add('video-warm-overlay');
+  const warm_overlay = document.createElement('div');
+  warm_overlay.classList.add('video-warm-overlay');
 
   // Insert video and overlay
-  desktopDiv.insertBefore(bgVideo, desktopDiv.firstChild);
-  desktopDiv.appendChild(warmOverlay);
+  desktop_div.insertBefore(bg_video, desktop_div.firstChild);
+  desktop_div.appendChild(warm_overlay);
 }
 
 /* Menu handler
@@ -354,11 +354,11 @@ function taida_desktop_contextmenu_handler(target, option) {
 			break;
 		case 'Play':
 		case 'Pause':
-			if (bgVideo) {
-				if (bgVideo.paused) {
-					bgVideo.play();
+			if (bg_video) {
+				if (bg_video.paused) {
+					bg_video.play();
 				} else {
-					bgVideo.pause();
+					bg_video.pause();
 				}
 			}
 			break;
@@ -391,40 +391,40 @@ $(document).ready(function() {
     _taida_desktop_path = $('div.desktop').attr('path');
     taida_read_only = $('div.desktop').attr('read_only') == 'no';
 
-	const desktopDiv = document.querySelector('.desktop');
-	if (!desktopDiv) {
+	const desktop_div = document.querySelector('.desktop');
+	if (!desktop_div) {
 		console.error('Desktop div not found');
 		return;
 	}
 
 	// Idle screen
 
-	let idleTimer;
-	const idleDelay = 60000; // 1 min
-	const sleepScreen = document.getElementById('sleep-screen');
+	let idle_timer;
+	const idle_delay = 60000; // 1 min
+	const sleep_screen = document.getElementById('sleep-screen');
 
-	function showSleepScreen() {
-		sleepScreen.classList.add('show');
+	function show_sleep_screen() {
+		sleep_screen.classList.add('show');
 	}
 
-	function hideSleepScreen() {
-		sleepScreen.classList.remove('show');
+	function hide_sleep_screen() {
+		sleep_screen.classList.remove('show');
 	}
 
-	function resetIdleTimer() {
-		clearTimeout(idleTimer);
-		hideSleepScreen();
-		idleTimer = setTimeout(showSleepScreen, idleDelay);
+	function reset_idle_timer() {
+		clearTimeout(idle_timer);
+		hide_sleep_screen();
+		idle_timer = setTimeout(show_sleep_screen, idle_delay);
 	}
 
 	['mousemove', 'mousedown', 'keydown', 'touchstart'].forEach(event =>
-		document.addEventListener(event, resetIdleTimer)
+		document.addEventListener(event, reset_idle_timer)
 	);
 
-	resetIdleTimer(); // Start on page load
+	reset_idle_timer(); // Start on page load
 	/* */
 
-	loadVideoBackground('/images/animatedlogo.webm');
+	load_video_background('/images/animatedlogo.webm');
 
     taida_setting_get('system/color', function(color) {
         taida_window_set_color(color);
@@ -497,10 +497,10 @@ $(document).ready(function() {
 
 		let menu_entries = [];
 
-		if (bgVideo) {
+		if (bg_video) {
 			menu_entries.push({
-				name: bgVideo.paused ? 'Play' : 'Pause',
-				icon: bgVideo.paused ? 'play' : 'pause'
+				name: bg_video.paused ? 'Play' : 'Pause',
+				icon: bg_video.paused ? 'play' : 'pause'
 			});
 		}
 
