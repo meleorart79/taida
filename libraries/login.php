@@ -8,7 +8,7 @@
 
 	namespace Taida;
 
-	class login_log extends taida_backend {
+	class login_log extends backend {
 		public function notify_user($notification) {
 			$this->add_notification($notification);
 		}

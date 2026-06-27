@@ -8,7 +8,7 @@
 
 	namespace Taida;
 
-	abstract class taida_backend {
+	abstract class backend {
 		protected $view = null;
 		protected $username = null;
 		protected $home_directory = null;

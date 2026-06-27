@@ -22,23 +22,21 @@
 
 	/* Auto-load class
 	 */
-	function autoloader($class_name) {
-		$parts = explode("\\", $class_name);
-		$class = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', array_pop($parts)));
-		$path = __DIR__;
+	spl_autoload_register(function ($class) {
+		$prefix = "Taida\\";
+		$baseDir = __DIR__ . "/";
 
-		if (strtolower($parts[0] ?? "") == "taida") {
-			array_shift($parts);
+		if (strncmp($prefix, $class, strlen($prefix)) !== 0) {
+			return;
 		}
 
-		if (count($parts) > 0) {
-			$path .= "/".strtolower(implode("/", $parts));
-		}
+		$relative = substr($class, strlen($prefix));
+		$file = $baseDir . str_replace("\\", "/", $relative) . ".php";
 
-		if (file_exists($file = $path."/".$class.".php")) {
-			include_once $file;
+		if (file_exists($file)) {
+			require $file;
 		}
-	}
+	});
 
 	/* Convert mixed to boolean
 	 *

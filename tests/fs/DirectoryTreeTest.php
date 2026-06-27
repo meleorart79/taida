@@ -5,9 +5,9 @@ use PHPUnit\Framework\TestCase;
 use Taida\FS\DirectoryTree;
 use Taida\FS\Persistence\DirectoryTreePersistence;
 
-require_once __DIR__ . '/schema_loader.php';
+require_once __DIR__ . '/SchemaLoader.php';
 
-class directory_tree_test extends TestCase {
+class DirectoryTreeTest extends TestCase {
     private ?DirectoryTree $tree = null;
     private ?\PDO $db = null;
     

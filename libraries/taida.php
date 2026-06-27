@@ -16,6 +16,7 @@
 	define("SYSTEM_DIRECTORIES", array(DESKTOP_PATH, "Shared", "Temporary"));
 	define("TERMINAL_NETWORK_TIMEOUT", 5);
 	define("NONE_AUTH_HOMEDIR", "public");
+	require_once __DIR__ . "/backend.php";
 
 	if (substr(HOME_DIRECTORIES, 0, 1) == "/") {
 		$home_root = HOME_DIRECTORIES;
@@ -60,7 +61,7 @@
 
 	/* Taida system backend
 	 */
-	class taida extends taida_backend {
+	class taida extends backend {
 		public function get_ping() {
 			$this->view->add_tag("pong");
 		}

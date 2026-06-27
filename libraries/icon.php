@@ -8,7 +8,7 @@
 
 	namespace Taida;
 
-	class icon extends taida_backend {
+	class icon extends backend {
 		public function get_default() {
 			if (($dp = opendir("images/icons")) == false) {
 				return;

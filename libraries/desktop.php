@@ -47,7 +47,7 @@
 				$name = "Taida\\".$name;
 
 				if (class_exists($name)) {
-					if (is_subclass_of($name, "Taida\\taida_backend")) {
+					if (is_subclass_of($name, "Taida\\backend")) {
 						return new $name($this->view, $this->username);
 					}
 				}
@@ -76,7 +76,7 @@
 				return false;
 			}
 
-			if (is_subclass_of($name, "Taida\\taida_backend") == false) {
+			if (is_subclass_of($name, "Taida\\backend") == false) {
 				return false;
 			}
 

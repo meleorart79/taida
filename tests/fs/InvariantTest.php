@@ -6,9 +6,9 @@ use Taida\FS\DirectoryTree;
 use Taida\FS\Persistence\DirectoryTreePersistence;
 use Taida\FS\Invariants\DirectoryInvariants;
 
-require_once __DIR__ . '/schema_loader.php';
+require_once __DIR__ . '/SchemaLoader.php';
 
-class invariant_test extends TestCase {
+class InvariantTest extends TestCase {
     private DirectoryTree $tree;
     private DirectoryInvariants $invariants;
     private \PDO $db;

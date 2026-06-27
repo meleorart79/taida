@@ -5,9 +5,9 @@ use PHPUnit\Framework\TestCase;
 use Taida\FS\DirectoryTree;
 use Taida\FS\Persistence\DirectoryTreePersistence;
 
-require_once __DIR__ . '/schema_loader.php';
+require_once __DIR__ . '/SchemaLoader.php';
 
-class concurrency_test extends TestCase {
+class ConcurrencyTest extends TestCase {
     /**
      * Test that concurrent operations maintain consistency
      * 

@@ -8,7 +8,7 @@
 
 	namespace Taida;
 
-	class setting extends taida_backend {
+	class setting extends backend {
 		private $filename = null;
 		private $settings = null;
 
