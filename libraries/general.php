@@ -254,5 +254,4 @@
 		define(trim($key), trim($value));
 	}
 
-	spl_autoload_register("autoloader", true, true);
 ?>

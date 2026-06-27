@@ -126,13 +126,15 @@ class DirectoryTreeTest extends TestCase {
         
         $storage_path = $this->create_temp_file('test content');
         $file_id = $this->tree->createFileReference($storage_path);
-        
+
         $success = $this->tree->addFileEntry('/files/test.txt', $file_id);
         $this->assertTrue($success);
         
         $file_ref = $this->tree->getFileReference($file_id);
         $this->assertEquals(1, $file_ref->refcount);
-        
+        $this->assertFalse(property_exists($file_ref, 'storage_path'));
+        $this->assertEquals($storage_path, $this->tree->getStoragePath($file_id));
+
         unlink($storage_path);
     }
     
@@ -287,6 +289,7 @@ class DirectoryTreeTest extends TestCase {
         
         $this->assertContains($file_id, $deleted);
         $this->assertNull($this->tree->getFileReference($file_id));
+        $this->assertNull($this->tree->getStoragePath($file_id));
         $this->assertFileDoesNotExist($storage_path);
     }
     

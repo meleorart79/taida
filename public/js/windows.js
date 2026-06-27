@@ -203,6 +203,7 @@ function taida_window_set_title(windowframe, title) {
 		maximize: undefined,
 		minimize: undefined,
 		resize: undefined,
+		help: undefined,
 		dialog: false,
 		taskbar: true
 	};
@@ -252,6 +253,7 @@ function taida_window_set_title(windowframe, title) {
 
 		var window_buttons =
 			'<div class="window-buttons">' +
+				(settings.help == undefined ? '' : '<span class="window-btn help-btn" title="Inspirations"></span>') +
 				(settings.minimize === true ? '' : '<span class="window-btn minimize-btn"></span>') +
 				(settings.maximize === true ? '' : '<span class="window-btn maximize-btn"></span>') +
 				(settings.close === true ? '' : '<span class="window-btn close-btn"></span>') +
@@ -324,6 +326,15 @@ function taida_window_set_title(windowframe, title) {
 		});
 
 		/* Window header buttons */
+		windowframe.find('span.help-btn').on('click', function(event) {
+			event.stopPropagation();
+			if (typeof theSecretSawce_open == 'function') {
+				theSecretSawce_open(settings.help);
+			} else {
+				taida_alert('theSecretSawce is not available yet.', 'Inspirations');
+			}
+		});
+
 		windowframe.find('span.close-btn').on('click', function(event) {
 			event.stopPropagation();
 			windowframe_close.call($(this).closest('.window')[0]);

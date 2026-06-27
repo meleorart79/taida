@@ -4,11 +4,13 @@ namespace Taida\FS\Operations;
 use Taida\FS\DirectoryTree;
 use Taida\FS\Entities\DirectoryEntry;
 use Taida\FS\Persistence\DirectoryTreePersistence;
+use Taida\FS\Resolution\VirtualPathResolver;
 
 class MoveOperation {
     private DirectoryTree $tree;
     private DirectoryTreePersistence $persistence;
     private CycleDetector $cycle_detector;
+    private VirtualPathResolver $path_resolver;
     
     public function __construct(
         DirectoryTree $tree,
@@ -18,6 +20,7 @@ class MoveOperation {
         $this->tree = $tree;
         $this->persistence = $persistence;
         $this->cycle_detector = $cycle_detector;
+        $this->path_resolver = new VirtualPathResolver($tree);
     }
     
     /**
@@ -41,7 +44,7 @@ class MoveOperation {
         }
         
         // Resolve source
-        $source_result = $this->tree->resolvePath($source_path);
+        $source_result = $this->path_resolver->resolve($source_path);
         if (!$source_result) {
             throw new \RuntimeException("Source not found: $source_path");
         }
@@ -56,17 +59,9 @@ class MoveOperation {
         }
         
         // Resolve parents
-        $source_parent_result = $this->tree->resolvePath($source_parent_path);
-        $dest_parent_result = $this->tree->resolvePath($dest_parent_path);
-        
-        if (!$source_parent_result || $source_parent_result['type'] !== 'dir') {
-            throw new \RuntimeException("Source parent not found: $source_parent_path");
-        }
-        
-        if (!$dest_parent_result || $dest_parent_result['type'] !== 'dir') {
-            throw new \RuntimeException("Destination parent not found: $dest_parent_path");
-        }
-        
+        $source_parent_result = $this->path_resolver->resolveDirectory($source_parent_path);
+        $dest_parent_result = $this->path_resolver->resolveDirectory($dest_parent_path);
+
         $source_parent_id = $source_parent_result['id'];
         $dest_parent_id = $dest_parent_result['id'];
         

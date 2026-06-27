@@ -142,8 +142,8 @@ class DirectoryTreePersistence {
         if ($this->is_sqlite) {
             $stmt = $this->db->prepare("
                 INSERT INTO fs_file_references 
-                (file_id, refcount, storage_path, created_at, size_bytes, mime_type)
-                VALUES (:file_id, :refcount, :storage_path, :created, :size, :mime)
+                (file_id, refcount, created_at, size_bytes, mime_type)
+                VALUES (:file_id, :refcount, :created, :size, :mime)
                 ON CONFLICT(file_id) DO UPDATE SET
                     refcount = excluded.refcount,
                     size_bytes = excluded.size_bytes,
@@ -152,8 +152,8 @@ class DirectoryTreePersistence {
         } else {
             $stmt = $this->db->prepare("
                 INSERT INTO fs_file_references 
-                (file_id, refcount, storage_path, created_at, size_bytes, mime_type)
-                VALUES (:file_id, :refcount, :storage_path, :created, :size, :mime)
+                (file_id, refcount, created_at, size_bytes, mime_type)
+                VALUES (:file_id, :refcount, :created, :size, :mime)
                 ON DUPLICATE KEY UPDATE
                     refcount = :refcount,
                     size_bytes = :size,
@@ -164,7 +164,6 @@ class DirectoryTreePersistence {
         return $stmt->execute([
             ':file_id' => $file->file_id,
             ':refcount' => $file->refcount,
-            ':storage_path' => $file->storage_path,
             ':created' => $file->created_at->format('Y-m-d H:i:s'),
             ':size' => $file->size_bytes,
             ':mime' => $file->mime_type
@@ -173,7 +172,7 @@ class DirectoryTreePersistence {
     
     public function loadFileReference(string $file_id): ?FileReference {
         $stmt = $this->db->prepare("
-            SELECT file_id, refcount, storage_path, created_at, size_bytes, mime_type
+            SELECT file_id, refcount, created_at, size_bytes, mime_type
             FROM fs_file_references
             WHERE file_id = :file_id
         ");
@@ -184,7 +183,7 @@ class DirectoryTreePersistence {
             return null;
         }
         
-        $file = new FileReference($row['file_id'], $row['storage_path']);
+        $file = new FileReference($row['file_id']);
         $file->refcount = (int)$row['refcount'];
         $file->created_at = new \DateTime($row['created_at']);
         $file->size_bytes = (int)$row['size_bytes'];
@@ -202,6 +201,46 @@ class DirectoryTreePersistence {
     
     public function deleteFileReference(string $file_id): bool {
         $stmt = $this->db->prepare("DELETE FROM fs_file_references WHERE file_id = :file_id");
+        return $stmt->execute([':file_id' => $file_id]);
+    }
+
+    public function saveStorageLocation(string $file_id, string $storage_path): bool {
+        if ($this->is_sqlite) {
+            $stmt = $this->db->prepare("
+                INSERT INTO fs_storage_locations (file_id, storage_path)
+                VALUES (:file_id, :storage_path)
+                ON CONFLICT(file_id) DO UPDATE SET
+                    storage_path = excluded.storage_path
+            ");
+        } else {
+            $stmt = $this->db->prepare("
+                INSERT INTO fs_storage_locations (file_id, storage_path)
+                VALUES (:file_id, :storage_path)
+                ON DUPLICATE KEY UPDATE
+                    storage_path = :storage_path
+            ");
+        }
+
+        return $stmt->execute([
+            ':file_id' => $file_id,
+            ':storage_path' => $storage_path
+        ]);
+    }
+
+    public function loadStoragePath(string $file_id): ?string {
+        $stmt = $this->db->prepare("
+            SELECT storage_path
+            FROM fs_storage_locations
+            WHERE file_id = :file_id
+        ");
+        $stmt->execute([':file_id' => $file_id]);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        return $row ? $row['storage_path'] : null;
+    }
+
+    public function deleteStorageLocation(string $file_id): bool {
+        $stmt = $this->db->prepare("DELETE FROM fs_storage_locations WHERE file_id = :file_id");
         return $stmt->execute([':file_id' => $file_id]);
     }
     

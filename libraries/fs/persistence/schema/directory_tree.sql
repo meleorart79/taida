@@ -27,13 +27,20 @@ CREATE TABLE IF NOT EXISTS fs_directory_entries (
 CREATE TABLE IF NOT EXISTS fs_file_references (
     file_id VARCHAR(36) PRIMARY KEY,          -- UUID for file
     refcount INT NOT NULL DEFAULT 0,          -- Hard link count
-    storage_path VARCHAR(512) NOT NULL,       -- Physical path (opaque)
     created_at DATETIME NOT NULL,
     size_bytes BIGINT NOT NULL DEFAULT 0,
     mime_type VARCHAR(127) NULL,
-    
-    INDEX idx_refcount (refcount),
-    INDEX idx_storage (storage_path(191))     -- For orphan detection
+
+    INDEX idx_refcount (refcount)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Storage locations table (physical byte locations)
+CREATE TABLE IF NOT EXISTS fs_storage_locations (
+    file_id VARCHAR(36) PRIMARY KEY,
+    storage_path VARCHAR(512) NOT NULL,
+
+    FOREIGN KEY (file_id) REFERENCES fs_file_references(file_id) ON DELETE CASCADE,
+    INDEX idx_storage (storage_path(191))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- System metadata (root directory, etc.)

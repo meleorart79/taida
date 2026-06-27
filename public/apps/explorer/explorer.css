@@ -1,0 +1,58 @@
+.explorer {
+	height: 100%;
+	display: grid;
+	grid-template-rows: 34px 1fr;
+	gap: 8px;
+}
+
+.explorer-toolbar {
+	display: grid;
+	grid-template-columns: auto auto 1fr;
+	gap: 6px;
+	align-items: center;
+}
+
+.explorer-toolbar button,
+.explorer-row {
+	border: 1px solid #ffebf3;
+	background: #333333;
+	color: #f7fff7;
+	cursor: pointer;
+}
+
+.explorer-path {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.explorer-list {
+	border: 1px solid #ffebf3;
+	overflow: auto;
+	background: #202020;
+}
+
+.explorer-row {
+	width: 100%;
+	display: grid;
+	grid-template-columns: 24px 1fr;
+	gap: 8px;
+	align-items: center;
+	padding: 7px;
+	text-align: left;
+}
+
+.explorer-row:hover {
+	background: #ffebf3;
+	color: #333333;
+}
+
+.explorer-row img {
+	width: 20px;
+	height: 20px;
+}
+
+.explorer-empty,
+.explorer-loading {
+	padding: 10px;
+}

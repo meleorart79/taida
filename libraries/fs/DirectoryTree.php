@@ -1,10 +1,17 @@
 <?php
 namespace Taida\FS;
 
+require_once __DIR__ . '/storage/StorageProviderInterface.php';
+require_once __DIR__ . '/storage/LocalStorageProvider.php';
+require_once __DIR__ . '/resolution/VirtualPathResolver.php';
+
 use Taida\FS\Entities\Directory;
 use Taida\FS\Entities\DirectoryEntry;
 use Taida\FS\Entities\FileReference;
 use Taida\FS\Persistence\DirectoryTreePersistence;
+use Taida\FS\Resolution\VirtualPathResolver;
+use Taida\FS\Storage\LocalStorageProvider;
+use Taida\FS\Storage\StorageProviderInterface;
 use Taida\FS\Operations\PathResolver;
 use Taida\FS\Operations\MoveOperation;
 use Taida\FS\Operations\CycleDetector;
@@ -12,6 +19,8 @@ use Taida\FS\Invariants\DirectoryInvariants;
 
 class DirectoryTree {
     private DirectoryTreePersistence $persistence;
+    private VirtualPathResolver $path_resolver;
+    private StorageProviderInterface $storage_provider;
     private CycleDetector $cycle_detector;
     private DirectoryInvariants $invariants;
     private MoveOperation $move_operation;
@@ -25,6 +34,8 @@ class DirectoryTree {
     
     public function __construct(DirectoryTreePersistence $persistence) {
         $this->persistence = $persistence;
+        $this->path_resolver = new VirtualPathResolver($this);
+        $this->storage_provider = new LocalStorageProvider($this->persistence);
         $this->cycle_detector = new CycleDetector($this);
         $this->invariants = new DirectoryInvariants($this);
         $this->move_operation = new MoveOperation($this, $this->persistence, $this->cycle_detector);
@@ -40,59 +51,7 @@ class DirectoryTree {
      */
     public function resolvePath(string $path): ?array {
         $this->debug_log("resolvePath", ['path' => $path]);
-        
-        $path = PathResolver::normalizePath($path);
-        
-        if (!PathResolver::checkDepth($path)) {
-            throw new \RuntimeException("Path exceeds maximum depth: $path");
-        }
-        
-        // Root special case
-        if ($path === '/') {
-            return ['type' => 'dir', 'id' => $this->root_dir_id];
-        }
-        
-        // Split into segments and traverse
-        $segments = array_filter(explode('/', trim($path, '/')));
-        $current_dir_id = $this->root_dir_id;
-        
-        foreach ($segments as $idx => $segment) {
-            $dir = $this->getDirectory($current_dir_id);
-            if (!$dir) {
-                $this->debug_log("resolvePath: directory not found", ['dir_id' => $current_dir_id]);
-                return null;
-            }
-            
-            $entry = $dir->getEntry($segment);
-            if (!$entry) {
-                $this->debug_log("resolvePath: entry not found", [
-                    'dir_id' => $current_dir_id,
-                    'segment' => $segment
-                ]);
-                return null;
-            }
-            
-            // If this is the last segment, return the target
-            if ($idx === count($segments) - 1) {
-                return [
-                    'type' => $entry->target_type,
-                    'id' => $entry->target_id
-                ];
-            }
-            
-            // Otherwise, must be a directory to continue
-            if ($entry->target_type !== 'dir') {
-                $this->debug_log("resolvePath: path component is not a directory", [
-                    'segment' => $segment,
-                    'type' => $entry->target_type
-                ]);
-                return null;
-            }
-            
-            $current_dir_id = $entry->target_id;
-        }
-        
-        return null;
+        return $this->path_resolver->resolve($path);
     }
     
     /**
@@ -368,17 +327,25 @@ class DirectoryTree {
         $this->debug_log("createFileReference", ['storage_path' => $storage_path]);
         
         $file_id = $this->generate_file_id();
-        $file_ref = new FileReference($file_id, $storage_path);
+        $file_ref = new FileReference($file_id);
         
         // Get file info
         if (file_exists($storage_path)) {
             $file_ref->size_bytes = filesize($storage_path);
             $file_ref->mime_type = mime_content_type($storage_path) ?: null;
         }
-        
-        $this->persistence->saveFileReference($file_ref);
-        $this->file_cache[$file_id] = $file_ref;
-        
+
+        $this->persistence->beginTransaction();
+        try {
+            $this->persistence->saveFileReference($file_ref);
+            $this->storage_provider->register($file_id, $storage_path);
+            $this->persistence->commit();
+            $this->file_cache[$file_id] = $file_ref;
+        } catch (\Exception $e) {
+            $this->persistence->rollback();
+            throw $e;
+        }
+
         $this->debug_log("createFileReference: success", ['file_id' => $file_id]);
         return $file_id;
     }
@@ -410,16 +377,18 @@ class DirectoryTree {
             $file_ref = $this->getFileReference($file_id);
             if ($file_ref && $file_ref->isOrphaned()) {
                 // Delete physical file
-                if (file_exists($file_ref->storage_path)) {
-                    @unlink($file_ref->storage_path);
+                $storage_path = $this->storage_provider->locate($file_id);
+                if ($storage_path && file_exists($storage_path)) {
+                    @unlink($storage_path);
                     $this->debug_log("collectGarbage: deleted physical file", [
                         'file_id' => $file_id,
-                        'path' => $file_ref->storage_path
+                        'path' => $storage_path
                     ]);
                 }
                 
                 // Delete metadata
                 $this->persistence->deleteFileReference($file_id);
+                $this->storage_provider->forget($file_id);
                 unset($this->file_cache[$file_id]);
                 
                 $deleted[] = $file_id;
@@ -457,6 +426,10 @@ class DirectoryTree {
         }
         
         return $file;
+    }
+
+    public function getStoragePath(string $file_id): ?string {
+        return $this->storage_provider->locate($file_id);
     }
     
     private function emit_orphaned_file(string $file_id): void {

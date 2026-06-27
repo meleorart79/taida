@@ -359,6 +359,10 @@ div.file_dialog div.files div.icon {
   mask-image: url("../images/minimize.svg");
 }
 
+.window-btn.help-btn {
+  mask-image: url("../images/question.svg");
+}
+
 .window-btn.maximize-btn {
   mask-image: url("../images/maximize.svg");
 }

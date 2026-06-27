@@ -25,8 +25,6 @@
 	session_set_cookie_params($options);
 	session_start();
 
-	spl_autoload_register("autoloader");
-
 	require "../libraries/taida.php";
 	require "../libraries/user_website.php";
 

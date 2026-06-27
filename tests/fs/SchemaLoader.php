@@ -29,14 +29,20 @@ function load_sqlite_schema(\PDO $db): void {
         CREATE TABLE IF NOT EXISTS fs_file_references (
             file_id VARCHAR(36) PRIMARY KEY,
             refcount INT NOT NULL DEFAULT 0,
-            storage_path VARCHAR(512) NOT NULL,
             created_at DATETIME NOT NULL,
             size_bytes BIGINT NOT NULL DEFAULT 0,
             mime_type VARCHAR(127) NULL
         );
 
         CREATE INDEX IF NOT EXISTS idx_refcount ON fs_file_references (refcount);
-        CREATE INDEX IF NOT EXISTS idx_storage ON fs_file_references (storage_path);
+
+        CREATE TABLE IF NOT EXISTS fs_storage_locations (
+            file_id VARCHAR(36) PRIMARY KEY,
+            storage_path VARCHAR(512) NOT NULL,
+            FOREIGN KEY (file_id) REFERENCES fs_file_references(file_id) ON DELETE CASCADE
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_storage ON fs_storage_locations (storage_path);
 
         CREATE TABLE IF NOT EXISTS fs_metadata (
             key_name VARCHAR(64) PRIMARY KEY,

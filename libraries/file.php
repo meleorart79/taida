@@ -105,7 +105,7 @@ class file extends backend {
                 'size' => $file_ref->size_bytes,
                 'mime_type' => $file_ref->mime_type,
                 'refcount' => $file_ref->refcount,
-                'storage_path' => $file_ref->storage_path
+                'storage_path' => $tree->getStoragePath($file_ref->file_id)
             ];
         } catch (\Exception $e) {
             return ['success' => false, 'error' => $e->getMessage()];
