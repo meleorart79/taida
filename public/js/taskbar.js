@@ -61,6 +61,80 @@ function taida_startmenu_close() {
 	$('div.taskbar div.startmenu').hide();
 }
 
+function taida_settings_open() {
+	var current_zoom = $('div.desktop').attr('zoom') || '0.75';
+	var view = $(
+		'<div class="taida-system-window taida-settings">' +
+			'<label>Window color<input type="color" class="settings-color" value="#333333" /></label>' +
+			'<label>Desktop zoom<input type="range" class="settings-zoom" min="0.5" max="1.25" step="0.05" value="' + current_zoom + '" /></label>' +
+			'<div class="settings-zoom-value">' + current_zoom + '</div>' +
+			'<button type="button" class="settings-save">Save</button>' +
+		'</div>'
+	);
+
+	taida_setting_get('system/color', function(color) {
+		view.find('.settings-color').val(color);
+	}, function() {
+		view.find('.settings-color').val('#333333');
+	});
+
+	view.find('.settings-zoom').on('input', function() {
+		view.find('.settings-zoom-value').text($(this).val());
+	});
+
+	view.find('.settings-save').on('click', function() {
+		var color = view.find('.settings-color').val();
+		var zoom = view.find('.settings-zoom').val();
+
+		taida_setting_set('system/color', color, function() {
+			taida_window_set_color(color);
+		});
+
+		taida_setting_set('system/zoom', zoom, function() {
+			$('div.desktop').attr('zoom', zoom);
+		});
+	});
+
+	view.taida_window({
+		header: 'Settings',
+		icon: '/images/settings.svg',
+		width: 320,
+		height: 210,
+		minWidth: 280,
+		resize: false
+	});
+	view.open();
+}
+
+function taida_info_open() {
+	var apps = $('div.taskbar div.startmenu div.applications div.application span').map(function() {
+		return $(this).text();
+	}).get();
+
+	var view = $(
+		'<div class="taida-system-window taida-info">' +
+			'<h2>Taida</h2>' +
+			'<dl>' +
+				'<dt>Version</dt><dd>' + ($('div.desktop').attr('version') || 'unknown') + '</dd>' +
+				'<dt>User</dt><dd>' + ($('div.desktop').attr('username') || 'unknown') + '</dd>' +
+				'<dt>Desktop</dt><dd>' + ($('div.desktop').attr('path') || 'Desktop') + '</dd>' +
+				'<dt>Applications</dt><dd>' + apps.length + '</dd>' +
+			'</dl>' +
+			'<p>Browser desktop, core services, ordinary apps. Keep it weird, keep it useful.</p>' +
+		'</div>'
+	);
+
+	view.taida_window({
+		header: 'Info',
+		icon: '/images/info.svg',
+		width: 360,
+		height: 260,
+		minWidth: 300,
+		resize: false
+	});
+	view.open();
+}
+
 
 
 /* Taskbar
@@ -176,6 +250,8 @@ $(document).ready(function() {
 	}, (60 - d.getSeconds()) * 1000);
 
 	if ($('div.desktop').attr('login') != 'none') {
+		taida_startmenu_system('Settings', '/images/settings.svg', taida_settings_open);
+		taida_startmenu_system('Info', '/images/info.svg', taida_info_open);
 		taida_startmenu_system('Logout', '/images/logout.png', taida_logout);
 	}
 });
