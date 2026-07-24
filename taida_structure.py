@@ -2,7 +2,7 @@ from pathlib import Path
 import math
 
 ROOT_DIR = Path(r"C:\xampp\htdocs\taida")
-OUTPUT_FILE = "taida_dump.md"
+OUTPUT_FILE = "taida_dump.txt"
 
 EXCLUDE_DIRS = {
     ".git", "__pycache__", "node_modules",
