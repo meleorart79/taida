@@ -732,6 +732,6 @@ const tpCases = [
     { input: "tu anpa tu sewi luka", expect: 1 },
 ];
 
-const engine = new CalculatorEngine();
+//const engine = new CalculatorEngine();
 //engine.regressionTestExpr(cases);
-engine.regressionTestTpExpr(tpCases);
+//engine.regressionTestTpExpr(tpCases);

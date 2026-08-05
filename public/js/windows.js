@@ -21,7 +21,7 @@ function taida_window_about(win) {
 function taida_window_max_zindex() {
 	var max_zindex = 0;
 
-	$('div.windows > div').each(function() {
+	$('div.windows > div').each(function () {
 		var zindex = parseInt($(this).css('z-index'));
 		if (isNaN(zindex) == false) {
 			if (zindex > max_zindex) {
@@ -62,75 +62,75 @@ function taida_window_raise(windowframe) {
 /* Maximize window
  */
 function taida_window_maximize(window_id) {
-    var windowframe = $('div.windows div#' + window_id);
-    if (windowframe.length === 0) {
-        console.error("taida_window_maximize: No window found with ID", window_id);
-        return;
-    }
+	var windowframe = $('div.windows div#' + window_id);
+	if (windowframe.length === 0) {
+		console.error("taida_window_maximize: No window found with ID", window_id);
+		return;
+	}
 
-    var windat = windowframe.data('maximize');
-    if (windat === undefined) {
-        var pos = windowframe.position();
-        if (!pos) {
-            console.error("taida_window_maximize: Could not get position of window", window_id);
-            return;
-        }
-        windat = [ pos.left, pos.top, windowframe.width(), windowframe.height() ];
-        windowframe.data('maximize', windat);
-        var pos_x = 0;
-        var pos_y = 0;
-        var width = Math.round($('div.windows').width());
-        var height = Math.round($('div.windows').height());
-    } else {
-        var [pos_x, pos_y, width, height] = windat;
-        windowframe.removeData('maximize');
-    }
+	var windat = windowframe.data('maximize');
+	if (windat === undefined) {
+		var pos = windowframe.position();
+		if (!pos) {
+			console.error("taida_window_maximize: Could not get position of window", window_id);
+			return;
+		}
+		windat = [pos.left, pos.top, windowframe.width(), windowframe.height()];
+		windowframe.data('maximize', windat);
+		var pos_x = 0;
+		var pos_y = 0;
+		var width = Math.round($('div.windows').width());
+		var height = Math.round($('div.windows').height());
+	} else {
+		var [pos_x, pos_y, width, height] = windat;
+		windowframe.removeData('maximize');
+	}
 
-    windowframe.animate({
-        left: pos_x + 'px',
-        top: pos_y + 'px',
-        width: width + 'px',
-        height: height + 'px'
-    }, ANIMATE_SPEED, function() {
-        var settings = windowframe.data('settings');
-        if (settings.resize !== undefined && settings.resize !== false) {
-            settings.resize();
-        }
-    });
+	windowframe.animate({
+		left: pos_x + 'px',
+		top: pos_y + 'px',
+		width: width + 'px',
+		height: height + 'px'
+	}, ANIMATE_SPEED, function () {
+		var settings = windowframe.data('settings');
+		if (settings.resize !== undefined && settings.resize !== false) {
+			settings.resize();
+		}
+	});
 }
 
 
 /* Minimize window
  */
 function taida_window_minimize(window_id) {
-    var windowframe = $('div.windows div#' + window_id);
-    if (windowframe.length === 0) {
-        console.error("taida_window_minimize: No window found with ID", window_id);
-        return;
-    }
+	var windowframe = $('div.windows div#' + window_id);
+	if (windowframe.length === 0) {
+		console.error("taida_window_minimize: No window found with ID", window_id);
+		return;
+	}
 
-    var task = $('div.taskbar div.tasks div.task[taskid=' + window_id + ']');
-    task.addClass('minimized');
+	var task = $('div.taskbar div.tasks div.task[taskid=' + window_id + ']');
+	task.addClass('minimized');
 
-    windowframe.removeClass('focus');
+	windowframe.removeClass('focus');
 
-    var win_pos = windowframe.offset();
-    var task_pos = task.offset();
-    if (!win_pos || !task_pos) {
-        console.error("taida_window_minimize: Failed to get window/task position");
-        return;
-    }
+	var win_pos = windowframe.offset();
+	var task_pos = task.offset();
+	if (!win_pos || !task_pos) {
+		console.error("taida_window_minimize: Failed to get window/task position");
+		return;
+	}
 
-    var width = windowframe.width();
-    var dx = (task_pos.left - win_pos.left).toString();
-    var dy = (task_pos.top - win_pos.top).toString();
+	var width = windowframe.width();
+	var dx = (task_pos.left - win_pos.left).toString();
+	var dy = (task_pos.top - win_pos.top).toString();
 
-    windowframe.css('transition', 'all .3s ease-in');
-    windowframe.css('transform', 'translate(' + dx + 'px, ' + dy + 'px) scale(0)');
+	windowframe.css('transition', 'all .3s ease-in');
+	windowframe.css('transform', 'translate(' + dx + 'px, ' + dy + 'px) scale(0)');
 
-    window.setTimeout(function() {
-        windowframe.hide();
-    }, ANIMATE_SPEED);
+	window.setTimeout(function () {
+		windowframe.hide();
+	}, ANIMATE_SPEED);
 }
 
 
@@ -185,7 +185,7 @@ function taida_window_set_title(windowframe, title) {
 
 /* Window plugin
  */
-(function($) {
+(function ($) {
 	const MARGIN_BOTTOM = 30;
 
 	var plugin_name = 'taida_window';
@@ -213,7 +213,7 @@ function taida_window_set_title(windowframe, title) {
 
 	/* Constructor
 	 */
-	var plugin = function(el, options) {
+	var plugin = function (el, options) {
 		var element = $(el);
 		var settings = $.extend({}, defaults, options);
 		var id = 1;
@@ -233,10 +233,10 @@ function taida_window_set_title(windowframe, title) {
 			menu += '<ul class="nav nav-tabs">';
 			for ([item, entries] of Object.entries(settings.menu)) {
 				menu += '<li class="dropdown">' +
-				        '<a class="dropdown-toggle" href="#" onClick="javascript:return false" ' +
-				        ' ondragstart="return false">' + item +
-				        '</a><ul class="dropdown-menu">';
-				entries.forEach(function(entry) {
+					'<a class="dropdown-toggle" href="#" onClick="javascript:return false" ' +
+					' ondragstart="return false">' + item +
+					'</a><ul class="dropdown-menu">';
+				entries.forEach(function (entry) {
 					if (entry == '-') {
 						menu += '<li class="divider"></li>';
 					} else {
@@ -253,10 +253,10 @@ function taida_window_set_title(windowframe, title) {
 
 		var window_buttons =
 			'<div class="window-buttons">' +
-				(settings.help == undefined ? '' : '<span class="window-btn help-btn" title="Inspirations"></span>') +
-				(settings.minimize === true ? '' : '<span class="window-btn minimize-btn"></span>') +
-				(settings.maximize === true ? '' : '<span class="window-btn maximize-btn"></span>') +
-				(settings.close === true ? '' : '<span class="window-btn close-btn"></span>') +
+			(settings.help == undefined ? '' : '<span class="window-btn help-btn" title="Inspirations"></span>') +
+			(settings.minimize === true ? '' : '<span class="window-btn minimize-btn"></span>') +
+			(settings.maximize === true ? '' : '<span class="window-btn maximize-btn"></span>') +
+			(settings.close === true ? '' : '<span class="window-btn close-btn"></span>') +
 			'</div>';
 		var icon = (settings.icon == undefined) ? '' : '<img src="' + settings.icon + '" class="icon" />';
 		var windowframe = '<div id="windowframe' + id + '" class="window" tabindex="' + id + '"><div class="window-header">' +
@@ -272,7 +272,7 @@ function taida_window_set_title(windowframe, title) {
 
 		/* Menu
 		 */
-		windowframe.find('ul.nav > li').on('click', function(event) {
+		windowframe.find('ul.nav > li').on('click', function (event) {
 			taida_window_raise(windowframe);
 
 			var visible = $(this).find('ul:visible').length > 0;
@@ -283,13 +283,13 @@ function taida_window_set_title(windowframe, title) {
 
 				$(this).find('ul').show(50);
 
-				$('body').one('click', function() {
+				$('body').one('click', function () {
 					windowframe.find('ul.nav ul').hide();
 				});
 			}
 		});
 
-		windowframe.find('ul.nav > li > a').mouseover(function(event) {
+		windowframe.find('ul.nav > li > a').mouseover(function (event) {
 			var visible = $(this).parent().parent().find('ul:visible');
 
 			if (visible.length == 0) {
@@ -304,7 +304,7 @@ function taida_window_set_title(windowframe, title) {
 			$(this).parent().find('ul').show(50);
 		});
 
-		windowframe.find('ul.nav a.entry').on('click', function(event) {
+		windowframe.find('ul.nav a.entry').on('click', function (event) {
 			$(this).parent().parent().hide();
 
 			var div = windowframe.find('div.window-body').children().first();
@@ -316,7 +316,7 @@ function taida_window_set_title(windowframe, title) {
 
 		/* Right-click dummy
 		 */
-		$('div.windows div#' + _taida_window_id_label + id).on('contextmenu', function() {
+		$('div.windows div#' + _taida_window_id_label + id).on('contextmenu', function () {
 			menu_entries = [{ name: 'About this application', icon: 'info-circle' }];
 			taida_contextmenu_show($(this), event, menu_entries, taida_window_about);
 
@@ -326,7 +326,7 @@ function taida_window_set_title(windowframe, title) {
 		});
 
 		/* Window header buttons */
-		windowframe.find('span.help-btn').on('click', function(event) {
+		windowframe.find('span.help-btn').on('click', function (event) {
 			event.stopPropagation();
 			if (typeof theSecretSawce_open == 'function') {
 				theSecretSawce_open(settings.help);
@@ -335,13 +335,13 @@ function taida_window_set_title(windowframe, title) {
 			}
 		});
 
-		windowframe.find('span.close-btn').on('click', function(event) {
+		windowframe.find('span.close-btn').on('click', function (event) {
 			event.stopPropagation();
 			windowframe_close.call($(this).closest('.window')[0]);
 		});
 
 
-		windowframe.find('span.maximize-btn').on('click', function(event) {
+		windowframe.find('span.maximize-btn').on('click', function (event) {
 			var windowframe_id = $(this).closest('.window').attr('id');
 			taida_window_maximize(windowframe_id);
 
@@ -352,7 +352,7 @@ function taida_window_set_title(windowframe, title) {
 			}
 		});
 
-		windowframe.find('span.minimize-btn').on('click', function(event) {
+		windowframe.find('span.minimize-btn').on('click', function (event) {
 			var windowframe_id = $(this).closest('.window').attr('id');
 
 			taida_window_minimize(windowframe_id);
@@ -394,7 +394,7 @@ function taida_window_set_title(windowframe, title) {
 
 		/* Click
 		 */
-		windowframe.on('click', function(event) {
+		windowframe.on('click', function (event) {
 			windowframe.find('ul.nav ul').hide();
 			taida_window_raise($(this));
 
@@ -406,11 +406,11 @@ function taida_window_set_title(windowframe, title) {
 		windowframe.draggable({
 			containment: 'div.windows',
 			handle: 'div.window-header',
-			start: function() {
+			start: function () {
 				taida_window_raise($(this));
 				taida_startmenu_close();
 			},
-			stop: function() {
+			stop: function () {
 				var pos = $(this).position();
 				if (pos.left < 0) {
 					$(this).css('left', '0px');
@@ -426,7 +426,7 @@ function taida_window_set_title(windowframe, title) {
 		if (settings.resize !== false) {
 			windowframe.resizable({
 				minWidth: settings.minWidth,
-				stop: function() {
+				stop: function () {
 					if ((settings.resize != undefined) && (settings.resize != false)) {
 						settings.resize();
 					}
@@ -438,7 +438,7 @@ function taida_window_set_title(windowframe, title) {
 
 	/* Functions
 	 */
-	var unselect_text = function() {
+	var unselect_text = function () {
 		if (window.getSelection || document.getSelection) {
 			window.getSelection().removeAllRanges();
 		} else {
@@ -446,7 +446,7 @@ function taida_window_set_title(windowframe, title) {
 		}
 	}
 
-	var windowframe_open = function() {
+	var windowframe_open = function () {
 		var windowframe_id = $(this).data('windowframe_id');
 		var windowframe = $('div.windows div#' + _taida_window_id_label + windowframe_id);
 		var settings = windowframe.data('settings');
@@ -458,10 +458,10 @@ function taida_window_set_title(windowframe, title) {
 			var overlay = '<div class="overlay overlay' + windowframe_id + '" style="z-index:' + zindex + '"></div>';
 			$('div.windows').append(overlay);
 			$('div.taskbar').append(overlay);
-			$('div.overlay').on('click', function(event) {
+			$('div.overlay').on('click', function (event) {
 				event.stopPropagation();
 			});
-			$('div.overlay').on('contextmenu', function(event) {
+			$('div.overlay').on('contextmenu', function (event) {
 				event.stopPropagation();
 				return false;
 			});
@@ -469,7 +469,7 @@ function taida_window_set_title(windowframe, title) {
 
 		taida_window_raise(windowframe);
 
-		windowframe.fadeIn(400, function() {
+		windowframe.fadeIn(400, function () {
 			if (settings.open != undefined) {
 				settings.open();
 			}
@@ -518,7 +518,7 @@ function taida_window_set_title(windowframe, title) {
 		}
 	};
 
-	var windowframe_close = function(event) {
+	var windowframe_close = function (event) {
 		// close via javascript?
 		var windowframe_id = $(this).attr('id');
 		if (windowframe_id == undefined) {
@@ -545,14 +545,14 @@ function taida_window_set_title(windowframe, title) {
 				$('div.taskbar div.overlay' + id).remove();
 			}
 
-			windowframe.fadeOut(200, function() {
+			windowframe.fadeOut(200, function () {
 				windowframe.remove();
 				taida_taskbar_remove(windowframe_id);
 
 				delete $(this);
 			});
 		} else {
-			taida_confirm('Taida Error: Object has no window id. Remove anyway?', function() {
+			taida_confirm('Taida Error: Object has no window id. Remove anyway?', function () {
 				$('div.windows div.overlay').remove();
 				$('div.taskbar div.overlay').remove();
 				$(this).parent().parent().remove();
@@ -560,12 +560,12 @@ function taida_window_set_title(windowframe, title) {
 		}
 	};
 
-	var get_body = function() {
+	var get_body = function () {
 		var windowframe_id = $(this).data('windowframe_id');
 		return $('div.windows div#' + _taida_window_id_label + windowframe_id + ' div.window-body').children().first();
 	}
 
-	var set_header = function(extra = '') {
+	var set_header = function (extra = '') {
 		var header = $(this).data('header');
 		if (extra != '') {
 			header += ' :: ' + taida_file_filename(extra);
@@ -579,8 +579,8 @@ function taida_window_set_title(windowframe, title) {
 
 	/* jQuery prototype
 	 */
-	$.fn[plugin_name] = function(options) {
-		return this.each(function() {
+	$.fn[plugin_name] = function (options) {
+		return this.each(function () {
 			(new plugin(this, options));
 		});
 	};
