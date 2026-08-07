@@ -35,7 +35,7 @@
 		{ id: 'statistics', label: 'Statistics' },
 		{ id: 'collections', label: 'Collections' },
 		{ id: 'timeline', label: 'Timeline' },
-		{ id: 'goals', label: 'Goals', arrow: true },
+		{ id: 'goals', label: 'Goals'},
 		{ id: 'settings', label: 'Settings' }
 	];
 
@@ -228,7 +228,12 @@
 		 * Rendering engine
 		 * ============================================================ */
 
+		var aoal_has_rendered_once = false;
+
 		function render() {
+			var previousActive = container.classList.contains('is-content-active');
+			var targetActive = !state.atHome;
+
 			container.innerHTML =
 				'<div class="aoal-wall">' +
 				renderViewport('home', renderHomeContent()) +
@@ -236,9 +241,30 @@
 				'</div>' +
 				renderModal();
 
-			container.className = 'aoal' +
-				(state.settings.reducedMotion ? ' is-reduced-motion' : '') +
-				(state.atHome ? '' : ' is-content-active');
+			if (!aoal_has_rendered_once) {
+				// First paint: apply the real state immediately, synchronously.
+				// No transition to preserve, and deferring via rAF here risks
+				// the window-open sizing logic in windows.js running before
+				// the class lands, which is what broke the initial launch.
+				container.className = 'aoal' +
+					(state.settings.reducedMotion ? ' is-reduced-motion' : '') +
+					(targetActive ? ' is-content-active' : '');
+				aoal_has_rendered_once = true;
+			} else {
+				// Subsequent renders: restore prior position first (so the
+				// freshly rebuilt .aoal-wall doesn't inherit the target state
+				// pre-painted), force a layout flush, then flip next frame so
+				// the transform transition actually animates.
+				container.className = 'aoal' +
+					(state.settings.reducedMotion ? ' is-reduced-motion' : '') +
+					(previousActive ? ' is-content-active' : '');
+
+				void container.offsetWidth;
+
+				requestAnimationFrame(function () {
+					container.classList.toggle('is-content-active', targetActive);
+				});
+			}
 
 			bindEvents();
 			applyBackgroundVideos();
@@ -256,9 +282,14 @@
 		}
 
 		function renderViewportBackground(variant) {
+			// 'home' (left wall) stays the night sky. 'content' (right wall)
+			// gets the exact same treatment (moon/stars analog, fog,
+			// particles) but recolored as its daylight counterpart.
+			var isDay = variant === 'content';
+
 			var particles = '';
 			if (state.settings.particles) {
-				var count = variant === 'home' ? 24 : 14;
+				var count = 24; // same density on both walls now
 				for (var i = 0; i < count; i++) {
 					var left = (Math.random() * 100).toFixed(2);
 					var delay = (Math.random() * 20).toFixed(2);
@@ -267,16 +298,24 @@
 				}
 			}
 
+			// Day sky uses three parallax cloud layers (far/middle/near),
+			// matching the layered background-image gradients defined for
+			// .aoal-clouds--far / --middle / --near in the current CSS.
+			var celestial = isDay
+				? '<div class="aoal-sun"></div>' +
+				'<div class="aoal-sun-glow"></div>' +
+				'<div class="aoal-clouds aoal-clouds--far"></div>' +
+				'<div class="aoal-clouds aoal-clouds--middle"></div>' +
+				'<div class="aoal-clouds aoal-clouds--near"></div>'
+				: '<div class="aoal-moon"></div><div class="aoal-stars"></div>';
+
 			return (
-				'<div class="aoal-viewport-bg" data-variant="' + variant + '">' +
-				// Empty until AOAL_BACKGROUND_SOURCES carries a clip for
-				// this variant — see applyBackgroundVideos().
+				'<div class="aoal-viewport-bg aoal-viewport-bg--' + (isDay ? 'day' : 'night') + '" data-variant="' + variant + '">' +
 				'<video class="aoal-bg-video" muted loop playsinline></video>' +
 				'<div class="aoal-bg-fallback">' +
-				'<div class="aoal-moon"></div>' +
-				'<div class="aoal-stars"></div>' +
 				'<div class="aoal-fog aoal-fog--far"></div>' +
 				'<div class="aoal-fog"></div>' +
+				celestial +
 				'<div class="aoal-particles">' + particles + '</div>' +
 				'</div>' +
 				'</div>'
@@ -312,20 +351,20 @@
 		}
 
 		function renderHomeContent() {
-			var items = AOAL_PAGES.map(function (page) {
+			var items = AOAL_PAGES.map(function (page, index) {
 				var active = page.id === state.page;
+				var indent = index * 18;
 				return (
-					'<button type="button" class="aoal-nav-item' + (active ? ' is-active' : '') + '" data-page="' + page.id + '">' +
+					'<button type="button" class="aoal-nav-item' + (active ? ' is-active' : '') + '" data-page="' + page.id + '" style="margin-left:' + indent + 'px">' +
 					'<span class="aoal-nav-cursor">&#9656;</span>' +
 					'<span>' + page.label + '</span>' +
-					(page.arrow ? '<span class="aoal-nav-arrow">&rarr;</span>' : '') +
 					'</button>'
 				);
 			}).join('');
 
 			return (
 				'<div class="aoal-home">' +
-				'<div class="aoal-home-title">Achievements<br />of a Lifetime</div>' +
+				'<div class="aoal-home-title">Achievements Of A Lifetime</div>' +
 				'<div class="aoal-home-rule"></div>' +
 				'<div class="aoal-home-nav-wrap">' +
 				'<nav class="aoal-home-nav">' + items + '</nav>' +
@@ -341,23 +380,12 @@
 		}
 
 		function renderContentShell() {
-			var tabs = AOAL_PAGES.map(function (page) {
-				var active = page.id === state.page;
-				return (
-					'<button type="button" class="aoal-nav-item' + (active ? ' is-active' : '') + '" data-page="' + page.id + '">' +
-					'<span class="aoal-nav-cursor">&#9656;</span>' +
-					'<span>' + page.label + '</span>' +
-					'</button>'
-				);
-			}).join('');
-
 			var builder = AOAL_VIEWS[state.page] || AOAL_VIEWS.achievements;
 
 			return (
 				'<div class="aoal-content-shell">' +
 				'<nav class="aoal-tabs">' +
 				'<button type="button" class="aoal-back-link" data-action="go-home">&larr; Menu</button>' +
-				tabs +
 				'</nav>' +
 				'<div class="aoal-content-body">' + builder(state) + '</div>' +
 				'</div>'
@@ -1022,14 +1050,16 @@
 			render();
 
 			view.taida_window({
-				header: 'Achievements Of A Lifetime',
+				header: 'AOAL',
 				icon: '/images/application.png',
 				width: 960,
 				height: 580,
 				minWidth: 700,
+				help: 'aoal',
 				close: function () {
 					$(document).off('keydown', onKeyDown);
 					window.clearTimeout(saveHandle);
+					aoal_has_rendered_once = false;
 				}
 			});
 
@@ -1044,6 +1074,6 @@
 	 * ============================================================ */
 
 	$(document).ready(function () {
-		taida_startmenu_add('Achievements', '/images/application.png', aoal_open);
+		taida_startmenu_add('AOAL', '/images/application.png', aoal_open);
 	});
 })();

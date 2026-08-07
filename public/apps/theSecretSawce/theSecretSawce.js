@@ -1,17 +1,49 @@
 var theSecretSawce_sections = {
+	aoal: {
+		title: 'AOAL',
+		body: [
+			'personal trophy chamber / life archive',
+			'- Inspired by the atmosphere of Final Fantasy XV menus and the feeling of opening a personal journey record.',
+			'- The idea started when I reached 1000 Elo in chess. It was the first achievement that made me want a dedicated space to preserve my successes.',
+			'- A digital chamber of trophies: a place to remember milestones, goals, and moments worth keeping.'
+		]
+	},
 	calculator: {
 		title: 'Calculator',
 		body: [
-			'README.md / tiny desk tool energy',
-			'- Keep arithmetic close to the desktop.',
-			'- Buttons first, decoration second.',
-			'- Inspiration notes: classic pocket calculators, early web widgets, and utilitarian OS accessories.'
+			'toki pona calculator / experimental parser',
+			'- Arithmetic is written entirely in toki pona rather than Arabic numerals.',
+			'- The engine first translates toki pona words into an internal mathematical expression, then tokenizes, parses and evaluates the result through its own expression tree.',
+			'- Numbers follow a seximal (base-6) adaptation of nasin nanpa suli. Operators and punctuation are represented by toki pona words before being converted into standard mathematical symbols.',
+			'',
+			'Glossary',
+			'- ala   = 0',
+			'- wan   = 1',
+			'- tu    = 2',
+			'- san   = 3',
+			'- po    = 4',
+			'- luka  = 5',
+			'- kulu  = 6 (used as the next digit in base-6)',
+			'- lili  = decimal point',
+			'- en    = addition (+)',
+			'- weka  = subtraction (-)',
+			'- mute  = multiplication (*)',
+			'- kipisi = division (/)',
+			'- sewi  = exponentiation (^)',
+			'- anpa  = logarithm',
+			'- li    = equality (=)',
+			'- te / to = parentheses',
+			'',
+			'Special thanks',
+			'- This project exists because my dear friend jan Tokun introduced me to toki pona.',
+			'- Without that introduction, this calculator—and probably the idea of expressing mathematics through toki pona—would never have existed.',
+			'- Some adaptations were made to the chosen "dialect" nasin nanpa suli, tan jan Emalan found on https://sona.pona.la/wiki/Proposed_number_systems'
 		]
 	},
 	explorer: {
 		title: 'File Explorer',
 		body: [
-			'README.md / filesystem app',
+			'filesystem app',
 			'- Show the virtual filesystem without exposing storage internals.',
 			'- Double click directories to move deeper; double click files to open with their handler.',
 			'- Inspiration notes: web desktop file managers, Windows Explorer basics, and Taida\'s own desktop icons.'
@@ -20,7 +52,7 @@ var theSecretSawce_sections = {
 	notepad: {
 		title: 'Notepad',
 		body: [
-			'README.md / plain text scratchpad',
+			'plain text scratchpad',
 			'- Open, edit, save, done.',
 			'- Text files should feel like data, not a whole product suite.',
 			'- Inspiration notes: Notepad, README editing, simple changelog drafting.'

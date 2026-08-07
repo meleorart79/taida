@@ -142,10 +142,8 @@
     background: radial-gradient(ellipse at 80% 15%, rgba(120, 170, 255, 0.10), transparent 55%), linear-gradient(180deg, #050a16 0%, #030510 55%, #01030a 100%);
     overflow: hidden;
 }
-
-.aoal-viewport--content .aoal-bg-fallback {
-    opacity: 0.55;
-    filter: blur(0.5px);
+.aoal-viewport-bg--day .aoal-bg-fallback {
+    background: radial-gradient(ellipse at 80% 15%, rgba(255, 210, 140, 0.25), transparent 55%), linear-gradient(180deg, #4f9fdb 0%, #7bbde8 45%, #a9d4ec 100%);
 }
 
 .aoal-vignette {
@@ -186,7 +184,7 @@
     height: 55%;
     background: linear-gradient(180deg, transparent, rgba(90, 120, 170, 0.16) 45%, rgba(20, 30, 50, 0.4) 100%);
     filter: blur(2px);
-    animation: aoal-drift 60s linear infinite;
+    animation: aoal-drift 60s linear infinite alternate;
 }
 
 .aoal-fog--far {
@@ -194,7 +192,7 @@
     height: 40%;
     opacity: 0.6;
     animation-duration: 90s;
-    animation-direction: reverse;
+    animation-direction: alternate-reverse;
 }
 
 .aoal-particles {
@@ -217,6 +215,93 @@
     animation-iteration-count: infinite;
 }
 
+.aoal-sun {
+    position: absolute;
+    top: 8%;
+    right: 12%;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 38% 35%, #fff2cf 0%, #ffd98a 35%, #ffb95c 65%, #f2903a 100%);
+    box-shadow: 0 0 40px 6px rgba(255, 190, 110, 0.3), 0 0 100px 26px rgba(255, 170, 90, 0.12);
+    animation: aoal-breathe 9s ease-in-out infinite;
+}
+
+.aoal-sun-glow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient( circle at 88% 12%, rgba(255,240,215,.22), transparent 42% );
+    mix-blend-mode: screen;
+}
+
+.aoal-clouds {
+    position: absolute;
+    inset: 0;
+    background-repeat: no-repeat;
+    pointer-events: none;
+}
+
+.aoal-clouds--far {
+    filter: blur(1px);
+    opacity: .45;
+    animation: aoal-cloud-drift 95s linear infinite;
+    background-repeat: no-repeat;
+    background-image:
+    /* Cloud 1 */
+    radial-gradient(circle at 6% 22%,rgba(245,248,255,.45) 0 75px,transparent 77px), radial-gradient(circle at 11% 18%,rgba(245,248,255,.45) 0 105px,transparent 107px), radial-gradient(circle at 17% 24%,rgba(245,248,255,.45) 0 85px,transparent 87px), radial-gradient(circle at 23% 20%,rgba(245,248,255,.45) 0 95px,transparent 97px),
+    /* Cloud 2 */
+    radial-gradient(circle at 69% 23%,rgba(245,248,255,.45) 0 85px,transparent 87px), radial-gradient(circle at 76% 18%,rgba(245,248,255,.45) 0 120px,transparent 122px), radial-gradient(circle at 83% 24%,rgba(245,248,255,.45) 0 90px,transparent 92px);
+}
+
+.aoal-clouds--middle {
+    opacity: .65;
+    animation: aoal-cloud-drift 65s linear infinite;
+    background-repeat: no-repeat;
+    background-image:
+    /* Cloud 2 */
+    radial-gradient(circle at 48% 44%,rgba(250,250,255,.65) 0 90px,transparent 92px), radial-gradient(circle at 56% 39%,rgba(250,250,255,.65) 0 130px,transparent 132px), radial-gradient(circle at 63% 45%,rgba(250,250,255,.65) 0 105px,transparent 107px),
+    /* Cloud 3 */
+    radial-gradient(circle at 82% 36%,rgba(250,250,255,.65) 0 95px,transparent 97px), radial-gradient(circle at 88% 31%,rgba(250,250,255,.65) 0 120px,transparent 122px), radial-gradient(circle at 95% 37%,rgba(250,250,255,.65) 0 100px,transparent 102px);
+}
+
+.aoal-clouds--near {
+    opacity: .85;
+    animation: aoal-cloud-drift 42s linear infinite;
+    background-repeat: no-repeat;
+    background-image:
+    /* Cloud 1 */
+    radial-gradient(circle at 8% 58%,rgba(255,255,255,.95) 0 105px,transparent 107px), radial-gradient(circle at 16% 52%,rgba(255,255,255,.95) 0 145px,transparent 147px), radial-gradient(circle at 25% 59%,rgba(255,255,255,.95) 0 115px,transparent 117px), radial-gradient(circle at 34% 55%,rgba(255,255,255,.95) 0 130px,transparent 132px),
+}
+
+.aoal-viewport-bg--day .aoal-fog {
+    opacity: 0.15;
+}
+
+.aoal-viewport-bg--day .aoal-fog--far {
+    opacity: 0.1;
+}
+
+.aoal-viewport-bg--day .aoal-particle {
+    background: #ffd27a;
+    box-shadow: 0 0 6px 1px rgba(255, 200, 120, 0.6);
+}
+
+.aoal-viewport--content {
+    /* Darker + explicitly re-declared as an actual `color` so it
+       INHERITS down to elements (page titles, stat values, etc.)
+       that never set their own `color` and were otherwise stuck
+       inheriting the night viewport's light color from .aoal root. */
+    --aoal-white: #0a0e18;
+    --aoal-dim: rgba(10, 14, 24, 0.72);
+    --aoal-faint: rgba(10, 14, 24, 0.5);
+    --aoal-line: rgba(10, 14, 24, 0.16);
+    color: var(--aoal-white);
+}
+
+    .aoal-viewport--content .aoal-vignette {
+        background: radial-gradient(ellipse at center, transparent 50%, rgba(255, 255, 255, 0.55) 100%) !important;
+    }
 /* ============================================================
    4. HOME VIEWPORT
    ============================================================ */
@@ -247,13 +332,14 @@
     line-height: 1.15;
     letter-spacing: 0.1em;
     text-align: center;
+    white-space: nowrap;
     color: var(--aoal-white);
     text-shadow: 0 0 32px rgba(140, 190, 255, 0.28);
 }
 
 .aoal-home-rule {
     margin-top: 22px;
-    width: 88px;
+    width: 160px;
     height: 1px;
     background: linear-gradient(90deg, transparent, var(--aoal-blue), transparent);
     opacity: 0.7;
@@ -343,7 +429,7 @@
     transform: translateX(0);
 }
 
-.aoal-nav-item[data-page="goals"] .aoal-nav-arrow {
+.aoal-nav-arrow {
     margin-left: 10px;
     opacity: 0.5;
 }
@@ -370,7 +456,9 @@
     flex-wrap: wrap;
     gap: 4px 22px;
     padding: 40px 64px 24px;
-    border-bottom: 1px solid var(--aoal-line);
+    border: none;
+    box-shadow: none;
+    outline: none;
 }
 
     .aoal-tabs .aoal-nav-item {
@@ -396,13 +484,11 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    margin-right: 8px;
     padding: 6px 10px 6px 0;
-    border-right: 1px solid var(--aoal-line);
     background: none;
-    border-top: none;
-    border-bottom: none;
-    border-left: none;
+    border: none;
+    box-shadow: none;
+    outline: none;
     color: var(--aoal-faint);
     font-family: var(--aoal-sans);
     font-size: 12px;
@@ -436,6 +522,9 @@
     padding: 40px 64px 56px;
     scrollbar-width: thin;
     scrollbar-color: var(--aoal-faint) transparent;
+    border: none;
+    box-shadow: none;
+    outline: none;
 }
 
     .aoal-content-body::-webkit-scrollbar {
@@ -968,14 +1057,14 @@
     }
 
     50% {
-        filter: brightness(1.12);
+        filter: brightness(1.1);
         transform: scale(1.02);
     }
 }
 
 @keyframes aoal-twinkle {
     0%, 100% {
-        opacity: 0.7;
+        opacity: 0.5;
     }
 
     50% {
@@ -983,17 +1072,18 @@
     }
 }
 
-@keyframes aoal-drift {
+@keyframes aoal-cloud-drift {
+
     0% {
-        transform: translateX(0);
+        transform: translateX(25%) translateY(0px);
     }
 
     50% {
-        transform: translateX(3%);
+        transform: translateX(0%) translateY(-8px);
     }
 
     100% {
-        transform: translateX(0);
+        transform: translateX(-25%) translateY(4px);
     }
 }
 
