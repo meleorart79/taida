@@ -4,6 +4,8 @@
  * NOW: Thin layer over DirectoryTree
  */
 
+namespace Taida;
+
 require_once BASE_PATH . '/libraries/backend.php';
 require_once BASE_PATH . '/libraries/fs/DirectoryTree.php';
 

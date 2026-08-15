@@ -6,7 +6,7 @@
 return [
     // Database configuration
     'database' => [
-        'dsn' => 'mysql:host=localhost;dbname=taida;charset=utf8mb4',
+        'dsn' => 'mysql:host=localhost;port=3306;dbname=taida;charset=utf8mb4',
         'username' => 'root',
         'password' => '',
         'options' => [
@@ -57,7 +57,7 @@ return [
     
     // Storage
     'storage' => [
-        'root' => '/var/www/taida/storage/files',
+        'root' => __DIR__ . '/../storage/files',
         'strategy' => 'hash',  // hash, date, uuid
         'hash_depth' => 2      // For hash strategy: ab/cd/ef/file
     ]

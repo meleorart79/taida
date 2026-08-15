@@ -18,3 +18,4 @@ taida.conf
 node_modules/
 dist/
 build/
+storage/

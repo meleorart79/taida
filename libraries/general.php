@@ -38,6 +38,17 @@
 		}
 	});
 
+	/* DirectoryTree database connection
+	 * Required by libraries/dir.php and libraries/file.php (global $db)
+	 */
+	$fs_config = require __DIR__ . "/../config/directory_tree.conf.php";
+	$db = new \PDO(
+		$fs_config['database']['dsn'],
+		$fs_config['database']['username'],
+		$fs_config['database']['password'],
+		$fs_config['database']['options']
+	);
+
 	/* Convert mixed to boolean
 	 *
 	 * INPUT:  mixed
