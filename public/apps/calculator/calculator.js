@@ -914,7 +914,6 @@ function calculator_open() {
         width: 260,
         height: 80,
         minWidth: 200,
-        help: 'calculator',
         resize: true
     });
     historyView.open();
@@ -927,7 +926,6 @@ function calculator_open() {
         width: 340,
         height: 260,
         minWidth: 260,
-        help: 'calculator',
         resize: true
     });
     keyboardView.open();

@@ -8,6 +8,16 @@ var theSecretSawce_sections = {
 			'- A digital chamber of trophies: a place to remember milestones, goals, and moments worth keeping.'
 		]
 	},
+	blankofmeaning: {
+		title: 'blankofmeaning',
+		body: [
+			'I just feel like sometimes I try to make any project I work on, the biggest thing ever.',
+			'I put way too much pressure on everything I skill or passion I try to learn.',
+			'It\'s like wanting everything to be perfect and neat first try.',
+			'So it doesn\'t leave a lot of space for imperfection, improvement and low stakes projects.',
+            'I guess this is a first attempt at showing awareness of the issue.',
+		]
+	},
 	calculator: {
 		title: 'Calculator',
 		body: [
